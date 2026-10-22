@@ -1,3 +1,4 @@
+# GitHub Actions: tests and store-ops checks
 name: CI
 
 on:
