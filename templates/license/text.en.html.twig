@@ -1,0 +1,16 @@
+{# Platform licence text, en: the engine is open source under Apache 2.0 (owner's decision 17.10.2026).
+   Changes together with the owner. Outside site/** — a pack cannot override it.
+   Variables: site (site domain), licensee (site owner), heading (heading tag: h1 on the site, h2 in the admin). Rendered by
+   site/page/license and admin/license/index; site languages without their own text (ru) get this one. #}
+{% set h = heading|default('h1') %}
+<{{ h }}>Licence</{{ h }}>
+<p>The website {{ site }} runs on Symfony ecommerce LuxSite, an open-source e-commerce engine licensed under Apache 2.0. Platform developed by LuxSite.</p>
+<ol>
+    <li><strong>Code licence.</strong> The engine code is distributed under the <a href="https://www.apache.org/licenses/LICENSE-2.0" rel="noopener">Apache License 2.0</a>. You may use, modify and distribute it, including in commercial projects, under the terms of that licence.</li>
+    <li><strong>NOTICE file.</strong> Copies and modified versions of the engine must include the NOTICE file that credits LuxSite as the platform developer.</li>
+    <li><strong>What belongs to the site owner.</strong> Texts, photos, products, prices, trademarks, logos and customer data belong to the site owner ({{ licensee }}) or are used by the site owner on their own grounds. The engine licence does not apply to them.</li>
+    <li><strong>The LuxSite name.</strong> The LuxSite name and logo are trademarks. The code licence grants no rights to them.</li>
+    <li><strong>Warranty.</strong> The engine is provided "as is", without warranties. Support and updates for a particular site are set by an agreement with LuxSite, if there is one.</li>
+    <li><strong>Third-party components.</strong> The engine includes open-source libraries such as Symfony, Doctrine and EasyAdmin. They are used under their own licences, listed below.</li>
+</ol>
+<p>Questions about the engine: via the <a href="https://luxsite.agency/" rel="noopener">luxsite.agency</a> website.</p>

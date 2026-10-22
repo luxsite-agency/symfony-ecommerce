@@ -1,0 +1,5 @@
+{# флеші лише з наявної сесії: app.flashes() стартує її #}
+{% if app.request.hasPreviousSession %}
+    {% for message in app.flashes('error') %}<p class="flash flash-error" role="alert">{{ message|trans }}</p>{% endfor %}
+    {% for message in app.flashes('success') %}<p class="flash flash-success" role="status">{{ message|trans }}</p>{% endfor %}
+{% endif %}

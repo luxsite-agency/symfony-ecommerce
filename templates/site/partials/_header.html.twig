@@ -1,0 +1,17 @@
+{# Шапка сайту: каркас <header> з логотипом і назвою; дії (телефон, кабінет, кошик, бургер) і меню приходять готовим HTML
+   з блоків header_actions і nav базового шаблону (site/base.html.twig, блок header). Контракт тем — docs/themes.md.
+   Змінні з контексту base.html.twig: brand_name (рядок), brand_tagline (рядок|null), logo (шлях лого відносно public/,
+   обов'язковий), locale; передані явно: header_actions (Markup блоку header_actions), nav (Markup блоку nav).
+   Функції: site_asset(), site_theme(), path(). Стабільні класи: site-header, header-bar, brand, brand-logo, brand-text,
+   brand-name, brand-tagline; чекбокс #nav-toggle.nav-toggle керує панеллю #site-nav без JS (CSS :checked). #}
+<header class="site-header">
+    <input type="checkbox" id="nav-toggle" class="nav-toggle visually-hidden" aria-controls="site-nav">
+    <div class="container header-bar">
+        <a class="brand" href="{{ path('site_home') }}">
+            <img class="brand-logo" src="{{ site_asset(logo) }}" width="{{ site_theme('logo.width') }}" height="{{ site_theme('logo.height') }}" alt="">
+            <span class="brand-text"><span class="brand-name">{{ brand_name }}</span>{% if brand_tagline %}<span class="brand-tagline">{{ brand_tagline }}</span>{% endif %}</span>
+        </a>
+        {{ header_actions }}
+    </div>
+    {{ nav }}
+</header>

@@ -1,0 +1,61 @@
+{# Каркас EasyAdmin з рядком ліцензії внизу кожної сторінки адмінки (admin/_license_footer.html.twig). Блок configured_body_contents —
+   єдиний у кінці <body>, який рендерять усі сторінки EasyAdmin; content_footer є лише на сторінках з контентом. Сторінка входу
+   рендериться без контексту EasyAdmin (login_minimal, не цей layout) — для неї admin/security/login.html.twig. #}
+{% extends '@!EasyAdmin/layout.html.twig' %}
+
+{# мобільна адмінка: кнопка меню й пункти меню — зона натискання 44 px (аудит UX A17) #}
+{% block head_stylesheets %}
+    {{ parent() }}
+    <style>
+        @media (max-width: 991.98px) {
+            #navigation-toggler { min-width: 44px; min-height: 44px; }
+            .ea-sidebar-item-link { min-height: 44px; }
+        }
+        /* перемикач мови в один рядок з меню користувача */
+        .admin-top-menu { display: flex; align-items: center; gap: .75rem; }
+        {# списки замовлень, товарів і налаштувань на телефоні (аудит UX A16, A15): компактний рядок без підписів, клікається цілком (EasyAdmin
+           ea-clickable-row), другорядні колонки сховано; решта списків — картками EasyAdmin, як були #}
+        @media (max-width: 767.98px) {
+            :is(body.ea-index-Order, body.ea-index-Product, body.ea-index-Setting) table.datagrid:not(.datagrid-empty) tbody tr { display: flex; flex-wrap: wrap; align-items: center; column-gap: .75rem; row-gap: .15rem; padding: .6rem .75rem; margin-block-end: .5rem; }
+            :is(body.ea-index-Order, body.ea-index-Product, body.ea-index-Setting) table.datagrid:not(.datagrid-empty) tr:not(.empty-row) td { padding: 0; box-shadow: none; min-block-size: 0; }
+            :is(body.ea-index-Order, body.ea-index-Product, body.ea-index-Setting) table.datagrid:not(.datagrid-empty) td::before { display: none; }
+            :is(body.ea-index-Order, body.ea-index-Product, body.ea-index-Setting) table.datagrid td.actions { margin-inline-start: auto; }
+            body.ea-index-Order table.datagrid td:is([data-column="phone"], [data-column="paymentStatus"]),
+            body.ea-index-Setting table.datagrid td:is([data-column="valueText"], [data-column="updatedAt"]),
+            body.ea-index-Product table.datagrid td:is([data-column="id"], [data-column="variantsCount"], [data-column="brand"], [data-column="featured"], [data-column="updatedAt"], .batch-actions-selector) { display: none; }
+            body.ea-index-Order table.datagrid td[data-column="number"], body.ea-index-Product table.datagrid td[data-column="name"] { flex-basis: 100%; font-weight: 600; }
+            body.ea-index-Setting table.datagrid td[data-column="label"] { flex: 1 1 0; min-width: 0; }
+            :is(body.ea-index-Order, body.ea-index-Product, body.ea-index-Setting) table.datagrid td:is([data-column="placedAt"], [data-column="sku"]) { color: var(--text-muted, #6c757d); font-size: .75rem; }
+        }
+        {# форми на телефоні (аудит UX A10): «Зберегти» й «Вийти без збереження» — липкою панеллю внизу, решту кнопок сховано #}
+        @media (max-width: 767.98px) {
+            :is(body.ea-edit, body.ea-new) .content-header .page-actions { position: fixed; inset-inline: 0; inset-block-end: 0; z-index: 1030; margin: 0; padding: .5rem 1rem; display: flex; flex-wrap: nowrap; justify-content: flex-end; gap: .5rem; background: var(--body-bg, #fff); border-top: 1px solid var(--border-color, #e3e7ee); }
+            :is(body.ea-edit, body.ea-new) .content-header .page-actions > :not(.action-saveAndReturn):not(.action-cancel) { display: none; }
+            :is(body.ea-edit, body.ea-new) .content-wrapper { padding-block-end: 4.5rem; }
+        }
+    </style>
+{% endblock %}
+
+{# кнопка меню на вузькому екрані: підпис для скрінрідера мовою адмінки (у EasyAdmin він зашитий англійською) #}
+{% block responsive_header %}
+    {{ parent()|replace({'aria-label="Toggle navigation"': 'aria-label="' ~ ('menu.toggle'|trans({}, 'admin'))|e('html_attr') ~ '"'})|raw }}
+    {# на вузькому екрані верхня панель (content_top_header) схована — перемикач мови в мобільному заголовку, справа #}
+    {% include 'admin/_locale_switcher.html.twig' %}
+{% endblock %}
+
+{# перемикач мови «UA / EN» — у верхній панелі перед меню користувача #}
+{% block header_custom_menu %}
+    <div class="admin-top-menu">
+        {% include 'admin/_locale_switcher.html.twig' %}
+        {{ parent() }}
+    </div>
+{% endblock %}
+
+{# пошук не у верхній панелі, а під заголовком розділу (crud/index.html.twig, рішення власника 20.10.2026): верхня панель —
+   лише перемикач мови й меню користувача. Блок search лишається визначеним — його рендерить сторінка списку. #}
+{% block search_wrapper %}<div class="content-search"></div>{% endblock %}
+
+{% block configured_body_contents %}
+    {{ parent() }}
+    {% include 'admin/_license_footer.html.twig' %}
+{% endblock %}

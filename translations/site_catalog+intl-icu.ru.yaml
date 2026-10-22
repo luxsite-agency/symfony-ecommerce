@@ -1,0 +1,91 @@
+# Публичный каталог (агент B): категория, фильтры, карточка товара
+catalog:
+    filters: Фильтры
+    reset: Сбросить все фильтры
+    apply: Применить
+    from: от
+    to: до
+    from_value: 'от {value}'
+    to_value: 'до {value}'
+    flag_yes: Да
+    flag_no: Нет
+    facet:
+        brand: Бренд
+        price: Цена
+        in_stock: Наличие
+        in_stock_only: Только в наличии
+        clear: Сбросить
+    sort:
+        label: Сортировка
+        price_asc: Сначала дешевле
+        price_desc: Сначала дороже
+        newest: Новинки
+    found: '{count, plural, one {# товар} few {# товара} many {# товаров} other {# товара}}'
+    empty: В этой категории пока нет товаров.
+    empty_filtered: По выбранным фильтрам товаров не найдено.
+    subcategories: Подкатегории
+    page_suffix: 'страница {page}'
+    pager:
+        label: Страницы
+        prev: Предыдущая
+        next: Следующая
+    price_on_request: Цена по запросу
+    price_from: 'от {price}'
+    price_retail: 'розница {price}'
+    availability:
+        in_stock: В наличии
+        to_order: Под заказ
+        out_of_stock: Нет в наличии
+        available: Доступно
+    lead_time: 'Срок: {days, plural, one {# день} few {# дня} many {# дней} other {# дня}}'
+    stock_exact: 'Остаток: {stock}'
+    options:
+        title: Опции
+        none: Без этого
+        range: 'от {min} до {max}, шаг {step}'
+        price: 'Цена с опциями: {price}'
+        calculate: Рассчитать
+    product:
+        sku: Артикул
+        attributes: Характеристики
+        category: Категория
+        categories: Категории товара
+        description: Описание
+        choose: Выберите вариант
+        unavailable: нет в наличии
+    wishlist:
+        add: В избранное
+        remove: Убрать из избранного
+    reviews:
+        title: Отзывы
+        store_rating: 'Оценка магазина:'
+        count: '{count, plural, one {# отзыв} few {# отзыва} many {# отзывов} other {# отзыва}}'
+        average: 'Оценка {average} из 5'
+        summary: '{average, number, ::.0} из 5 · {count, plural, one {# отзыв} few {# отзыва} many {# отзывов} other {# отзыва}}'
+        rating_of: 'Оценка {rating} из 5'
+        anonymous: Покупатель
+        verified: Купил этот товар
+        demo: Демо-отзыв
+        reply: Ответ магазина
+        empty: Отзывов пока нет. Станьте первым, кто поделится впечатлением.
+        write: Оставить отзыв
+        edit_mine: Ваш отзыв
+        submit: Сохранить отзыв
+        login_hint: Отзывы оставляют покупатели, вошедшие в кабинет.
+        login: Войти, чтобы оставить отзыв
+        login_google: Войти через Google, чтобы оставить отзыв
+        google_required: Чтобы оставить отзыв, войдите через Google.
+    az:
+        label: Товары по алфавиту
+        clear: Показать все буквы
+    search:
+        title: Поиск
+        title_for: 'Поиск: {q}'
+        label: Поиск товаров
+        placeholder: Название товара, артикул или бренд
+        button: Найти
+        hint: Введите не менее 2 символов — ищем по названию, артикулу и бренду.
+        found: '{count, plural, =0 {По запросу «{q}» ничего не найдено} one {# товар по запросу «{q}»} few {# товара по запросу «{q}»} other {# товаров по запросу «{q}»}}'
+        empty: 'По запросу «{q}» ничего не найдено. Попробуйте другое написание или более короткий запрос.'
+    viewed:
+        title: Вы смотрели

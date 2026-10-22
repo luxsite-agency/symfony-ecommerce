@@ -1,0 +1,27 @@
+{# Форма «в кошик» без JS: варіант (якщо їх кілька) + опції (options, calc_url — з картки) + кількість. product — Product.
+   selected — варіант, обраний кнопками осей на картці: тоді select варіанта не дублює вибір (UX-аудит S6). #}
+{% set variants = product.variants|filter(v => v.active) %}
+{% set selected = selected|default(null) %}
+{% if variants|length > 0 %}
+<form method="post" action="{{ path('site_cart_add') }}" class="add-to-cart" id="add-to-cart-{{ product.id }}">
+    <input type="hidden" name="_token" value="{{ csrf_token('cart') }}">
+    {% if selected and selected.active %}
+        <input type="hidden" name="variant" value="{{ selected.id }}">
+    {% elseif variants|length == 1 %}
+        {% set v = variants|first %}
+        <input type="hidden" name="variant" value="{{ v.id }}">
+    {% else %}
+        <label>{{ 'site.cart.variant'|trans }}
+            <select name="variant">
+                {% for v in variants %}<option value="{{ v.id }}">{% include 'site/partials/_variant_label.html.twig' with {v: v, with_price: true} only %}</option>{% endfor %}
+            </select>
+        </label>
+    {% endif %}
+    {% if options|default(null) %}{% include 'site/partials/_product_options.html.twig' with {options: options, calc_url: calc_url, keep: keep|default({})} only %}{% endif %}
+    {% set first = selected and selected.active ? selected : variants|first %}
+    {# 1.000 → 1, 0.500 → 0.5: десяткова кількість з БД без хвостових нулів #}
+    {% set qty = quantity_display(first.minQuantity) %}
+    <label>{{ 'site.cart.quantity'|trans }} <input type="number" name="quantity" value="{{ qty }}" min="{{ first.minQuantity }}" step="{{ first.quantityStep }}" inputmode="decimal"></label>
+    <button type="submit" class="btn btn-primary">{{ 'site.cart.add_to_cart'|trans }}</button>
+</form>
+{% endif %}

@@ -1,0 +1,89 @@
+{% extends '@EasyAdmin/crud/index.html.twig' %}
+{% trans_default_domain 'admin' %}
+{# Налаштування сайту + розділ «Вхід через Google» (стан, адреси для Cloud Console, інструкція, перевірка) + адреси товарних фідів
+   (Google Merchant, Meta) для копіювання в кабінети й час останньої генерації. #}
+{% block main %}
+    {{ parent() }}
+    {% if google is defined %}
+        {% set gt = 'settings.google.' %}
+        <section class="mt-4" id="google-sign-in" data-google-source="{{ google.source }}"{% if google.problem %} data-google-problem="{{ google.problem }}"{% endif %}>
+            <h3 class="h5">{{ (gt ~ 'title')|trans({}, 'admin') }}</h3>
+            {% set state_class = google.source == 'settings' ? 'text-success' : (google.source == 'env' ? 'text-muted' : 'text-danger') %}
+            <p class="small mb-2 {{ state_class }}">{{ (gt ~ 'state.' ~ (google.problem ?? google.source))|trans({}, 'admin') }}</p>
+            <div class="row g-2 mb-3" style="max-width: 48rem">
+                {% for key, value in {origin: google.origin, redirect_uri: google.redirectUri} %}
+                    <div class="col-12">
+                        <label class="form-label small mb-1" for="google-{{ key }}">{{ (gt ~ key)|trans({}, 'admin') }}</label>
+                        <div class="input-group input-group-sm">
+                            <input type="text" class="form-control" id="google-{{ key }}" readonly value="{{ value }}" onclick="this.select()">
+                            <button type="button" class="btn btn-secondary" data-copy="#google-{{ key }}" data-copied="{{ (gt ~ 'copied')|trans({}, 'admin') }}">{{ (gt ~ 'copy')|trans({}, 'admin') }}</button>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+            <details class="mb-3">
+                <summary class="small">{{ (gt ~ 'steps.title')|trans({}, 'admin') }}</summary>
+                <ol class="small mt-2 mb-2">
+                    {% for step in ['console', 'consent', 'client', 'uris', 'keys', 'enable', 'verify'] %}
+                        {# назви пунктів меню Google Cloud Console — англійською, як в інтерфейсі Google: translate="no" (не перекладати й не сприймати як сирий код) #}
+                        <li>{{ (gt ~ 'steps.' ~ step)|trans({}, 'admin')|e|replace({'Create credentials': '<span translate="no">Create credentials</span>'})|raw }}</li>
+                    {% endfor %}
+                </ol>
+                <a href="https://console.cloud.google.com/apis/credentials" target="_blank" rel="noopener" class="btn btn-sm btn-outline-secondary">{{ (gt ~ 'console')|trans({}, 'admin') }}</a>
+            </details>
+            <form method="post" action="{{ ea_url().unsetAll().setController('App\\Admin\\Controller\\Crud\\SettingCrudController').setAction('googleCheck').generateUrl() }}" class="d-inline" id="google-check">
+                <input type="hidden" name="token" value="{{ csrf_token(google.csrf) }}">
+                <button type="submit" class="btn btn-secondary btn-sm">{{ (gt ~ 'check')|trans({}, 'admin') }}</button>
+            </form>
+            <a href="{{ google.loginUrl }}" target="_blank" rel="noopener" class="btn btn-sm btn-outline-secondary ms-1">{{ (gt ~ 'try')|trans({}, 'admin') }}</a>
+        </section>
+    {% endif %}
+    {% if ai is defined %}
+        <section class="mt-4" id="ai-provider">
+            <h3 class="h5">{{ 'ai_key.section.title'|trans }}</h3>
+            {% if ai.keyState == 'no_key' %}
+                <p class="text-danger small mb-2" data-ai-state="no_key">{{ (ai.keyProblem == 'invalid' ? 'ai_key.section.no_key_invalid' : 'ai_key.section.no_key_missing')|trans }} — {{ 'ai_key.section.no_key_disabled'|trans }}</p>
+            {% elseif ai.keyState == 'unreadable' %}
+                <p class="text-danger small mb-2" data-ai-state="unreadable"><strong>{{ 'ai_key.section.unreadable_title'|trans }}</strong> {{ 'ai_key.section.unreadable_text'|trans }} <code>bin/console app:secrets:rotate</code> (docs/ai.md).</p>
+            {% elseif not ai.configured %}
+                <p class="text-muted small mb-2" data-ai-state="missing">{{ 'ai_key.section.missing'|trans }}</p>
+            {% else %}
+                {# суми — number_format, як і раніше (форматування грошей мовою адмінки — окремий PR) #}
+                <p class="text-muted small mb-2" data-ai-state="ready">{{ 'ai_key.section.model'|trans }} <code>{{ ai.model }}</code>{% if ai.edit['ai.model'] is defined %} <a href="{{ ai.edit['ai.model'] }}" class="small" data-ai-edit="ai.model">{{ 'ai_key.section.change'|trans }}</a>{% endif %}. {{ (ai.budget > 0 ? 'ai_key.section.month_budget' : 'ai_key.section.month')|trans({calls: ai.month.calls ~ '', cost: ai.month.cost|number_format(2, '.', ''), budget: ai.budget|number_format(2, '.', '')}) }}{% if ai.edit['ai.monthly_budget_usd'] is defined %} <a href="{{ ai.edit['ai.monthly_budget_usd'] }}" class="small" data-ai-edit="ai.monthly_budget_usd">{{ 'ai_key.section.change_budget'|trans }}</a>{% endif %}{% if ai.month.noCost > 0 %}; {{ 'ai_key.section.no_cost'|trans({count: ai.month.noCost}) }}{% endif %}.</p>
+            {% endif %}
+            {% if ai.keyState != 'no_key' and ai.edit['ai.openrouter_key'] is defined %}
+                <a href="{{ ai.edit['ai.openrouter_key'] }}" class="btn {{ ai.configured ? 'btn-secondary' : 'btn-primary' }}" data-ai-edit="ai.openrouter_key">{{ (ai.configured ? 'ai_key.action.change' : 'ai_key.action.enter')|trans }}</a>
+                <a href="https://openrouter.ai/keys" target="_blank" rel="noopener" class="small me-2">{{ 'ai_key.action.get'|trans }}</a>
+            {% endif %}
+            {% if not ai.configured %}
+                <p class="small mb-2 mt-2">
+                    {% if ai.edit['ai.model'] is defined %}<a href="{{ ai.edit['ai.model'] }}" data-ai-edit="ai.model">{{ 'ai_key.section.change_model'|trans }}</a>{% endif %}
+                    {% if ai.edit['ai.monthly_budget_usd'] is defined %} · <a href="{{ ai.edit['ai.monthly_budget_usd'] }}" data-ai-edit="ai.monthly_budget_usd">{{ 'ai_key.section.change_monthly_budget'|trans }}</a>{% endif %}
+                </p>
+            {% endif %}
+            <form method="post" action="{{ ea_url().unsetAll().setController('App\\Admin\\Controller\\Crud\\SettingCrudController').setAction('aiCheck').generateUrl() }}" class="d-inline">
+                <input type="hidden" name="token" value="{{ csrf_token(ai.csrf) }}">
+                <button type="submit" class="btn btn-secondary btn-sm" {{ ai.configured ? '' : 'disabled' }}>{{ 'ai_key.action.check'|trans }}</button>
+            </form>
+        </section>
+    {% endif %}
+    {% if feeds is defined and feeds is not empty %}
+        <section class="mt-4" id="product-feeds">
+            <h3 class="h5">{{ 'setting.feeds.title'|trans }}</h3>
+            <p class="text-muted small mb-2">{{ 'setting.feeds.help'|trans }}</p>
+            <table class="table table-sm datagrid">
+                <thead><tr><th>{{ 'setting.feeds.channel'|trans }}</th><th>{{ 'setting.feeds.locale'|trans }}</th><th>{{ 'setting.feeds.url'|trans }}</th><th>{{ 'setting.feeds.generated_at'|trans }}</th></tr></thead>
+                <tbody>
+                {% for feed in feeds %}
+                    <tr data-feed="{{ feed.channel }}-{{ feed.locale }}">
+                        <td>{{ feed.label }}</td>
+                        <td>{{ feed.locale }}</td>
+                        <td><div class="input-group input-group-sm"><input type="text" class="form-control" id="feed-{{ feed.channel }}-{{ feed.locale }}" readonly value="{{ feed.url }}" onclick="this.select()" aria-label="{{ 'setting.feeds.url_aria'|trans({channel: feed.label, locale: feed.locale}) }}"><button type="button" class="btn btn-secondary" data-copy="#feed-{{ feed.channel }}-{{ feed.locale }}" data-copied="{{ 'setting.feeds.copied'|trans }}">{{ 'setting.feeds.copy'|trans }}</button></div></td>
+                        <td>{{ feed.generatedAt ? feed.generatedAt|date_short(true) : 'setting.feeds.not_generated'|trans }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </section>
+    {% endif %}
+{% endblock %}

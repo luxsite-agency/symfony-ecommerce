@@ -1,0 +1,9 @@
+{% extends '@EasyAdmin/crud/detail.html.twig' %}
+{# Сторінка пакета змін (ChangesetCrudController, E15 PR-4): усе тіло — у _body.html.twig, спільному з page.html.twig (409/422). #}
+{% block content_title %}#{{ cs.id }} {{ cs.title }}{% endblock %}
+{% block page_actions %}
+    {{ include('admin/changeset/_actions.html.twig') }}
+{% endblock %}
+{% block main %}
+    {{ include('admin/changeset/_body.html.twig') }}
+{% endblock %}

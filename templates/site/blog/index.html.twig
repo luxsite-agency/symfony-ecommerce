@@ -1,0 +1,33 @@
+{# Контракт теми (docs/themes.md, template_contract 1). Змінні BlogController::index: posts (list<Post> опубліковані), page (int), pages (int — усього сторінок). #}
+{% extends 'site/base.html.twig' %}
+{% import 'site/partials/_schema.html.twig' as schema %}
+{% set alternates = site_alternates('site_blog') %}
+{% set heading = 'site.blog.title'|trans %}
+{% block title %}{{ heading }} | {{ site_name }}{% endblock %}
+{% block schema %}{{ schema.crumbs([{name: site_name, url: url('site_home')}, {name: heading}]) }}{% endblock %}
+{% block body %}
+    <ol class="crumbs"><li><a href="{{ path('site_home') }}">{{ site_name }}</a></li><li>{{ heading }}</li></ol>
+    <h1>{{ heading }}</h1>
+    {% if posts %}
+        <ul class="cards cards-posts">
+            {% for post in posts %}{% set t = tr(post) %}{% set url = site_url(post) %}
+                {% if t and url %}<li class="card post-card">
+                    {% if post.cover %}<a href="{{ url }}"><img src="{{ ('/media/' ~ post.cover.path)|imagine_filter('product_large') }}" alt="{{ post.cover.alt ?: t.title }}" loading="lazy"></a>{% endif %}
+                    <h3><a href="{{ url }}">{{ t.title }}</a></h3>
+                    <p class="meta">
+                        <time datetime="{{ post.publishedAt|date('Y-m-d') }}">{{ post.publishedAt|format_date('long', locale=app.request.locale) }}</time>
+                        {% if post.category and tr(post.category) %} · {{ tr(post.category).name }}{% endif %}
+                    </p>
+                    {% if t.excerpt %}<p>{{ t.excerpt }}</p>{% endif %}
+                </li>{% endif %}
+            {% endfor %}
+        </ul>
+        {% if pages > 1 %}
+            <nav class="pager">
+                {% if page > 1 %}<a href="{{ path('site_blog', {page: page - 1}) }}" rel="prev">←</a>{% endif %}
+                <span class="meta">{{ 'site.blog.page_of'|trans({page: page, pages: pages}) }}</span>
+                {% if page < pages %}<a href="{{ path('site_blog', {page: page + 1}) }}" rel="next">→</a>{% endif %}
+            </nav>
+        {% endif %}
+    {% else %}<p class="empty">{{ 'site.blog.empty'|trans }}</p>{% endif %}
+{% endblock %}

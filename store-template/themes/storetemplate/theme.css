@@ -1,0 +1,3 @@
+/* Тема магазину (app.theme.stylesheet): доповнення до assets/site.css рушія. Кольори, шрифт, радіуси — у параметрах теми
+   (CSS-змінні --c-*, --font, --radius); тут лише те, чого параметрами не задати. Клас body.theme-storetemplate. */
+.theme-storetemplate .brand-tagline{color:var(--c-muted)}

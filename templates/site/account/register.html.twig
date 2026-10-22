@@ -1,0 +1,19 @@
+{% extends 'site/base.html.twig' %}
+{% set noindex = true %}
+{% block title %}{{ 'site.account.register.title'|trans }} | {{ site_name }}{% endblock %}
+{% block body %}
+    <h1>{{ 'site.account.register.title'|trans }}</h1>
+    {% if limited %}<p class="flash flash-error" role="alert">{{ 'site.account.error.too_many'|trans }}</p>{% endif %}
+    <form method="post" action="{{ path('site_account_register') }}" class="account-form" novalidate>
+        <input type="hidden" name="{{ field_name(form._token) }}" value="{{ field_value(form._token) }}">
+        <p>{{ 'site.account.register.text'|trans }}</p>
+        {% include 'site/account/_field.html.twig' with {field: form.email, label: 'site.account.email'|trans, type: 'email', autocomplete: 'email'} only %}
+        <label class="checkbox"><input type="checkbox" name="{{ field_name(form.consent) }}" value="1"{% if form.consent.vars.checked %} checked{% endif %}> {{ 'site.account.consent.pd_processing'|trans }}</label>
+        {% for error in field_errors(form.consent) %}<span class="form-error">{{ error|trans }}</span>{% endfor %}
+        <button type="submit" class="btn btn-primary">{{ 'site.account.register.submit'|trans }}</button>
+    </form>
+    {% include 'site/account/_google_button.html.twig' with {next: app.request.query.get('next')} only %}
+    <ul class="account-links">
+        <li><a href="{{ path('site_account_login') }}">{{ 'site.account.register.have_account'|trans }}</a></li>
+    </ul>
+{% endblock %}

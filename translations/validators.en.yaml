@@ -1,0 +1,144 @@
+# Повідомлення валідації (домен validators, формат Symfony без ICU: {{ limit }}). Ключі <область>.<сутність>.<поле>.<правило>.
+catalog:
+  attribute:
+    code:
+      not_blank: Enter a code.
+      unique: An attribute with this code already exists.
+  attribute_value:
+    code:
+      not_blank: Enter a code.
+      unique: This attribute already has a value with this code.
+  brand:
+    name:
+      not_blank: Enter a name.
+    slug:
+      not_blank: Enter a URL slug.
+      unique: A brand with this URL slug already exists.
+  media:
+    file:
+      extensions: Only .jpg, .jpeg, .png, .webp, .gif and .avif files are allowed.
+      mime_types: Only JPEG, PNG, WebP, GIF and AVIF images are allowed.
+      not_null: Upload a file.
+    path:
+      unique: A file with this path already exists.
+  option_group:
+    code:
+      not_blank: Enter a code.
+      unique: This product already has an option group with this code.
+  option_value:
+    code:
+      not_blank: Enter a code.
+      unique: This option group already has a value with this code.
+  product:
+    variants:
+      min_count: A product must have at least one variant.
+  product_translation:
+    slug:
+      unique: A product with this URL slug already exists in this language.
+  product_variant:
+    external_id:
+      unique: A variant with this externalId already exists.
+    sku:
+      not_blank: Enter a SKU.
+      unique: A variant with this SKU already exists.
+changeset:
+  changeset:
+    operations:
+      min_count: 'operations: empty change set'
+    title:
+      max_length: 'title: up to 255 characters'
+      not_blank: 'title: empty title'
+  operation:
+    min_quantity:
+      format: 'min_quantity: number with a decimal point, up to 3 decimal places'
+    old_price:
+      format: 'old_price: number with a decimal point, up to 2 decimal places'
+    price:
+      format: 'price: number with a decimal point, up to 2 decimal places'
+    product:
+      not_blank: 'product: id or SKU'
+    variant:
+      not_blank: 'variant: id or SKU'
+  set_product_categories:
+    categories:
+      max_count: 'categories: no more than 50'
+      min_count: 'categories: at least one category'
+    main:
+      positive: 'main: main category id'
+  set_translation:
+    entity:
+      choice: 'entity: product, category, page or post'
+    fields:
+      min_count: 'fields: at least one field'
+    id:
+      positive: 'id: positive integer'
+    locale:
+      format: 'locale: language code (uk, ru, en…)'
+content:
+  solution_option:
+    product:
+      unique: 'This product is already one of the solution options.'
+  solution_translation:
+    slug:
+      unique: 'A solution with this URL slug already exists in this language.'
+  page_translation:
+    slug:
+      reserved: 'The address “{{ slug }}” is reserved by the site (cart, account, blog…), choose another slug.'
+      category: 'A top-level category already uses this URL slug in this language: pages and categories share root URLs.'
+      product: 'A product already uses this URL slug in this language: pages and products share root URLs.'
+      unique: A page with this URL slug already exists in this language.
+  post_category:
+    code:
+      not_blank: Enter a code.
+      unique: A blog category with this code already exists.
+  post_category_translation:
+    slug:
+      unique: A blog category with this URL slug already exists in this language.
+  post_translation:
+    slug:
+      unique: A blog post with this URL slug already exists in this language.
+customer:
+  customer_group:
+    code:
+      not_blank: Enter a code.
+      unique: A customer group with this code already exists.
+    name:
+      not_blank: Enter a name.
+pricing:
+  promotion:
+    ends_at:
+      after_start: The end date must be after the start date.
+    name:
+      not_blank: Enter a promotion name.
+security:
+  api_token:
+    days:
+      not_blank: Enter the validity period.
+      range: Must be between {{ min }} and {{ max }} days.
+    name:
+      max_length: Up to 100 characters.
+      not_blank: Enter a name.
+    scopes:
+      min_count: Select at least one permission.
+  user:
+    email:
+      email: This doesn't look like an email address.
+      not_blank: Enter an email address.
+      unique: A user with this email already exists.
+    name:
+      not_blank: Enter a name.
+    password:
+      min_length: Password must be at least 8 characters.
+      not_blank: Enter a password.
+seo:
+  redirect:
+    source:
+      invalid: 'Invalid URL: enter a path from the site root (/old-url) or the full URL of the old page.'
+      not_blank: Enter the URL to redirect from (a path from the site root).
+      unique: A redirect for this URL already exists.
+    target:
+      external_denied: Only an administrator can set a target on another site. Managers can use a path from the root (/…).
+      invalid: 'Invalid target: a path from the root (/…) or a full URL https://…'
+  redirect_import:
+    file:
+      not_null: Choose a file.

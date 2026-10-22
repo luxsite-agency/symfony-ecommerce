@@ -1,0 +1,44 @@
+{% extends '@EasyAdmin/crud/detail.html.twig' %}
+{% trans_default_domain 'admin' %}
+{# Перегляд заявки оптовика: стандартні поля + для нової заявки форми рішення (схвалити з групою, відхилити з причиною). #}
+{% set application = entity.instance %}
+{% block main %}
+    {{ parent() }}
+    {% if application.pending %}
+        {% set token = csrf_token('wholesale-decision-' ~ application.id) %}
+        {% set decideUrl = path('admin_wholesale_application_decide', {entityId: application.id}) %}
+        <div class="row mt-4" id="wholesale-decision">
+            <div class="col-lg-6">
+                <h3 class="h5">{{ 'wholesale.detail.approve'|trans }}</h3>
+                <form method="post" action="{{ decideUrl }}" class="wholesale-approve">
+                    <input type="hidden" name="decision" value="approve">
+                    <input type="hidden" name="token" value="{{ token }}">
+                    <div class="mb-2">
+                        <label class="form-label" for="wholesale-group">{{ 'wholesale.detail.group_label'|trans }}</label>
+                        <select class="form-select" name="group" id="wholesale-group" required>
+                            <option value="">{{ 'wholesale.detail.group_placeholder'|trans }}</option>
+                            {% for group in groups %}<option value="{{ group.id }}">{{ group.name }} ({{ group.code }})</option>{% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label" for="wholesale-approve-comment">{{ 'wholesale.detail.approve_comment'|trans }}</label>
+                        <textarea class="form-control" name="comment" id="wholesale-approve-comment" rows="2" maxlength="1000"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-success"><i class="fa fa-check"></i> {{ 'wholesale.detail.approve_submit'|trans }}</button>
+                </form>
+            </div>
+            <div class="col-lg-6">
+                <h3 class="h5">{{ 'wholesale.detail.reject'|trans }}</h3>
+                <form method="post" action="{{ decideUrl }}" class="wholesale-reject">
+                    <input type="hidden" name="decision" value="reject">
+                    <input type="hidden" name="token" value="{{ token }}">
+                    <div class="mb-2">
+                        <label class="form-label" for="wholesale-reject-comment">{{ 'wholesale.detail.reject_reason'|trans }}</label>
+                        <textarea class="form-control" name="comment" id="wholesale-reject-comment" rows="3" maxlength="1000" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-danger"><i class="fa fa-ban"></i> {{ 'wholesale.detail.reject'|trans }}</button>
+                </form>
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}

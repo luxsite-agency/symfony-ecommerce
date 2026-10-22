@@ -1,0 +1,41 @@
+{% extends 'site/base.html.twig' %}
+{% set noindex = true %}
+{% block title %}{{ 'site.account.orders.title'|trans }} | {{ site_name }}{% endblock %}
+{% block body %}
+    <h1>{{ 'site.account.orders.title'|trans }}</h1>
+    {% include 'site/account/_flashes.html.twig' %}
+    {% if claimable > 0 %}
+        <form method="post" action="{{ path('site_account_orders_claim') }}" class="orders-claim flash flash-success">
+            <input type="hidden" name="_token" value="{{ csrf_token('account') }}">
+            <p>{{ 'site.account.orders.claim.text'|trans({count: claimable, email: customer.email}) }}</p>
+            <button type="submit" class="btn btn-primary">{{ 'site.account.orders.claim.submit'|trans }}</button>
+        </form>
+    {% endif %}
+    {% if orders is empty %}
+        <p class="orders-empty">{{ 'site.account.orders.empty'|trans }}</p>
+    {% else %}
+        <table class="cart orders">
+            <thead><tr><th>{{ 'site.account.orders.number'|trans }}</th><th>{{ 'site.account.orders.date'|trans }}</th><th>{{ 'site.account.orders.status'|trans }}</th><th>{{ 'site.account.orders.total'|trans }}</th></tr></thead>
+            <tbody>
+            {% for order in orders %}
+                <tr>
+                    <td data-label="{{ 'site.account.orders.number'|trans }}"><a href="{{ path('site_account_order', {id: order.id}) }}">{{ order.number }}</a></td>
+                    <td data-label="{{ 'site.account.orders.date'|trans }}">{{ order.placedAt|date_short }}</td>
+                    <td data-label="{{ 'site.account.orders.status'|trans }}"><span class="order-status order-status-{{ order.status }}">{{ ('site.account.orders.status_name.' ~ order.status)|trans }}</span></td>
+                    <td class="price" data-label="{{ 'site.account.orders.total'|trans }}">{{ order.total|money }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        {% if pages > 1 %}
+            <nav class="pagination" aria-label="{{ 'site.account.orders.pages'|trans }}">
+                {% if page > 1 %}<a rel="prev" href="{{ path('site_account_orders', {page: page - 1}) }}">{{ 'site.account.orders.prev'|trans }}</a>{% endif %}
+                <span>{{ page }} / {{ pages }}</span>
+                {% if page < pages %}<a rel="next" href="{{ path('site_account_orders', {page: page + 1}) }}">{{ 'site.account.orders.next'|trans }}</a>{% endif %}
+            </nav>
+        {% endif %}
+    {% endif %}
+    <ul class="account-links">
+        <li><a href="{{ path('site_account') }}">{{ 'site.account.wholesale.back'|trans }}</a></li>
+    </ul>
+{% endblock %}

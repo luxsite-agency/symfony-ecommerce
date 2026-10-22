@@ -1,0 +1,11 @@
+# Пак магазину (формат 1, docs/store-pack.md рушія). Сервер, статус, бекапи — у реєстрі stores.yaml рушія, не тут.
+format: 1
+key: storetemplate
+name: 'Store Template'
+# Перша мова — за замовчуванням; та сама послідовність, що app.locales у config/parameters.yaml і locales у реєстрі
+locales: [uk, en]
+domains:
+    site: storetemplate.example.com
+    admin: admin.storetemplate.example.com
+# Версія рушія, з якою пак перевірено (тег vX.Y.Z; до перших тегів — sha коміту main)
+engine: 6ef6d06

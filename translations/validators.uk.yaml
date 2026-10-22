@@ -1,0 +1,144 @@
+# Повідомлення валідації (домен validators, формат Symfony без ICU: {{ limit }}). Ключі <область>.<сутність>.<поле>.<правило>.
+catalog:
+  attribute:
+    code:
+      not_blank: Вкажіть код
+      unique: Характеристика з таким кодом уже є
+  attribute_value:
+    code:
+      not_blank: Вкажіть код
+      unique: Значення з таким кодом уже є в цій характеристиці
+  brand:
+    name:
+      not_blank: Вкажіть назву
+    slug:
+      not_blank: Вкажіть слаг
+      unique: Бренд з таким слагом уже є
+  media:
+    file:
+      extensions: Дозволені лише файли .jpg, .jpeg, .png, .webp, .gif, .avif
+      mime_types: Дозволені лише зображення JPEG, PNG, WebP, GIF, AVIF
+      not_null: Завантажте файл
+    path:
+      unique: Файл з таким шляхом уже є
+  option_group:
+    code:
+      not_blank: Вкажіть код
+      unique: Група з таким кодом уже є в товарі
+  option_value:
+    code:
+      not_blank: Вкажіть код
+      unique: Значення з таким кодом уже є в групі
+  product:
+    variants:
+      min_count: Товар має мати хоча б один варіант
+  product_translation:
+    slug:
+      unique: Товар з таким слагом уже є цією мовою
+  product_variant:
+    external_id:
+      unique: Варіант з таким externalId уже є
+    sku:
+      not_blank: Вкажіть SKU
+      unique: Варіант з таким SKU уже є
+changeset:
+  changeset:
+    operations:
+      min_count: 'operations: порожній пакет'
+    title:
+      max_length: 'title: не довше 255 символів'
+      not_blank: 'title: порожній заголовок'
+  operation:
+    min_quantity:
+      format: 'min_quantity: число з крапкою, до 3 знаків'
+    old_price:
+      format: 'old_price: число з крапкою, до 2 знаків'
+    price:
+      format: 'price: число з крапкою, до 2 знаків'
+    product:
+      not_blank: 'product: id або SKU'
+    variant:
+      not_blank: 'variant: id або SKU'
+  set_product_categories:
+    categories:
+      max_count: 'categories: не більше 50'
+      min_count: 'categories: хоча б одна категорія'
+    main:
+      positive: 'main: id головної категорії'
+  set_translation:
+    entity:
+      choice: 'entity: product, category, page або post'
+    fields:
+      min_count: 'fields: хоча б одне поле'
+    id:
+      positive: 'id: додатне ціле'
+    locale:
+      format: 'locale: код мови (uk, ru, en…)'
+content:
+  solution_option:
+    product:
+      unique: 'Цей товар уже є серед варіантів рішення.'
+  solution_translation:
+    slug:
+      unique: 'Рішення з таким слагом уже є цією мовою.'
+  page_translation:
+    slug:
+      reserved: 'Адреса «{{ slug }}» службова (кошик, кабінет, блог…), оберіть інший слаг.'
+      category: 'Такий слаг має коренева категорія цією мовою: сторінки й категорії в корені сайту ділять адреси.'
+      product: 'Такий слаг має товар цією мовою: сторінки й товари в корені сайту ділять адреси.'
+      unique: Сторінка з таким слагом уже є цією мовою
+  post_category:
+    code:
+      not_blank: Вкажіть код
+      unique: Рубрика з таким кодом уже є
+  post_category_translation:
+    slug:
+      unique: Рубрика з таким слагом уже є цією мовою
+  post_translation:
+    slug:
+      unique: Запис з таким слагом уже є цією мовою
+customer:
+  customer_group:
+    code:
+      not_blank: Вкажіть код
+      unique: Група з таким кодом уже є
+    name:
+      not_blank: Вкажіть назву
+pricing:
+  promotion:
+    ends_at:
+      after_start: Кінець акції має бути пізніше за початок
+    name:
+      not_blank: Вкажіть назву акції
+security:
+  api_token:
+    days:
+      not_blank: Вкажіть строк
+      range: Від {{ min }} до {{ max }} днів
+    name:
+      max_length: Не довше за 100 символів
+      not_blank: Вкажіть назву
+    scopes:
+      min_count: Виберіть хоча б один дозвіл
+  user:
+    email:
+      email: Не схоже на електронну пошту
+      not_blank: Вкажіть електронну пошту
+      unique: Користувач з такою поштою вже є
+    name:
+      not_blank: Вкажіть ім'я
+    password:
+      min_length: Пароль має бути не коротшим за 8 символів
+      not_blank: Вкажіть пароль
+seo:
+  redirect:
+    source:
+      invalid: 'Невалідна адреса: потрібен шлях від кореня сайту (/stara-adresa) або повний URL старої сторінки'
+      not_blank: Вкажіть адресу, з якої переадресувати (шлях від кореня сайту)
+      unique: Для цієї адреси правило вже є
+    target:
+      external_denied: Ціль на іншому сайті може задати лише адміністратор; менеджеру — шлях від кореня (/…)
+      invalid: 'Невалідна ціль: шлях від кореня (/…) або повний URL https://…'
+  redirect_import:
+    file:
+      not_null: Оберіть файл

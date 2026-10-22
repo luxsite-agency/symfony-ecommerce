@@ -1,0 +1,7 @@
+{# Зірки оцінки (відгуки): average (float 0–5), stars (int повних зірок), count (кількість схвалених відгуків).
+   show_count (типово true) — false, коли кількість поруч уже є. Стабільні класи: .rating, .rating-stars, .rating-count. #}
+{% trans_default_domain 'site_catalog' %}
+<span class="rating" title="{{ 'catalog.reviews.average'|trans({average: average}) }}">
+    <span class="rating-stars" aria-label="{{ 'catalog.reviews.average'|trans({average: average}) }}">{% for i in 1..5 %}<span class="star{{ i <= stars ? ' star-on' : '' }}" aria-hidden="true">★</span>{% endfor %}</span>
+    {% if show_count ?? true %}<span class="rating-count">{{ 'catalog.reviews.count'|trans({count: count}) }}</span>{% endif %}
+</span>

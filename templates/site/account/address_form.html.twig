@@ -1,0 +1,40 @@
+{% extends 'site/base.html.twig' %}
+{% set noindex = true %}
+{% block title %}{{ (isNew ? 'site.account.address.add' : 'site.account.address.edit')|trans }} | {{ site_name }}{% endblock %}
+{% block head %}{% if np %}<script src="{{ asset('assets/site-checkout-np.js') }}" defer></script>{% endif %}{% endblock %}
+{% block body %}
+    <h1>{{ (isNew ? 'site.account.address.add' : 'site.account.address.edit')|trans }}</h1>
+    <form method="post" action="{{ isNew ? path('site_account_address_new') : path('site_account_address_edit', {id: addressId}) }}" class="account-form address-form" novalidate>
+        <input type="hidden" name="{{ field_name(form._token) }}" value="{{ field_value(form._token) }}">
+        <label>{{ 'site.account.address.label'|trans }} <input type="text" name="{{ field_name(form.label) }}" value="{{ field_value(form.label) }}" placeholder="{{ 'site.account.address.label_hint'|trans }}"></label>
+        {% include 'site/account/_field.html.twig' with {field: form.recipientName, label: 'site.account.address.recipient'|trans, type: 'text', autocomplete: 'name'} only %}
+        {% include 'site/account/_field.html.twig' with {field: form.recipientPhone, label: 'site.checkout.phone'|trans, type: 'tel', autocomplete: 'tel'} only %}
+        <fieldset>
+            <legend>{{ 'site.checkout.shipping_title'|trans }}</legend>
+            {% for method in shippingMethods %}
+                <label class="radio"><input type="radio" name="shipping" value="{{ method.value }}" {{ data.shipping == method.value ? 'checked' }}> {{ ('site.checkout.shipping.' ~ method.value)|trans }}</label>
+            {% endfor %}
+            {% if np %}
+                <div class="np-picker" data-np-cities="{{ path('site_np_cities') }}" data-np-warehouses="{{ path('site_np_warehouses') }}" data-np-method="{{ constant('App\\Core\\Order\\Enum\\ShippingMethod::NovaPoshta').value }}">
+                    <input type="hidden" name="npCityRef" value="{{ data.npCityRef }}" data-np-city-ref>
+                    <label>{{ 'site.checkout.city'|trans }} <input type="text" name="city" value="{{ data.city }}" autocomplete="off" list="np-cities" data-np-city placeholder="{{ 'site.checkout.np.city_hint'|trans }}"></label>
+                    <datalist id="np-cities"></datalist>
+                    <label class="np-warehouse" {{ np.warehouses is empty ? 'hidden' }} data-np-warehouse-wrap>{{ 'site.checkout.np.warehouse'|trans }}
+                        <select name="npWarehouseRef" data-np-warehouse {{ np.warehouses is empty ? 'disabled' }}>
+                            <option value="">{{ 'site.checkout.np.warehouse_placeholder'|trans }}</option>
+                            {% for w in np.warehouses %}<option value="{{ w.ref }}" {{ data.npWarehouseRef == w.ref ? 'selected' }}>{{ w.label(app.request.locale) }}</option>{% endfor %}
+                        </select>
+                    </label>
+                    <label data-np-address-wrap>{{ 'site.checkout.address'|trans }} <input type="text" name="address" value="{{ data.address }}" placeholder="{{ 'site.checkout.address_hint'|trans }}" data-np-address></label>
+                </div>
+            {% else %}
+                <label>{{ 'site.checkout.city'|trans }} <input type="text" name="city" value="{{ data.city }}" autocomplete="address-level2"></label>
+                <label>{{ 'site.checkout.address'|trans }} <input type="text" name="address" value="{{ data.address }}" placeholder="{{ 'site.checkout.address_hint'|trans }}"></label>
+            {% endif %}
+            {% for error in field_errors(form.address) %}<span class="form-error">{{ error|trans }}</span>{% endfor %}
+        </fieldset>
+        <label class="checkbox"><input type="checkbox" name="{{ field_name(form.isDefault) }}" value="1"{% if form.isDefault.vars.checked %} checked{% endif %}> {{ 'site.account.address.make_default'|trans }}</label>
+        <button type="submit" class="btn btn-primary">{{ 'site.account.address.save'|trans }}</button>
+    </form>
+    <ul class="account-links"><li><a href="{{ path('site_account_addresses') }}">{{ 'site.account.address.back'|trans }}</a></li></ul>
+{% endblock %}

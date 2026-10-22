@@ -1,0 +1,161 @@
+{# Тіло сторінки пакета (дизайн B pr4-ui.md §3): шапка, ризики, попередження, конфлікти, таблиця змін, підтвердження й кнопки.
+   Усі значення з diff екрануються Twig — сирий HTML від AI тут ніколи не виконується. Без JS сторінка повністю робоча. #}
+{% trans_default_domain 'admin' %}
+{% set status_label = status|trans %}
+<section id="changeset-{{ cs.id }}" data-status="{{ status.value }}">
+    <p class="mb-1">
+        <span class="badge badge-{{ status_badge }}">{{ status_label }}</span>
+        {% if status.value == 'proposed' %}
+            · {{ 'changeset.detail.valid_until'|trans({date: cs.expiresAt|date_short(true)}) }}
+            {% if hours_left is not null %}<span class="badge badge-{{ hours_left < 2 ? 'warning' : 'light' }}">{{ hours_left < 1 ? 'changeset.detail.less_than_hour'|trans : 'changeset.detail.hours_left'|trans({hours: hours_left ~ ''}) }}</span>{% endif %}
+        {% elseif status.value == 'expired' %}
+            · {{ 'changeset.detail.expired_at'|trans({date: cs.expiresAt|date_short(true)}) }}
+        {% elseif status.value == 'applied' %}
+            · {{ 'changeset.detail.applied_by'|trans({name: cs.appliedByName, date: cs.appliedAt|date_short(true)}) }}{% if cs.riskConfirmedAt %}; {{ 'changeset.detail.risk_confirmed_by'|trans({name: cs.riskConfirmedByName, date: cs.riskConfirmedAt|date_short(true)}) }}{% endif %}
+        {% elseif status.value == 'rejected' %}
+            · {{ 'changeset.detail.rejected_by'|trans({name: cs.rejectedByName, date: cs.rejectedAt|date_short(true)}) }}
+        {% endif %}
+    </p>
+    <p class="text-muted small">
+        {{ 'changeset.detail.author'|trans({name: cs.author}) }}{% if cs.tokenId %} {{ 'changeset.detail.via_token'|trans({id: cs.tokenId ~ ''}) }}{% endif %} ·
+        {{ 'changeset.detail.created'|trans({date: cs.createdAt|date_short(true)}) }} · {{ 'changeset.detail.source'|trans({source: cs.source|trans}) }} ·
+        {{ 'changeset.detail.operations'|trans({count: cs.operations|length ~ ''}) }}{% if view.price_ops > 0 %}{{ 'changeset.detail.price_operations'|trans({count: view.price_ops ~ ''}) }}{% endif %}
+        {% if cs.revertOf %} · <a href="{{ urls.revert_of }}">{{ 'changeset.detail.revert_of'|trans({id: cs.revertOf.id ~ ''}) }}</a>{% endif %}
+        {% if reverted_by %} · <a href="{{ urls.reverted_by }}">{{ 'changeset.detail.reverted_by'|trans({id: reverted_by.id ~ ''}) }}</a>{% endif %}
+        · <a href="{{ urls.audit }}">{{ 'changeset.detail.audit_link'|trans }}</a>
+    </p>
+
+    {% if conflicts is not empty %}
+        <div class="alert alert-danger" id="conflicts">
+            <h5 class="alert-heading">{{ 'changeset.conflicts.title'|trans }}</h5>
+            <p class="mb-2">{{ 'changeset.conflicts.text'|trans }}</p>
+            <table class="table table-sm mb-0">
+                <thead><tr><th>{{ 'changeset.conflicts.col_op'|trans }}</th><th>{{ 'changeset.conflicts.col_target'|trans }}</th><th>{{ 'changeset.conflicts.col_field'|trans }}</th><th>{{ 'changeset.conflicts.col_expected'|trans }}</th><th>{{ 'changeset.conflicts.col_current'|trans }}</th><th>{{ 'changeset.conflicts.col_who'|trans }}</th></tr></thead>
+                <tbody>
+                {% for c in conflicts %}
+                    <tr>
+                        <td>{{ c.index is null ? '—' : c.index + 1 }}</td>
+                        <td>{{ c.target ?? '' }}</td>
+                        <td>{{ c.field ?? '' }}</td>
+                        <td>{{ c.expected ?? '—' }}</td>
+                        <td>{{ c.current ?? '—' }}</td>
+                        <td>{% if c.code == 'conflict' %}{{ c.who ?? 'changeset.conflicts.outside_log'|trans }}{% if c.when %}, {{ c.when }}{% endif %}{% else %}{{ c.message }}{% endif %}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endif %}
+
+    {% if revert_errors is not empty %}
+        <div class="alert alert-danger" id="revert-errors">
+            <h5 class="alert-heading">{{ 'changeset.flash.revert_failed'|trans }}</h5>
+            <ul class="mb-0">{% for e in revert_errors %}<li>{% if e.index is not null %}{{ 'changeset.detail.op'|trans({n: (e.index + 1) ~ ''}) }} — {% endif %}{{ e.message }}</li>{% endfor %}</ul>
+        </div>
+    {% endif %}
+
+    {% if view.risks is not empty %}
+        <div class="alert alert-warning" id="risks">
+            <h5 class="alert-heading">
+                {% if status.value == 'proposed' %}{{ 'changeset.risks.title_proposed'|trans }}{% elseif status.value == 'applied' and cs.riskConfirmedAt %}{{ 'changeset.risks.title_confirmed'|trans({name: cs.riskConfirmedByName, date: cs.riskConfirmedAt|date_short(true)}) }}{% else %}{{ 'changeset.risks.title'|trans }}{% endif %}
+            </h5>
+            <ul class="mb-2">
+                {% for risk in view.risks %}
+                    <li><strong>{{ risk.label }}</strong>{% if risk.items is not empty %}:
+                        {% for item in risk.items|slice(0, 5) %}{{ item.message }}{% if item.index is not null %} <a href="#op-{{ item.index }}">[{{ 'changeset.detail.op'|trans({n: (item.index + 1) ~ ''}) }}]</a>{% endif %}{{ not loop.last ? '; ' }}{% endfor %}
+                        {% if risk.items|length > 5 %} {{ 'changeset.risks.more'|trans({count: (risk.items|length - 5) ~ ''}) }}{% endif %}
+                    {% endif %}</li>
+                {% endfor %}
+            </ul>
+            <p class="small mb-0">{{ 'changeset.risks.note'|trans }}</p>
+        </div>
+    {% endif %}
+
+    {% if view.warnings is not empty %}
+        <div class="alert alert-info" id="warnings">
+            <details{{ view.warnings|length <= 5 ? ' open' }}>
+                <summary>{{ 'changeset.warnings.title'|trans({count: view.warnings|length ~ ''}) }}</summary>
+                <ul class="mb-0 mt-2">
+                    {% for w in view.warnings %}
+                        <li>{% if w.index is not null %}<a href="#op-{{ w.index }}">{{ 'changeset.detail.op'|trans({n: (w.index + 1) ~ ''}) }}</a> — {% endif %}<strong>{{ w.label }}:</strong> {{ w.message }}</li>
+                    {% endfor %}
+                </ul>
+            </details>
+        </div>
+    {% endif %}
+
+    <h3 class="h5 mt-4">{{ 'changeset.diff.title'|trans({count: view.rows|length ~ ''}) }}</h3>
+    <div class="table-responsive">
+        <table class="table table-sm datagrid" id="diff">
+            <thead><tr><th>#</th><th>{{ 'changeset.conflicts.col_target'|trans }}</th><th>{{ 'changeset.conflicts.col_field'|trans }}</th><th>{{ 'changeset.diff.col_before'|trans }}</th><th>{{ 'changeset.diff.col_after'|trans }}</th></tr></thead>
+            <tbody>
+            {% for row in view.rows %}
+                {% set span = row.changes|length > 0 ? row.changes|length : 1 %}
+                {% if row.changes is empty %}
+                    <tr id="op-{{ row.index }}" class="text-muted"><td>{{ row.index + 1 }}</td><td>{{ row.type_label }} {{ row.label }}</td><td colspan="3">{{ 'changeset.diff.no_changes'|trans }}</td></tr>
+                {% endif %}
+                {% for change in row.changes %}
+                    <tr{% if loop.first %} id="op-{{ row.index }}"{% endif %}{% if row.risk %} class="table-warning"{% endif %}>
+                        {% if loop.first %}
+                            <td rowspan="{{ span }}">{{ row.index + 1 }}</td>
+                            <td rowspan="{{ span }}">
+                                {{ row.type_label }} {{ row.label ?? ('#' ~ row.id) }}
+                                {% if row.locale %}<span class="badge badge-light">{{ row.locale }}</span>{% endif %}
+                                {% if entity_urls[row.index] is defined and entity_urls[row.index] %}<a href="{{ entity_urls[row.index] }}" title="{{ 'changeset.diff.open_form'|trans }}" target="_blank" rel="noopener">↗</a>{% endif %}
+                            </td>
+                        {% endif %}
+                        <td>{{ change.label }}</td>
+                        <td class="{{ change.mono ? 'font-monospace' }}" style="white-space: pre-wrap">{% if change.before is null %}<span class="text-muted">{{ row.op == 'set_price_tier' ? 'changeset.diff.none'|trans : '—' }}</span>{% else %}{{ change.before }}{% endif %}
+                            {% if change.html and change.before_full %}<details><summary class="small text-muted">HTML</summary><pre class="small">{{ change.before_full }}</pre></details>{% endif %}</td>
+                        <td class="{{ change.mono ? 'font-monospace' }}" style="white-space: pre-wrap">{% if change.after is null %}<span class="text-muted">—</span>{% else %}{{ change.after }}{% endif %}
+                            {% if change.percent %} <span class="badge badge-{{ row.risk ? 'warning' : 'light' }}">{{ change.percent }}</span>{% endif %}
+                            {% if change.html and change.after_full %}<details><summary class="small text-muted">HTML</summary><pre class="small">{{ change.after_full }}</pre></details>{% endif %}
+                            {% if change.redirect %}<div class="small text-muted">→ {{ 'changeset.diff.redirect'|trans }}</div>{% endif %}
+                            {% if change.category_paths %}<div class="small text-muted">→ {{ 'changeset.diff.category_paths'|trans }}</div>{% endif %}</td>
+                    </tr>
+                {% endfor %}
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    {% if (can_apply or can_reject) and conflicts is empty %}
+        <div class="card mt-3" id="confirm">
+            <div class="card-body">
+                <form method="post" action="{{ urls.apply }}" id="changeset-apply-form" data-changeset-action="apply">
+                    <input type="hidden" name="token" value="{{ csrf_token(csrf.apply) }}">
+                    {% if cs.hasRisk %}
+                        <div class="form-check mb-3">
+                            <input type="checkbox" class="form-check-input{{ risk_invalid ? ' is-invalid' }}" name="risk_confirmed" value="1" id="risk-confirm" required>
+                            <label class="form-check-label" for="risk-confirm">{{ 'changeset.confirm.label'|trans({summary: view.risk_summary}) }}</label>
+                            {% if risk_invalid %}<div class="invalid-feedback">{{ 'changeset.confirm.invalid'|trans }}</div>{% endif %}
+                        </div>
+                    {% endif %}
+                    {% if can_apply %}<button type="submit" class="btn btn-primary" id="changeset-apply"{{ cs.hasRisk ? ' disabled' }}><i class="fa fa-check"></i> {{ 'changeset.confirm.apply_n'|trans({count: cs.operations|length}) }}</button>{% endif %}
+                </form>
+                {% if can_reject %}
+                    <form method="post" action="{{ urls.reject }}" class="d-inline-block mt-2" data-changeset-action="reject">
+                        <input type="hidden" name="token" value="{{ csrf_token(csrf.reject) }}">
+                        <button type="submit" class="btn btn-outline-danger"><i class="fa fa-xmark"></i> {{ 'changeset.action.reject'|trans }}</button>
+                        <span class="small text-muted ms-2">{{ 'changeset.confirm.reject_note'|trans }}</span>
+                    </form>
+                {% endif %}
+            </div>
+        </div>
+        <script>
+            (function () {
+                var box = document.getElementById('risk-confirm'), btn = document.getElementById('changeset-apply');
+                if (box && btn) { box.addEventListener('change', function () { btn.disabled = !box.checked; }); btn.disabled = !box.checked; }
+                document.querySelectorAll('form[data-changeset-action]').forEach(function (f) { f.addEventListener('submit', function () { var b = f.querySelector('button[type=submit]'); if (b) { setTimeout(function () { b.disabled = true; }, 0); } }); });
+            })();
+        </script>
+    {% endif %}
+
+    {% if can_revert %}
+        <form method="post" action="{{ urls.revert }}" class="mt-3" data-changeset-action="revert">
+            <input type="hidden" name="token" value="{{ csrf_token(csrf.revert) }}">
+            <button type="submit" class="btn btn-outline-secondary"><i class="fa fa-rotate-left"></i> {{ 'changeset.action.revert'|trans }}</button>
+            <span class="small text-muted ms-2">{{ 'changeset.confirm.revert_note'|trans }}</span>
+        </form>
+    {% endif %}
+</section>

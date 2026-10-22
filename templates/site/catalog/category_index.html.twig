@@ -1,0 +1,140 @@
+{# Контракт теми (docs/themes.md, template_contract 1). Змінні CategoryPageController: category (Category), tr (CategoryTranslation), crumbs (list<Category> предки),
+   children (list<Category> активні підкатегорії з URL), result (CatalogResult: hits, total, pageCount()), cards (list рядків картки), item_list (list URL товарів для ItemList),
+   analytics_products, analytics_prices, facets (блоки фільтрів FacetBlockBuilder: list {…, clear}), params (CatalogFilter: page, sort, hasFilters…), reset_url, sorts (list {value, selected, url}),
+   pages (list {number, url, current}|null), prev_url, next_url, noindex (bool), alternates (мова → URL),
+   letters (list {letter, url|null, current, available, count} — A–Z за першою літерою назви; [] коли app.catalog_letters вимкнено або літер нема). #}
+{% extends 'site/base.html.twig' %}
+{% trans_default_domain 'site_catalog' %}
+{% import 'site/partials/_schema.html.twig' as schema %}
+{% set locale = app.request.locale %}
+{% set base = {path: tr.path, _locale: locale} %}
+{% block title %}{{ tr.metaTitle ?: tr.name }}{% if params.page > 1 %}, {{ 'catalog.page_suffix'|trans({page: params.page}) }}{% endif %} | {{ site_name }}{% endblock %}
+{% block metaDescription %}{% if params.page == 1 %}{{ tr.metaDescription ?: tr.description|default('')|striptags|slice(0, 200) }}{% endif %}{% endblock %}
+{% block schema %}
+    {% set items = [{name: site_name, url: url('site_home')}] %}
+    {% for c in crumbs %}{% set t = c.translation(locale) %}{% if t and t.path %}{% set items = items|merge([{name: t.name, url: url('site_category', {path: t.path, _locale: locale})}]) %}{% endif %}{% endfor %}
+    {{ schema.crumbs(items|merge([{name: tr.name}])) }}
+    {# ItemList — товари цієї сторінки лістингу в її порядку (seo-tech-notes п. 21) #}
+    {{ schema.itemList(item_list) }}
+{% endblock %}
+{# og:image — зображення плитки категорії, інакше перше фото товару сторінки (п. 17) #}
+{% block ogImage %}{% set first = (cards|filter(c => c.image)|first) %}{% if category.image %}{{ absolute_url(('media/' ~ category.image.path)|imagine_filter('product_large')) }}{% elseif first %}{{ absolute_url(('media/' ~ first.image)|imagine_filter('product_large')) }}{% endif %}{% endblock %}
+{% block head %}
+    {% if prev_url %}<link rel="prev" href="{{ prev_url }}">{% endif %}
+    {% if next_url %}<link rel="next" href="{{ next_url }}">{% endif %}
+{% endblock %}
+{% block body %}
+    <ol class="crumbs">
+        <li><a href="{{ path('site_home') }}">{{ site_name }}</a></li>
+        {% for c in crumbs %}{% set t = c.translation(locale) %}
+            {% if t and t.path %}<li><a href="{{ path('site_category', {path: t.path, _locale: locale}) }}">{{ t.name }}</a></li>{% endif %}
+        {% endfor %}
+        <li>{{ tr.name }}</li>
+    </ol>
+    <h1>{{ tr.heading }}</h1>
+
+    {% if children %}
+        <ul class="subcats" aria-label="{{ 'catalog.subcategories'|trans }}">
+            {% for child in children %}{% set t = child.translation(locale) %}
+                <li><a href="{{ path('site_category', {path: t.path, _locale: locale}) }}">{{ t.name }}</a></li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    {% if letters %}
+        <nav class="az" aria-label="{{ 'catalog.az.label'|trans }}">
+            {% for l in letters %}
+                {% if l.current %}<a href="{{ l.url }}" class="current" aria-current="true" rel="nofollow" title="{{ 'catalog.az.clear'|trans }}">{{ l.letter }}</a>
+                {% elseif l.available %}<a href="{{ l.url }}" rel="nofollow">{{ l.letter }}</a>
+                {% else %}<span aria-disabled="true">{{ l.letter }}</span>{% endif %}
+            {% endfor %}
+        </nav>
+    {% endif %}
+
+    <div class="listing">
+        <div class="filters">
+        {% if facets or params.hasFilters() %}
+        <input type="checkbox" id="filters-toggle" class="filters-check visually-hidden" aria-controls="facets"{{ params.hasFilters() ? ' checked' }}>
+        <label class="filters-toggle" for="filters-toggle">{{ 'catalog.filters'|trans }}</label>
+        {% endif %}
+        {# діапазони (ціна, числові характеристики) — одна GET-форма з однією кнопкою внизу панелі; значення-посилання діють одразу (UX-аудит S10) #}
+        {% set has_ranges = facets|filter(b => b.range is not null)|length > 0 %}
+        <aside class="facets" id="facets" aria-label="{{ 'catalog.filters'|trans }}">
+            {% if params.hasFilters() %}<p><a class="reset" href="{{ reset_url }}">{{ 'catalog.reset'|trans }}</a></p>{% endif %}
+            {% if has_ranges %}<form method="get" action="{{ path('site_category', base) }}" class="facets-form">
+                {% for name, value in params.rangeFormFields() %}<input type="hidden" name="{{ name }}" value="{{ value }}">{% endfor %}{% endif %}
+            {% for block in facets %}
+                <fieldset class="facet facet-{{ block.kind }}" data-facet="{{ block.code }}">
+                    <legend>{{ block.label }}{% if block.unit %}, {{ block.unit }}{% endif %}</legend>
+                    {% if block.range is not null %}
+                        {% set field = block.kind == 'price' ? 'price' : 'f[' ~ block.code ~ ']' %}
+                        {% set lo = block.range.min is null ? null : ('.' in block.range.min ? block.range.min|trim('0', 'right')|trim('.', 'right') : block.range.min) %}
+                        {% set hi = block.range.max is null ? null : ('.' in block.range.max ? block.range.max|trim('0', 'right')|trim('.', 'right') : block.range.max) %}
+                        <div class="range">
+                            <input type="text" inputmode="decimal" name="{{ field }}[min]" value="{{ block.range.from }}" placeholder="{{ lo is null ? 'catalog.from'|trans : 'catalog.from_value'|trans({value: lo}) }}" aria-label="{{ block.label }}: {{ 'catalog.from'|trans }}">
+                            <span aria-hidden="true">–</span>
+                            <input type="text" inputmode="decimal" name="{{ field }}[max]" value="{{ block.range.to }}" placeholder="{{ hi is null ? 'catalog.to'|trans : 'catalog.to_value'|trans({value: hi}) }}" aria-label="{{ block.label }}: {{ 'catalog.to'|trans }}">
+                        </div>
+                    {% endif %}
+                    {% if block.items %}
+                        <ul>
+                            {% for item in block.items %}
+                                <li><a href="{{ path('site_category', base|merge(item.query)) }}" rel="nofollow"{% if item.selected %} class="selected" aria-current="true"{% endif %}>{{ item.label }}</a>{% if item.count is not null %} <span class="count">({{ item.count }})</span>{% endif %}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                    {% if block.selected %}<a class="clear" href="{{ path('site_category', base|merge(block['clear'])) }}" rel="nofollow">{{ 'catalog.facet.clear'|trans }}</a>{% endif %}
+                </fieldset>
+            {% endfor %}
+            {% if has_ranges %}<div class="facets-submit"><button type="submit" class="btn btn-primary">{{ 'catalog.apply'|trans }}</button></div>
+            </form>{% endif %}
+        </aside>
+        </div>
+
+        <section>
+            <div class="toolbar">
+                <p class="found muted" data-total="{{ result.total }}">{{ 'catalog.found'|trans({count: result.total}) }}</p>
+                {# сортувати нічого — при 0 товарів кнопок сортування нема (UX-аудит S11) #}
+                {% if result.total > 0 %}
+                <nav class="sorts" aria-label="{{ 'catalog.sort.label'|trans }}">
+                    {% for sort in sorts %}
+                        {% if sort.selected %}<span class="current">{{ ('catalog.sort.' ~ sort.value)|trans }}</span>{% else %}<a href="{{ sort.url }}" rel="nofollow">{{ ('catalog.sort.' ~ sort.value)|trans }}</a>{% endif %}
+                    {% endfor %}
+                </nav>
+                {% endif %}
+            </div>
+
+            {% if cards %}
+                {# GA4 ecommerce (PR #5): view_item_list сторінки й select_item по кліку — сутності з ListingProducts #}
+                {% set analytics_items = cards|map(c => analytics_products[c.id] ?? null)|filter(p => p is not null) %}
+                {% if analytics_items is not empty %}{% do analytics_push(analytics_view_item_list(analytics_items, tr.name, analytics_prices ?? [])) %}{% endif %}
+                <ul class="cards product-grid">
+                    {% for card in cards %}{% include 'site/partials/_product_card.html.twig' with {card: card, list_name: tr.name, index: loop.index0, eager: loop.index <= 4} %}{% endfor %}
+                </ul>
+            {% else %}
+                <div class="empty-state">
+                    <p class="empty muted">{{ (params.hasFilters() ? 'catalog.empty_filtered' : 'catalog.empty')|trans }}</p>
+                    {% if params.hasFilters() %}<a class="btn btn-outline" href="{{ reset_url }}">{{ 'catalog.reset'|trans }}</a>{% endif %}
+                </div>
+            {% endif %}
+
+            {% if pages %}
+                <nav aria-label="{{ 'catalog.pager.label'|trans }}">
+                    <ul class="pager">
+                        {% if prev_url %}<li><a href="{{ pages|filter(p => p and p.number == params.page - 1)|first.url }}" rel="prev">{{ 'catalog.pager.prev'|trans }}</a></li>{% endif %}
+                        {% for p in pages %}
+                            {% if p is null %}<li><span>…</span></li>
+                            {% elseif p.current %}<li><span class="current" aria-current="page">{{ p.number }}</span></li>
+                            {% else %}<li><a href="{{ p.url }}">{{ p.number }}</a></li>{% endif %}
+                        {% endfor %}
+                        {% if next_url %}<li><a href="{{ pages|filter(p => p and p.number == params.page + 1)|first.url }}" rel="next">{{ 'catalog.pager.next'|trans }}</a></li>{% endif %}
+                    </ul>
+                </nav>
+            {% endif %}
+
+            {% if params.page == 1 and not params.hasFilters() and tr.description %}
+                <div class="prose category-text">{{ tr.description|raw }}</div>
+            {% endif %}
+        </section>
+    </div>
+{% endblock %}

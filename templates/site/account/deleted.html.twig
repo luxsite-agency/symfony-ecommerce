@@ -1,0 +1,10 @@
+{% extends 'site/base.html.twig' %}
+{% set noindex = true %}
+{% block title %}{{ 'site.account.privacy.deleted_title'|trans }} | {{ site_name }}{% endblock %}
+{% block body %}
+    <div class="status-page">
+        <h1>{{ 'site.account.privacy.deleted_title'|trans }}</h1>
+        <p class="lead account-deleted">{{ 'site.account.privacy.deleted_text'|trans }}</p>
+        <div class="hero-actions"><a class="btn btn-primary" href="{{ path('site_home') }}">{{ 'site.cart.continue'|trans }}</a></div>
+    </div>
+{% endblock %}

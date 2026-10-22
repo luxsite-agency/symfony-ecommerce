@@ -1,0 +1,7 @@
+# Віджет відгуків gbp-manager (luxsite/gmb-reviews-bundle, копія в packages/ — local/sync-gmb-reviews.sh). Необов'язковий пакет:
+# Kernel імпортує цей файл лише разом із бандлом, коли пакет встановлено (store.yaml addons: [gmb-reviews], docs/addons.md).
+# Токен і адреса — параметри паку app.gbp_reviews.* (config/services.yaml); порожній токен — Twig-функції gmb_* віддають порожньо.
+gmb_reviews:
+    token: '%app.gbp_reviews.token%'
+    base_url: '%app.gbp_reviews.base%'
+    cache_pool: cache.gbp_reviews

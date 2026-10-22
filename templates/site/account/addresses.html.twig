@@ -1,0 +1,28 @@
+{% extends 'site/base.html.twig' %}
+{% set noindex = true %}
+{% block title %}{{ 'site.account.address.title'|trans }} | {{ site_name }}{% endblock %}
+{% block body %}
+    <h1>{{ 'site.account.address.title'|trans }}</h1>
+    {% include 'site/account/_flashes.html.twig' %}
+    {% if addresses is empty %}
+        <p class="addresses-empty">{{ 'site.account.address.empty'|trans }}</p>
+    {% else %}
+        <ul class="addresses">
+            {% for a in addresses %}
+                <li class="address{% if a.default %} address-default{% endif %}" data-id="{{ a.id }}">
+                    <strong>{{ a.summary }}</strong>{% if a.default %} <span class="badge">{{ 'site.account.address.default'|trans }}</span>{% endif %}<br>
+                    <span class="meta">{{ ('site.checkout.shipping.' ~ a.shippingMethod.value)|trans }} · {{ a.recipientName }}, {{ a.recipientPhone }}</span>
+                    <div class="address-actions">
+                        <a class="btn btn-outline" href="{{ path('site_account_address_edit', {id: a.id}) }}">{{ 'site.account.address.edit'|trans }}</a>
+                        {% if not a.default %}
+                            <form method="post" action="{{ path('site_account_address_default', {id: a.id}) }}" class="inline address-default-form"><input type="hidden" name="_token" value="{{ csrf_token('account') }}"><button type="submit" class="btn btn-outline">{{ 'site.account.address.make_default'|trans }}</button></form>
+                        {% endif %}
+                        <form method="post" action="{{ path('site_account_address_delete', {id: a.id}) }}" class="inline address-delete-form"><input type="hidden" name="_token" value="{{ csrf_token('account') }}"><button type="submit" class="btn btn-outline">{{ 'site.account.address.delete'|trans }}</button></form>
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+    {% if addresses|length < max %}<p><a class="btn btn-primary" href="{{ path('site_account_address_new') }}">{{ 'site.account.address.add'|trans }}</a></p>{% endif %}
+    <ul class="account-links"><li><a href="{{ path('site_account') }}">{{ 'site.account.wholesale.back'|trans }}</a></li></ul>
+{% endblock %}

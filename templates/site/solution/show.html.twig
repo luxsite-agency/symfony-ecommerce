@@ -1,0 +1,107 @@
+{# Контракт теми (docs/themes.md, template_contract 1). Змінні SolutionController::show: solution (Solution), tr (SolutionTranslation
+   мовою сторінки), options (list of {option: SolutionOption, tr: ?SolutionOptionTranslation, card: рядок ProductCards — id, name, slug,
+   image, imageAlt, price (?Money; null — ціна за запитом), priceFrom, availability}), related (list<Solution>, до 3, видимі цією мовою).
+   Блоки: solution_hero, solution_task, solution_options, solution_after_options (порожній — «Як ми працюємо», цифри компанії в паку),
+   solution_body, solution_request, solution_faq, solution_related. Ціна варіанта — з товару, як у лістингу; «Запитати ціну» веде на
+   форму товару (#price-request). #}
+{% extends 'site/base.html.twig' %}
+{% import 'site/partials/_schema.html.twig' as schema %}
+{% trans_default_domain 'messages' %}
+{% set locale = app.request.locale %}
+{% set alternates = site_alternates('site_solution', {}, solution) %}
+{% set coverUrl = solution.cover ? absolute_url(('/media/' ~ solution.cover.path)|imagine_filter('product_large')) : null %}
+{% block title %}{{ tr.metaTitle ?: tr.title }} | {{ site_name }}{% endblock %}
+{% block metaDescription %}{{ tr.metaDescription ?: tr.intro ?: tr.task }}{% endblock %}
+{% block ogImage %}{% if coverUrl %}{{ coverUrl }}{% endif %}{% endblock %}
+{% block schema %}
+    {{ schema.crumbs([{name: site_name, url: url('site_home')}, {name: 'site.solution.title'|trans, url: url('site_solutions')}, {name: tr.title}]) }}
+    {{ schema.itemList(options|map(o => url('site_product', {slug: o.card.slug, _locale: locale}))) }}
+    {% if tr.faq is not empty %}{{ schema.faq(tr.faq) }}{% endif %}
+{% endblock %}
+{% block bodyClass %} page-solution{% endblock %}
+{% block body %}
+    <ol class="crumbs"><li><a href="{{ path('site_home') }}">{{ site_name }}</a></li><li><a href="{{ path('site_solutions') }}">{{ 'site.solution.title'|trans }}</a></li><li>{{ tr.title }}</li></ol>
+    {% block solution_hero %}
+    <section class="solution-hero">
+        <div class="solution-hero-text">
+            <h1>{{ tr.title }}</h1>
+            {% if tr.intro %}<p class="lead">{{ tr.intro|nl2br }}</p>{% endif %}
+            <p class="solution-actions">
+                <a class="btn" href="#solution-request">{{ 'site.solution.get_quote'|trans }}</a>
+                {% if options is not empty %}<a class="btn btn-secondary" href="#solution-options">{{ 'site.solution.options'|trans }}</a>{% endif %}
+            </p>
+        </div>
+        {% if coverUrl %}<img class="solution-cover" src="{{ coverUrl }}" alt="{{ solution.cover.alt ?: tr.title }}" fetchpriority="high">{% endif %}
+    </section>
+    {% endblock %}
+    {% block solution_task %}
+    {% if tr.task or tr.loads is not empty or tr.industries is not empty %}
+    <section class="solution-task">
+        {% if tr.task %}<h2>{{ 'site.solution.task'|trans }}</h2><p>{{ tr.task|nl2br }}</p>{% endif %}
+        {% if tr.loads is not empty %}<h3>{{ 'site.solution.loads'|trans }}</h3><ul class="chips">{% for item in tr.loads %}<li>{{ item }}</li>{% endfor %}</ul>{% endif %}
+        {% if tr.industries is not empty %}<h3>{{ 'site.solution.industries'|trans }}</h3><ul class="chips">{% for item in tr.industries %}<li>{{ item }}</li>{% endfor %}</ul>{% endif %}
+    </section>
+    {% endif %}
+    {% endblock %}
+    {% block solution_options %}
+    {% if options is not empty %}
+    <section class="solution-options" id="solution-options">
+        <h2>{{ 'site.solution.options'|trans }}</h2>
+        {% for row in options %}
+            {% set card = row.card %}
+            {% set href = path('site_product', {slug: card.slug, _locale: locale}) %}
+            <article class="solution-option">
+                {% if card.image %}<img src="{{ ('media/' ~ card.image)|imagine_filter('product_card') }}" alt="{{ card.imageAlt ?: card.name }}" loading="lazy" width="400" height="400">{% endif %}
+                <div class="solution-option-text">
+                    <h3><a href="{{ href }}">{{ card.name }}</a></h3>
+                    {% if row.tr and row.tr.pros is not empty %}<ul class="checks">{% for pro in row.tr.pros %}<li>{{ pro }}</li>{% endfor %}</ul>{% endif %}
+                    {% if row.tr and row.tr.note %}<p>{{ row.tr.note|nl2br }}</p>{% endif %}
+                    <p class="solution-option-buy">
+                        {% if card.price is null %}
+                            <span class="price">{{ 'catalog.price_on_request'|trans({}, 'site_catalog') }}</span>
+                            <a class="btn" href="{{ href }}#price-request">{{ 'site.solution.ask_price'|trans }}</a>
+                        {% else %}
+                            <span class="price">{{ card.priceFrom ? 'catalog.price_from'|trans({price: card.price|money}, 'site_catalog') : card.price|money }}</span>
+                        {% endif %}
+                        <a class="btn btn-secondary" href="{{ href }}">{{ 'site.solution.details'|trans }}</a>
+                    </p>
+                </div>
+            </article>
+        {% endfor %}
+    </section>
+    {% endif %}
+    {% endblock %}
+    {% block solution_after_options %}{% endblock %}
+    {% block solution_body %}{% if tr.body %}<section class="prose solution-body">{{ tr.body|raw }}</section>{% endif %}{% endblock %}
+    {% block solution_request %}
+    {# PR-1: контакти магазину; форма розрахунку (лід у CRM) — окремим PR (docs/solutions.md) #}
+    {% set phone = site_theme('footer.phone') %}
+    {% set email = site_theme('footer.email') %}
+    <section class="solution-request" id="solution-request">
+        <h2>{{ 'site.solution.get_quote'|trans }}</h2>
+        <p>{{ 'site.solution.request_note'|trans }}</p>
+        {% if phone or email %}<p class="solution-contacts">
+            {% if phone %}<a href="tel:{{ phone|replace({' ': '', '(': '', ')': '', '-': ''}) }}">{{ phone }}</a>{% endif %}
+            {% if email %}<a href="mailto:{{ email }}">{{ email }}</a>{% endif %}
+        </p>{% endif %}
+    </section>
+    {% endblock %}
+    {% block solution_faq %}
+    {% if tr.faq is not empty %}
+    <section class="solution-faq"><h2>{{ 'site.solution.faq'|trans }}</h2>
+        {% for item in tr.faq %}<details><summary>{{ item.q }}</summary><p>{{ item.a|nl2br }}</p></details>{% endfor %}
+    </section>
+    {% endif %}
+    {% endblock %}
+    {% block solution_related %}
+    {% if related is not empty %}
+    <section class="solution-related">
+        <h2>{{ 'site.solution.related'|trans }}</h2>
+        <p><a href="{{ path('site_solutions') }}">{{ 'site.solution.all'|trans }}</a></p>
+        <ul class="solution-cards">
+            {% for item in related %}{% include 'site/solution/_card.html.twig' with {solution: item, locale: locale} only %}{% endfor %}
+        </ul>
+    </section>
+    {% endif %}
+    {% endblock %}
+{% endblock %}

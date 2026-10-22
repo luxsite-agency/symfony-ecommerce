@@ -1,0 +1,109 @@
+# Symfony ecommerce (shop-engine) — рушій інтернет-магазину LuxSite (Symfony 8.1 / PHP 8.4 / MySQL 8.0). Стек dev-сервер за traefik.
+# Розкладка: <робоча копія> = робоча копія репо luxsite-agency/symfony-ecommerce.
+# vendor і var — іменовані томи. Команди: docker compose exec shop-engine-php composer|bin/console|vendor/bin/phpunit.
+name: shop-engine
+
+services:
+  shop-engine-php:
+    build: ./docker/php
+    image: shop-engine-php:dev
+    container_name: shop-engine-php
+    restart: unless-stopped
+    volumes:
+      - ./:/app
+      - vendor:/app/vendor
+      - var:/app/var
+    environment:
+      APP_ENV: dev
+      DATABASE_URL: "mysql://shop:shop@shop-engine-mysql:3306/shop?serverVersion=8.0&charset=utf8mb4"
+      MAILER_DSN: "smtp://shop-engine-mailpit:1025"
+      MESSENGER_TRANSPORT_DSN: "doctrine://default?auto_setup=0"
+      # живий дизайн (theme:write): рендер сторінок після запису — до nginx цього стека (мережа internal спільна з worktree, ім'я «nginx» там неоднозначне)
+      THEME_SMOKE_URL: "http://shop-engine-nginx"
+    networks: [internal]
+    depends_on:
+      shop-engine-mysql:
+        condition: service_healthy
+
+  # Воркер Messenger (ADR D7: outbox → CRM, листи; імпорт чанками). --time-limit перезапускається compose'ом,
+  # щоб не тримати старий код/пам'ять; dev-БД та мережа спільні з shop-engine-php.
+  shop-engine-worker:
+    image: shop-engine-php:dev
+    container_name: shop-engine-worker
+    restart: unless-stopped
+    command: ["php", "bin/console", "messenger:consume", "auth_mail", "async", "scheduler_default", "feeds", "--time-limit=3600", "--memory-limit=256M", "--no-interaction", "-vv"]
+    volumes:
+      - ./:/app
+      - vendor:/app/vendor
+      - var:/app/var
+    environment:
+      APP_ENV: dev
+      DATABASE_URL: "mysql://shop:shop@shop-engine-mysql:3306/shop?serverVersion=8.0&charset=utf8mb4"
+      MAILER_DSN: "smtp://shop-engine-mailpit:1025"
+      MESSENGER_TRANSPORT_DSN: "doctrine://default?auto_setup=0"
+    networks: [internal]
+    depends_on:
+      shop-engine-mysql:
+        condition: service_healthy
+      shop-engine-php:
+        condition: service_started
+
+  shop-engine-nginx:
+    image: nginx:1.27-alpine
+    container_name: shop-engine-nginx
+    restart: unless-stopped
+    volumes:
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./public:/app/public:ro
+    networks: [internal, edge]
+    depends_on:
+      - shop-engine-php
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=edge
+      - traefik.http.routers.shop-engine.rule=Host(`shop-engine.localhost`) || Host(`shop-engine-admin.localhost`)
+      - traefik.http.services.shop-engine.loadbalancer.server.port=80
+
+  shop-engine-mysql:
+    image: mysql:8.0
+    container_name: shop-engine-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: shop
+      MYSQL_USER: shop
+      MYSQL_PASSWORD: shop
+    command: >
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_0900_ai_ci
+      --innodb-buffer-pool-size=512M
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks: [internal]
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-proot"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+      start_period: 120s
+
+  shop-engine-mailpit:
+    image: axllent/mailpit:latest
+    container_name: shop-engine-mailpit
+    restart: unless-stopped
+    networks: [internal, edge]
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=edge
+      - traefik.http.routers.shop-engine-mail.rule=Host(`shop-engine-mail.localhost`)
+      - traefik.http.services.shop-engine-mail.loadbalancer.server.port=8025
+
+networks:
+  internal:
+  edge:
+    external: true
+
+volumes:
+  vendor:
+  var:
+  mysql-data:

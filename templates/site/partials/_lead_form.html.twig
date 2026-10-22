@@ -1,0 +1,39 @@
+{# Загальна заявка без товару → POST /request (LeadRequestController → Order source=lead, лід у CRM, лист магазину).
+   Контракт теми (docs/themes.md). Змінні (усі необов'язкові):
+     context    — рядок-контекст сторінки, напр. «Рішення: Палетне зберігання»: прихований, іде в коментар ліда/CRM;
+     choices    — список назв варіантів (рядки) для <select name="choice">; до списку додається пункт «Не знаю, порадьте»;
+                  без choices селекта нема;
+     source_url — адреса сторінки, з якої надсилають (прихований; лише адреси цього сайту, решту контролер відкидає);
+     show_title — показувати заголовок site.lead.title (default true).
+   Без змінних — звичайна форма (контакти, послуги). Функції: path, csrf_token, trans; app.request.locale.
+   Стабільні класи: form.lead-form (+ checkout), .lf-hp (honeypot, ховає site.css), .btn.btn-primary.
+   Поля: name*, phone*, email, company, choice, comment, attachment (PDF/DWG/JPG/PNG ≤ 10 МБ), website (honeypot, лишати порожнім).
+   Flash-повідомлення контролера (error/success) partial показує сам над формою — base.html.twig їх не виводить. #}
+{% set show_title = show_title is defined ? show_title : true %}
+{% for message in app.flashes('error') %}<p class="flash flash-error" role="alert">{{ message }}</p>{% endfor %}
+{% for message in app.flashes('success') %}<p class="flash flash-success" role="status">{{ message }}</p>{% endfor %}
+<form method="post" action="{{ path('site_lead_request') }}" enctype="multipart/form-data" class="lead-form checkout">
+    {% if show_title %}<h2 class="h4">{{ 'site.lead.title'|trans }}</h2>{% endif %}
+    <p class="meta">{{ 'site.lead.note'|trans }}</p>
+    <input type="hidden" name="_token" value="{{ csrf_token('lead_request') }}">
+    <input type="hidden" name="locale" value="{{ app.request.locale }}">
+    {% if context is defined and context %}<input type="hidden" name="context" value="{{ context }}">{% endif %}
+    {% if source_url is defined and source_url %}<input type="hidden" name="source_url" value="{{ source_url }}">{% endif %}
+    <label class="lf-hp" aria-hidden="true">{{ 'site.lead.website'|trans }} <input type="text" name="website" tabindex="-1" autocomplete="off"></label>
+    <label>{{ 'site.lead.name'|trans }} <input type="text" name="name" required autocomplete="name" maxlength="120"></label>
+    <label>{{ 'site.lead.phone'|trans }} <input type="tel" name="phone" required autocomplete="tel" placeholder="+380"></label>
+    <label>{{ 'site.lead.email'|trans }} <input type="email" name="email" autocomplete="email" maxlength="180"></label>
+    <label>{{ 'site.lead.company'|trans }} <input type="text" name="company" autocomplete="organization" maxlength="160"></label>
+    {% if choices is defined and choices|length > 0 %}
+    <label>{{ 'site.lead.choice'|trans }}
+        <select name="choice">
+            {% for choice in choices %}<option value="{{ choice }}">{{ choice }}</option>{% endfor %}
+            <option value="{{ 'site.lead.choice_unknown'|trans }}">{{ 'site.lead.choice_unknown'|trans }}</option>
+        </select>
+    </label>
+    {% endif %}
+    <label>{{ 'site.lead.comment'|trans }} <textarea name="comment" rows="4" maxlength="2000"></textarea></label>
+    <label>{{ 'site.lead.attachment'|trans }} <input type="file" name="attachment" accept=".pdf,.dwg,.jpg,.jpeg,.png,application/pdf,image/jpeg,image/png,image/vnd.dwg"></label>
+    <p class="meta">{{ 'site.lead.attachment_hint'|trans }}</p>
+    <button type="submit" class="btn btn-primary btn-block">{{ 'site.lead.submit'|trans }}</button>
+</form>

@@ -1,0 +1,24 @@
+{# Перемикач мови адмінки «UA / EN» (рішення власника 20.10.2026): текстом, без прапорів, поточна мова виділена. Верхня панель
+   (bundles/EasyAdminBundle/layout.html.twig) і сторінка входу (admin/security/login.html.twig). Посилання — AdminLocaleExtension,
+   застосування й запамʼятовування (cookie, профіль) — AdminLocaleListener. #}
+{% set links = admin_locale_links() %}
+{% if links|length > 1 %}
+<nav class="admin-locale-switch" aria-label="{{ 'locale_switch.label'|trans({}, 'admin') }}">
+    {%- for link in links -%}
+        {%- if not loop.first %}<span class="admin-locale-sep" aria-hidden="true"> / </span>{% endif -%}
+        {%- if link.current -%}
+            <strong aria-current="true" lang="{{ link.locale }}">{{ link.label }}</strong>
+        {%- else -%}
+            <a href="{{ link.url }}" lang="{{ link.locale }}" hreflang="{{ link.locale }}" data-admin-locale="{{ link.locale }}">{{ link.label }}</a>
+        {%- endif -%}
+    {%- endfor -%}
+</nav>
+<style>
+    .admin-locale-switch { display: inline-flex; align-items: center; gap: .1rem; font-size: .875rem; white-space: nowrap; }
+    .admin-locale-switch a, .admin-locale-switch strong { display: inline-flex; align-items: center; justify-content: center; min-width: 44px; min-height: 44px; padding: 0 .25rem; border-radius: 4px; }
+    .admin-locale-switch a { color: var(--text-muted, #6c757d); text-decoration: none; }
+    .admin-locale-switch a:hover, .admin-locale-switch a:focus-visible { color: var(--link-color, #4f46e5); text-decoration: underline; }
+    .admin-locale-switch strong { color: var(--text-color, #212529); background: var(--gray-100, #f1f3f5); font-weight: 700; }
+    .admin-locale-sep { white-space: pre; color: var(--text-muted, #adb5bd); }
+</style>
+{% endif %}

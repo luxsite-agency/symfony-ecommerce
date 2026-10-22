@@ -1,0 +1,11 @@
+{# «В обране» без JS (E12 PR-10): POST-форма з stateless CSRF; для залогіненого стан з wishlist_has(), гостя access_control веде на вхід. product_id, compact (іконка в картці лістингу). #}
+{% trans_default_domain 'site_catalog' %}
+{% set in_list = wishlist_has(product_id) %}
+<form method="post" action="{{ path(in_list ? 'site_account_wishlist_remove' : 'site_account_wishlist_add') }}" class="wish{{ in_list ? ' wish-on' : '' }}">
+    <input type="hidden" name="_token" value="{{ csrf_token('wishlist') }}">
+    <input type="hidden" name="product" value="{{ product_id }}">
+    <button type="submit" class="{{ compact ? 'wish-btn' : 'btn btn-outline wish-btn' }}" aria-pressed="{{ in_list ? 'true' : 'false' }}" title="{{ (in_list ? 'catalog.wishlist.remove' : 'catalog.wishlist.add')|trans }}">
+        <svg viewBox="0 0 24 24" fill="{{ in_list ? 'currentColor' : 'none' }}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" width="20" height="20"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg>
+        {% if not compact %}<span>{{ (in_list ? 'catalog.wishlist.remove' : 'catalog.wishlist.add')|trans }}</span>{% else %}<span class="sr-only">{{ (in_list ? 'catalog.wishlist.remove' : 'catalog.wishlist.add')|trans }}</span>{% endif %}
+    </button>
+</form>

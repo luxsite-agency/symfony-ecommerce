@@ -1,0 +1,34 @@
+{% extends 'site/base.html.twig' %}
+{% set noindex = true %}
+{% block title %}{{ 'site.account.title'|trans }} | {{ site_name }}{% endblock %}
+{% block body %}
+    <h1>{{ 'site.account.title'|trans }}</h1>
+    {% include 'site/account/_flashes.html.twig' %}
+    <p>{{ 'site.account.hello'|trans({name: customer.name}) }}</p>
+    <p>{{ 'site.account.email'|trans }}: {{ customer.email }}</p>
+    {% if last_order|default(null) %}
+        <section class="account-last-order" aria-labelledby="last-order-title">
+            <h2 id="last-order-title">{{ 'site.account.last_order'|trans }}</h2>
+            <p class="account-last-order-row">
+                <a href="{{ path('site_account_order', {id: last_order.id}) }}">{{ last_order.number }}</a>
+                <span class="muted">{{ last_order.placedAt|date_short }}</span>
+                <span class="order-status order-status-{{ last_order.status }}">{{ ('site.account.orders.status_name.' ~ last_order.status)|trans }}</span>
+                <span class="price">{{ last_order.total|money }}</span>
+            </p>
+        </section>
+    {% endif %}
+    <ul class="account-links">
+        <li><a href="{{ path('site_account_orders') }}">{{ 'site.account.orders.link'|trans }}</a></li>
+        <li><a href="{{ path('site_account_wishlist') }}">{{ 'site.account.wishlist.link'|trans }}</a></li>
+        {% if site_reviews_enabled() %}<li><a href="{{ path('site_account_reviews') }}">{{ 'site.account.reviews.link'|trans }}</a></li>{% endif %}
+        <li><a href="{{ path('site_account_profile') }}">{{ 'site.account.profile.link'|trans }}</a></li>
+        <li><a href="{{ path('site_account_addresses') }}">{{ 'site.account.address.link'|trans }}</a></li>
+        <li><a href="{{ path('site_account_privacy') }}">{{ 'site.account.privacy.link'|trans }}</a></li>
+        <li><a href="{{ path('site_account_bulk') }}">{{ 'site.account.bulk.link'|trans }}</a></li>
+        <li><a href="{{ path('site_account_wholesale') }}">{{ 'site.account.wholesale.link'|trans }}</a></li>
+    </ul>
+    <form method="post" action="{{ path('site_account_logout') }}">
+        <input type="hidden" name="_csrf_token" value="{{ csrf_token('logout') }}">
+        <button type="submit" class="btn btn-outline">{{ 'site.account.logout'|trans }}</button>
+    </form>
+{% endblock %}

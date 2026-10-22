@@ -1,0 +1,91 @@
+# Публічний каталог (агент B): категорія, фільтри, картка товару
+catalog:
+    filters: Фільтри
+    reset: Скинути всі фільтри
+    apply: Застосувати
+    from: від
+    to: до
+    from_value: 'від {value}'
+    to_value: 'до {value}'
+    flag_yes: Так
+    flag_no: Ні
+    facet:
+        brand: Бренд
+        price: Ціна
+        in_stock: Наявність
+        in_stock_only: Лише в наявності
+        clear: Скинути
+    sort:
+        label: Сортування
+        price_asc: Спочатку дешевші
+        price_desc: Спочатку дорожчі
+        newest: Новинки
+    found: '{count, plural, one {# товар} few {# товари} many {# товарів} other {# товару}}'
+    empty: У цій категорії ще нема товарів.
+    empty_filtered: За обраними фільтрами товарів не знайдено.
+    subcategories: Підкатегорії
+    page_suffix: 'сторінка {page}'
+    pager:
+        label: Сторінки
+        prev: Попередня
+        next: Наступна
+    price_on_request: Ціна за запитом
+    price_from: 'від {price}'
+    price_retail: 'роздріб {price}'
+    availability:
+        in_stock: В наявності
+        to_order: Під замовлення
+        out_of_stock: Немає в наявності
+        available: Доступно
+    lead_time: 'Строк: {days, plural, one {# день} few {# дні} many {# днів} other {# дня}}'
+    stock_exact: 'Залишок: {stock}'
+    options:
+        title: Опції
+        none: Без цього
+        range: 'від {min} до {max}, крок {step}'
+        price: 'Ціна з опціями: {price}'
+        calculate: Порахувати
+    product:
+        sku: Артикул
+        attributes: Характеристики
+        category: Категорія
+        categories: Категорії товару
+        description: Опис
+        choose: Оберіть варіант
+        unavailable: немає в наявності
+    wishlist:
+        add: В обране
+        remove: Прибрати з обраного
+    reviews:
+        title: Відгуки
+        store_rating: 'Оцінка магазину:'
+        count: '{count, plural, one {# відгук} few {# відгуки} many {# відгуків} other {# відгуку}}'
+        average: 'Оцінка {average} з 5'
+        summary: '{average, number, ::.0} з 5 · {count, plural, one {# відгук} few {# відгуки} many {# відгуків} other {# відгуку}}'
+        rating_of: 'Оцінка {rating} з 5'
+        anonymous: Покупець
+        verified: Купив цей товар
+        demo: Демо-відгук
+        reply: Відповідь магазину
+        empty: Відгуків ще немає. Станьте першим, хто поділиться враженням.
+        write: Залишити відгук
+        edit_mine: Ваш відгук
+        submit: Зберегти відгук
+        login_hint: Відгуки залишають покупці, що увійшли в кабінет.
+        login: Увійти, щоб залишити відгук
+        login_google: Увійти через Google, щоб залишити відгук
+        google_required: Щоб залишити відгук, увійдіть через Google.
+    az:
+        label: Товари за алфавітом
+        clear: Показати всі літери
+    search:
+        title: Пошук
+        title_for: 'Пошук: {q}'
+        label: Пошук товарів
+        placeholder: Назва товару, артикул або бренд
+        button: Знайти
+        hint: Введіть щонайменше 2 символи — шукаємо за назвою, артикулом і брендом.
+        found: '{count, plural, =0 {За запитом «{q}» нічого не знайдено} one {# товар за запитом «{q}»} few {# товари за запитом «{q}»} other {# товарів за запитом «{q}»}}'
+        empty: 'За запитом «{q}» нічого не знайдено. Спробуйте інше написання або коротший запит.'
+    viewed:
+        title: Ви переглядали

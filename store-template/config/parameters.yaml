@@ -1,0 +1,50 @@
+# Параметри Symfony магазину → config/store/parameters.local.yaml образу (Kernel імпортує після services.yaml рушія).
+# Лише відомі рушію параметри (перелік — config/services.yaml рушія); admin_host/site_host додає деплой із domains реєстру.
+# Секретів тут нема й не буде: ключі НП, CRM, пошти — у .env.local на сервері магазину (600) або в Settings адмінки.
+parameters:
+    app.locales: ['uk', 'en']
+    app.default_locale: 'uk'
+    app.hreflang: { uk: 'uk-UA', en: 'en' }
+    app.site_name: { uk: 'Store Template', en: 'Store Template' }
+    app.mail_from: 'shop@storetemplate.example.com'
+    # Статичні сторінки (Page) у корені сайту: /about/, /en/about/ (типово рушія; старі /page/{slug} → 301). '/<слаг>' — під префіксом.
+    app.page_path_prefix: ''
+    # Ліцензія платформи (сторінка /license сайту і «Ліцензія» в адмінці): власник сайту за договором (рядок або за мовами),
+    # тип subscription | perpetual, договір і дата початку в лапках. Без app.license власником буде app.site_name, тип «за договором».
+    app.license:
+        licensee: { uk: '[ФОП ПІБ / ТОВ «Назва»]', en: '[Sole proprietor / company name]' }
+        type: subscription
+        contract: '[№ договору від дд.мм.рррр]'
+        since: '2026-01-01'
+    # Тема: лише відмінні від дефолту ключі (SiteTheme::DEFAULTS рушія — нейтральна світла). Невідомий ключ — помилка.
+    app.theme:
+        key: 'storetemplate'
+        color_scheme: 'light'
+        colors:
+            accent: '#0b4f9c'
+            accent_bg: '#0b4f9c'
+            accent_bg_hover: '#093f7c'
+            link: '#0b4f9c'
+        logo: { src: 'themes/storetemplate/logo.svg', width: 40, height: 40 }
+        favicon: 'themes/storetemplate/favicon.svg'
+        stylesheet: 'themes/storetemplate/theme.css'
+        brand:
+            tagline: { uk: '[Підзаголовок бренду]', en: '[Brand tagline]' }
+        hero:
+            title: { uk: 'Store Template', en: 'Store Template' }
+            text:
+                uk: '[Одне речення про магазин: що продаємо і кому. Лише перевірені факти з брифу.]'
+                en: '[One sentence about the store: what we sell and to whom. Verified facts from the brief only.]'
+            cta_label: { uk: 'До каталогу', en: 'Browse catalogue' }
+        product_perks:
+            - { uk: 'Доставка Новою поштою по всій Україні', en: 'Nova Poshta delivery across Ukraine' }
+            - { uk: 'Оплата при отриманні або на рахунок', en: 'Cash on delivery or bank transfer' }
+        footer:
+            about: { uk: '[Хто продавець і що продає — 1–2 речення]', en: '[Who sells and what — 1–2 sentences]' }
+            phone: '[+380 XX XXX XX XX]'
+            email: 'shop@storetemplate.example.com'
+            address: { uk: '[Місто, адреса або «відправка Новою поштою»]', en: '[City, address or “shipping by Nova Poshta”]' }
+            legal:
+                uk: 'Продавець: [ФОП ПІБ / ТОВ «Назва»], [ІПН / ЄДРПОУ], IBAN [рахунок], [адреса].'
+                en: 'Seller: [sole proprietor / company], [tax ID], IBAN [account], [address].'
+            socials: []

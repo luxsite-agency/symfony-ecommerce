@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<yml_catalog date="2026-09-27 10:00">
+  <shop>
+    <name>Постачальник дверей</name>
+    <currencies><currency id="UAH" rate="1"/></currencies>
+    <categories>
+      <category id="1">Двері</category>
+      <category id="2" parentId="1">Міжкімнатні</category>
+      <category id="3" parentId="1">Вхідні</category>
+    </categories>
+    <offers>
+      <offer id="1001" available="true" group_id="ML14">
+        <name>Двері ML 14</name>
+        <vendor>Solo</vendor>
+        <vendorCode>ML-14-WHITE</vendorCode>
+        <price>4262</price>
+        <oldprice>5000</oldprice>
+        <currencyId>UAH</currencyId>
+        <categoryId>2</categoryId>
+        <picture>https://example.test/ml14-white.jpg</picture>
+        <stock_quantity>3</stock_quantity>
+        <description>Полотно МДФ</description>
+        <param name="Матеріал">МДФ</param>
+        <param name="Висота, мм">2000</param>
+        <param name="Колір">Білий</param>
+      </offer>
+      <offer id="1002" available="false" group_id="ML14">
+        <name>Двері ML 14</name>
+        <vendor>Solo</vendor>
+        <vendorCode>ML-14-BLACK</vendorCode>
+        <price>4562,50</price>
+        <currencyId>UAH</currencyId>
+        <categoryId>2</categoryId>
+        <param name="Матеріал">МДФ</param>
+        <param name="Висота, мм">2000</param>
+        <param name="Колір">Чорний</param>
+      </offer>
+      <offer id="2001" available="true">
+        <name>Двері вхідні Форт</name>
+        <vendorCode>FORT-1</vendorCode>
+        <price>12000</price>
+        <currencyId>UAH</currencyId>
+        <categoryId>3</categoryId>
+        <param name="Матеріал">Метал</param>
+      </offer>
+      <offer id="3001" available="true">
+        <name>Зламана ціна</name>
+        <vendorCode>BROKEN</vendorCode>
+        <price>-5</price>
+        <currencyId>UAH</currencyId>
+        <categoryId>3</categoryId>
+      </offer>
+    </offers>
+  </shop>
+</yml_catalog>

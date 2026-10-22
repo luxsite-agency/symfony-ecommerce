@@ -1,0 +1,56 @@
+{% extends 'site/base.html.twig' %}
+{% set noindex = true %}
+{% block title %}{{ 'site.account.bulk.title'|trans }} | {{ site_name }}{% endblock %}
+{% block body %}
+    <h1>{{ 'site.account.bulk.title'|trans }}</h1>
+    {% include 'site/account/_flashes.html.twig' %}
+    {% if group is null %}
+        <p class="flash flash-error bulk-no-group" role="status">{{ 'site.account.bulk.no_group'|trans }} <a href="{{ path('site_account_wholesale') }}">{{ 'site.account.wholesale.link'|trans }}</a></p>
+    {% else %}
+        <p>{{ 'site.account.bulk.text'|trans }}</p>
+        {% if error %}<p class="flash flash-error bulk-error" role="alert">{{ ('site.account.bulk.error.' ~ error)|trans({lines: constant('App\\Core\\B2b\\BulkOrder\\BulkOrderInput::MAX_LINES'), kb: (constant('App\\Core\\B2b\\BulkOrder\\BulkOrderInput::MAX_BYTES') // 1024)}) }}</p>{% endif %}
+        <form method="post" action="{{ path('site_account_bulk') }}" class="account-form bulk-form" enctype="multipart/form-data">
+            <input type="hidden" name="_token" value="{{ csrf_token('account') }}">
+            <label>{{ 'site.account.bulk.lines'|trans }}
+                <textarea name="lines" rows="10" placeholder="{{ 'site.account.bulk.placeholder'|trans }}">{{ text }}</textarea>
+            </label>
+            <label>{{ 'site.account.bulk.csv'|trans }}
+                <input type="file" name="csv" accept=".csv,.txt,text/csv,text/plain">
+            </label>
+            <p class="meta">{{ 'site.account.bulk.hint'|trans({lines: constant('App\\Core\\B2b\\BulkOrder\\BulkOrderInput::MAX_LINES'), kb: (constant('App\\Core\\B2b\\BulkOrder\\BulkOrderInput::MAX_BYTES') // 1024)}) }}</p>
+            <button type="submit" class="btn btn-primary">{{ 'site.account.bulk.parse'|trans }}</button>
+        </form>
+        {% if rows is not null %}
+            {% set ok = rows|filter(r => r.status == 'ok') %}
+            <h2>{{ 'site.account.bulk.result'|trans({ok: ok|length, total: rows|length}) }}</h2>
+            <table class="cart bulk-rows">
+                <thead><tr><th>{{ 'site.account.bulk.col.line'|trans }}</th><th>{{ 'site.account.bulk.col.sku'|trans }}</th><th>{{ 'site.account.bulk.col.product'|trans }}</th><th>{{ 'site.account.bulk.col.quantity'|trans }}</th><th>{{ 'site.account.bulk.col.price'|trans }}</th><th>{{ 'site.account.bulk.col.total'|trans }}</th><th>{{ 'site.account.bulk.col.status'|trans }}</th></tr></thead>
+                <tbody>
+                {% for row in rows %}
+                    <tr class="bulk-row bulk-status-{{ row.status }}" data-sku="{{ row.sku }}" data-status="{{ row.status }}">
+                        <td>{{ row.line }}</td>
+                        <td>{{ row.sku }}</td>
+                        <td>{% if row.variant and row.variant.product.active %}{% set url = site_url(row.variant.product) %}{% if url %}<a href="{{ url }}">{{ row.name }}</a>{% else %}{{ row.name }}{% endif %}{% else %}{{ row.name ?? '' }}{% endif %}</td>
+                        <td>{{ row.status == 'invalid_quantity' ? '' : row.quantity|qty(row.variant ? row.variant.unit) }}</td>
+                        <td>{% if row.unitPrice %}{{ row.unitPrice|money }}{% endif %}</td>
+                        <td class="price">{% if row.lineTotal %}{{ row.lineTotal|money }}{% endif %}</td>
+                        <td>{{ ('site.account.bulk.status.' ~ row.status)|trans({min: row.variant ? row.variant.minQuantity|qty : '', step: row.variant ? row.variant.quantityStep|qty : ''}) }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+                {% if total %}<tfoot><tr><th colspan="5">{{ 'site.cart.items_total'|trans }}</th><th class="price bulk-total">{{ total|money }}</th><th></th></tr></tfoot>{% endif %}
+            </table>
+            {% if ok|length > 0 %}
+                <form method="post" action="{{ path('site_account_bulk_add') }}" class="bulk-add">
+                    <input type="hidden" name="_token" value="{{ csrf_token('account') }}">
+                    {% for row in ok %}
+                        <input type="hidden" name="rows[{{ loop.index0 }}][sku]" value="{{ row.sku }}">
+                        <input type="hidden" name="rows[{{ loop.index0 }}][quantity]" value="{{ row.quantity }}">
+                    {% endfor %}
+                    <button type="submit" class="btn btn-primary">{{ 'site.account.bulk.add'|trans({count: ok|length}) }}</button>
+                </form>
+            {% endif %}
+        {% endif %}
+    {% endif %}
+    <p><a href="{{ path('site_account') }}">{{ 'site.account.wholesale.back'|trans }}</a></p>
+{% endblock %}

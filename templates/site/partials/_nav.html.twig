@@ -1,0 +1,34 @@
+{# Меню: рядок сторінок (nav-bar, десктоп) і панель категорій #site-nav (відкриває чекбокс #nav-toggle; на мобільному —
+   усе меню). Виводиться блоком nav базового шаблону. Змінні з контексту не потрібні — дані з функцій: site_nav_categories()
+   (активні кореневі категорії), site_nav_pages('header') (сторінки з «показувати в шапці»), site_has_solutions() (пункт «Рішення», якщо є видимі), site_url(сутність),
+   tr(сутність) — переклад мовою сторінки з фолбеком, path(), trans. Стабільні класи: nav-bar, nav-inline, site-nav, nav,
+   nav-sep, nav-secondary, nav-toggle-btn. #}
+<div class="nav-bar">
+    <div class="container">
+        <label class="header-link nav-toggle-btn" for="nav-toggle"><span class="icon-burger" aria-hidden="true"></span>{{ 'site.nav.catalog'|trans }}</label>
+        <ul class="nav-inline">
+            {% for page in site_nav_pages('header') %}{% set url = site_url(page) %}{% set t = tr(page) %}
+                {% if url and t %}<li><a href="{{ url }}">{{ t.title }}</a></li>{% endif %}
+            {% endfor %}
+            {% if site_has_solutions() %}<li><a href="{{ path('site_solutions') }}">{{ 'site.nav.solutions'|trans }}</a></li>{% endif %}
+            <li><a href="{{ path('site_blog') }}">{{ 'site.nav.blog'|trans }}</a></li>
+        </ul>
+    </div>
+</div>
+<nav class="site-nav" id="site-nav" aria-label="{{ 'site.nav.catalog'|trans }}">
+    <div class="container">
+        <ul class="nav">
+            {% for category in site_nav_categories() %}{% set url = site_url(category) %}{% set t = tr(category) %}
+                {% if url and t %}<li><a href="{{ url }}">{{ t.name }}</a></li>{% endif %}
+            {% endfor %}
+            <li class="nav-sep" role="presentation"></li>
+            {% for page in site_nav_pages('header') %}{% set url = site_url(page) %}{% set t = tr(page) %}
+                {% if url and t %}<li class="nav-secondary"><a href="{{ url }}">{{ t.title }}</a></li>{% endif %}
+            {% endfor %}
+            {% if site_has_solutions() %}<li class="nav-secondary"><a href="{{ path('site_solutions') }}">{{ 'site.nav.solutions'|trans }}</a></li>{% endif %}
+            <li class="nav-secondary"><a href="{{ path('site_blog') }}">{{ 'site.nav.blog'|trans }}</a></li>
+            <li class="nav-secondary"><a href="{{ path('site_cart') }}" rel="nofollow">{{ 'site.nav.cart'|trans }}</a></li>
+            <li class="nav-secondary"><a href="{{ path('site_account') }}" rel="nofollow">{{ 'site.nav.account'|trans }}</a></li>
+        </ul>
+    </div>
+</nav>

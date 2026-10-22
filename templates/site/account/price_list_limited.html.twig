@@ -1,0 +1,11 @@
+{% extends 'site/base.html.twig' %}
+{% set noindex = true %}
+{% block title %}{{ 'site.account.price_list.limited_title'|trans }} | {{ site_name }}{% endblock %}
+{% block body %}
+    <h1>{{ 'site.account.price_list.limited_title'|trans }}</h1>
+    <p class="flash flash-error" role="alert">{{ 'site.account.price_list.limited_text'|trans }}</p>
+    <ul class="account-links">
+        <li><a href="{{ path('site_account_wholesale') }}">{{ 'site.account.wholesale.title'|trans }}</a></li>
+        <li><a href="{{ path('site_account') }}">{{ 'site.account.price_list.back'|trans }}</a></li>
+    </ul>
+{% endblock %}

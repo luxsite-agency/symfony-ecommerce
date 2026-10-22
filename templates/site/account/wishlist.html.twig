@@ -1,0 +1,15 @@
+{% extends 'site/base.html.twig' %}
+{% set noindex = true %}
+{% block title %}{{ 'site.account.wishlist.title'|trans }} | {{ site_name }}{% endblock %}
+{% block body %}
+    <h1>{{ 'site.account.wishlist.title'|trans }}</h1>
+    {% include 'site/account/_flashes.html.twig' %}
+    <p><a href="{{ path('site_account') }}">&larr; {{ 'site.account.title'|trans }}</a></p>
+    {% if cards %}
+        <ul class="cards cards-4 product-grid wishlist-grid">
+            {% for card in cards %}{% include 'site/partials/_product_card.html.twig' with {card: card, list_name: 'site.account.wishlist.title'|trans, index: loop.index0, eager: loop.index <= 4} %}{% endfor %}
+        </ul>
+    {% else %}
+        <p class="empty">{{ 'site.account.wishlist.empty'|trans }}</p>
+    {% endif %}
+{% endblock %}

@@ -1,0 +1,42 @@
+# Реєстр-фікстура для тестів bin/store (tests/store/run.sh) і стенду store-demo на dev-сервері. Не справжній реєстр (stores.yaml).
+version: 1
+stores:
+  - key: demo
+    name: Демо-магазин (стенд bin/store)
+    repo: example-org/store-demo
+    pack: tests/store/pack-demo
+    server:
+      host: local
+      user: ""
+      path: /srv/stores/demo
+      proxy: traefik
+      traefik_network: edge
+    domains:
+      site: store-demo.localhost
+      admin: store-demo-admin.localhost
+    locales: [uk, en]
+    engine: HEAD
+    status: active
+    support: yes
+    backup_target: /srv/stores/_copies/demo
+  - key: client
+    name: Сервер клієнта (сухий прогін standalone)
+    repo: example-org/store-client
+    server: { host: client.example.com, user: deploy, path: /work/stores/client, proxy: standalone }
+    domains: { site: shop.example.com, admin: admin.shop.example.com }
+    locales: [uk]
+    # магазин на чужому сервері — лише тег/sha; тест передає ref HEAD аргументом deploy
+    engine: v0.0.0-test
+    status: active
+    support: true
+    backup_target: /srv/stores/_copies/client
+  - key: old
+    name: Стара схема (як legacyshop на старому прод-сервері) — bin/store мусить відмовити
+    repo: example-org/store-old
+    server: { host: prod-host, user: root, path: /work/shop-engine, proxy: traefik }
+    domains: { site: shop.example.org, admin: admin.example.org }
+    locales: [uk, en]
+    engine: 407eb01
+    status: archived
+    support: false
+    backup_target: null

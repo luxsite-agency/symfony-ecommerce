@@ -1,0 +1,18 @@
+{# Швидке замовлення в один клік (ADR D8): ім'я + телефон, один варіант. product — Product.
+   price[<id>] — ціна картки кожного варіанта, яку бачить покупець: PlaceOrder звіряє її й не оформлює мовчки за іншою. #}
+{% set variants = product.variants|filter(v => v.active) %}
+{% if variants|length > 0 %}
+<form method="post" action="{{ path('site_quick_order') }}" class="quick-order checkout">
+    <h2>{{ 'site.quick.title'|trans }}</h2>
+    <input type="hidden" name="_token" value="{{ csrf_token('quick_order') }}">
+    <input type="hidden" name="key" value="{{ random(1000000000) }}-{{ 'now'|date('U') }}">
+    {% for v in variants %}<input type="hidden" name="price[{{ v.id }}]" value="{{ site_card_price(v).amount }}">{% endfor %}
+    {% if variants|length == 1 %}<input type="hidden" name="variant" value="{{ (variants|first).id }}">
+    {% else %}<label>{{ 'site.cart.variant'|trans }} <select name="variant">{% for v in variants %}<option value="{{ v.id }}">{% include 'site/partials/_variant_label.html.twig' with {v: v, with_price: true} only %}</option>{% endfor %}</select></label>{% endif %}
+    <label>{{ 'site.cart.quantity'|trans }} <input type="number" name="quantity" value="{{ quantity_display((variants|first).minQuantity) }}" min="{{ (variants|first).minQuantity }}" step="{{ (variants|first).quantityStep }}" inputmode="decimal"></label>
+    <label>{{ 'site.checkout.name'|trans }} <input type="text" name="name" required autocomplete="name"></label>
+    <label>{{ 'site.checkout.phone'|trans }} <input type="tel" name="phone" required autocomplete="tel" placeholder="+380"></label>
+    <button type="submit" class="btn">{{ 'site.quick.submit'|trans }}</button>
+    <p class="meta">{{ 'site.quick.note'|trans }}</p>
+</form>
+{% endif %}

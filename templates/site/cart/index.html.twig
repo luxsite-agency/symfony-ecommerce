@@ -1,0 +1,55 @@
+{# Контракт теми (docs/themes.md, template_contract 1). Змінні CartController::index: cart (Cart|null — рядки з варіантами й опціями), totals (CartTotals: lines, count, itemsTotal). #}
+{% extends 'site/base.html.twig' %}
+{% set alternates = site_alternates('site_cart') %}
+{% block title %}{{ 'site.cart.title'|trans }} | {{ site_name }}{% endblock %}
+{% block body %}
+    <ol class="crumbs"><li><a href="{{ path('site_home') }}">{{ site_name }}</a></li><li>{{ 'site.cart.title'|trans }}</li></ol>
+    <h1>{{ 'site.cart.title'|trans }}</h1>
+    {# флеші лише з наявної сесії: app.flashes() стартує її (PdoSessionHandler — рядок і блокування на кожен візит бота) #}
+    {% if app.request.hasPreviousSession %}
+        {% for message in app.flashes('error') %}<p class="flash flash-error" role="alert">{{ message }}</p>{% endfor %}
+        {% for message in app.flashes('success') %}<p class="flash flash-success">{{ message }}</p>{% endfor %}
+    {% endif %}
+    {% if totals is null or totals.count == 0 %}
+        <p class="empty">{{ 'site.cart.empty'|trans }}</p>
+        <p><a class="btn btn-primary" href="{{ path('site_home') }}">{{ 'site.cart.continue'|trans }}</a></p>
+    {% else %}
+        {% include 'site/partials/_order_minimum.html.twig' with {shortfall: shortfall} only %}
+        <table class="cart">
+            <thead><tr><th>{{ 'site.cart.product'|trans }}</th><th>{{ 'site.cart.price'|trans }}</th><th>{{ 'site.cart.quantity'|trans }}</th><th>{{ 'site.cart.total'|trans }}</th><th></th></tr></thead>
+            <tbody>
+            {% for line in totals.lines %}
+                {% set variant = line.item.variant %}{% set t = tr(variant.product) %}
+                <tr class="cart-line" data-sku="{{ variant.sku }}">
+                    <td>
+                        {% set url = site_url(variant.product) %}
+                        {% if url %}<a href="{{ url }}">{{ t ? t.name : variant.sku }}</a>{% else %}{{ t ? t.name : variant.sku }}{% endif %}
+                        <div class="meta">{{ variant.sku }}{% if variant.axisValues|length %} · {% include 'site/partials/_variant_label.html.twig' with {v: variant} only %}{% endif %}</div>
+                        {% include 'site/partials/_line_options.html.twig' with {snapshot: line.optionsSnapshot} only %}
+                        {% if line.problem %}<div class="problem" role="alert">{{ ('site.cart.problem.' ~ line.problem)|trans }}</div>{% endif %}
+                    </td>
+                    <td data-label="{{ 'site.cart.price'|trans }}">{{ line.unitPrice|money }}{% if line.listPrice %} <span class="old-price">{{ line.listPrice|money }}</span>{% endif %}{% if line.retailPrice %} <span class="retail-price muted">{{ 'catalog.price_retail'|trans({price: line.retailPrice|money}, 'site_catalog') }}</span>{% endif %}</td>
+                    <td data-label="{{ 'site.cart.quantity'|trans }}">
+                        <form method="post" action="{{ path('site_cart_update') }}" class="cart-qty">
+                            <input type="hidden" name="_token" value="{{ csrf_token('cart') }}">
+                            <input type="hidden" name="item" value="{{ line.item.id }}">
+                            <input type="number" name="quantity" value="{{ quantity_display(line.item.quantity) }}" min="{{ variant.minQuantity }}" step="{{ variant.quantityStep }}" inputmode="decimal" aria-label="{{ 'site.cart.quantity'|trans }}">
+                            <button type="submit" class="btn btn-small btn-outline">{{ 'site.cart.update'|trans }}</button>
+                        </form>
+                    </td>
+                    <td class="price" data-label="{{ 'site.cart.total'|trans }}">{{ line.lineTotal|money }}</td>
+                    <td>
+                        <form method="post" action="{{ path('site_cart_remove') }}">
+                            <input type="hidden" name="_token" value="{{ csrf_token('cart') }}">
+                            <input type="hidden" name="item" value="{{ line.item.id }}">
+                            <button type="submit" class="btn btn-link">{{ 'site.cart.remove'|trans }}</button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+            <tfoot><tr><th colspan="3">{{ 'site.cart.items_total'|trans }}</th><th class="price cart-total">{{ totals.itemsTotal|money }}</th><th></th></tr></tfoot>
+        </table>
+        <div class="cart-actions"><a class="btn-link" href="{{ path('site_home') }}">{{ 'site.cart.continue'|trans }}</a><a class="btn btn-primary" href="{{ path('site_checkout') }}">{{ 'site.cart.checkout'|trans }}</a></div>
+    {% endif %}
+{% endblock %}

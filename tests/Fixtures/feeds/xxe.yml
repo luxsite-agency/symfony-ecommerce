@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE yml_catalog [
+  <!ENTITY secret SYSTEM "file:///etc/passwd">
+]>
+<yml_catalog date="2026-10-10 10:00">
+  <shop>
+    <name>XXE</name>
+    <currencies><currency id="UAH" rate="1"/></currencies>
+    <categories>
+      <category id="1">Двері</category>
+    </categories>
+    <offers>
+      <offer id="9001" available="true">
+        <name>Двері XXE</name>
+        <vendorCode>XXE-1</vendorCode>
+        <price>10</price>
+        <currencyId>UAH</currencyId>
+        <categoryId>1</categoryId>
+        <description>&secret;</description>
+      </offer>
+    </offers>
+  </shop>
+</yml_catalog>

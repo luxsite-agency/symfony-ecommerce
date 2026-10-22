@@ -1,0 +1,12 @@
+{% extends 'site/base.html.twig' %}
+{% set noindex = true %}
+{% block title %}{{ 'site.account.login_link.title'|trans }} | {{ site_name }}{% endblock %}
+{% block body %}
+    <h1>{{ 'site.account.login_link.title'|trans }}</h1>
+    {# POST на ту саму адресу (user, expires, hash — у query): вхід робить login_link, GET лише показує кнопку.
+       _token — CSRF (App\Site\Account\LoginLinkCsrf): без нього чужа сторінка впустила б відвідувача в чужий акаунт. #}
+    <form method="post" action="{{ action }}" class="account-form">
+        <input type="hidden" name="_token" value="{{ csrf_token('account') }}">
+        <button type="submit" class="btn btn-primary">{{ 'site.account.login_link.confirm'|trans }}</button>
+    </form>
+{% endblock %}

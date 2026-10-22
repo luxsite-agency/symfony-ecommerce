@@ -1,0 +1,8 @@
+# Параметри тестового магазину client (сухий прогін deploy на сервер клієнта, standalone)
+parameters:
+    app.locales: ['uk']
+    app.site_name: 'Client store'
+    app.theme:
+        key: 'client'
+        logo: { src: 'themes/client/logo.svg' }
+        stylesheet: 'themes/client/theme.css'

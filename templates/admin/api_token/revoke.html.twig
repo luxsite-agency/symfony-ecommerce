@@ -1,0 +1,13 @@
+{% extends '@EasyAdmin/page/content.html.twig' %}
+{% trans_default_domain 'admin' %}
+{# Підтвердження відкликання токена (AdminApiTokenCrudController::revoke, GET): POST з CSRF на той самий маршрут. Змінні: token (AdminApiToken), index_url. #}
+{% block content_title %}{{ 'api_token.revoke.title'|trans }}{% endblock %}
+{% block main %}
+    <p>{{ 'api_token.revoke.token'|trans }} <strong>«{{ token.name }}»</strong> ({{ token.maskedToken }}{% if is_granted('ROLE_ADMIN') %}, {{ 'api_token.revoke.owner'|trans }} {{ token.ownerName }}{% endif %}) {{ 'api_token.revoke.text'|trans }}</p>
+    <form method="post" action="{{ ea_url().unsetAll().setController('App\\Admin\\Controller\\Crud\\AdminApiTokenCrudController').setAction('revoke').generateUrl() }}" id="api-token-revoke">
+        <input type="hidden" name="token" value="{{ csrf_token('api-token-revoke') }}">
+        <input type="hidden" name="id" value="{{ token.id }}">
+        <button type="submit" class="btn btn-danger">{{ 'api_token.revoke.submit'|trans }}</button>
+        <a href="{{ index_url }}" class="btn btn-secondary">{{ 'api_token.revoke.cancel'|trans }}</a>
+    </form>
+{% endblock %}

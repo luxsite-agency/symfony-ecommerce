@@ -1,0 +1,26 @@
+{# Контракт теми (docs/themes.md, template_contract 1). Змінні SolutionController::index: groups (list of {group: ?SolutionGroup,
+   solutions: list<Solution>} — групи за position, без групи — останньою; рішення видимі мовою сторінки), solution_locales (мови, де є
+   рішення: hreflang лише ними). Картка — site/solution/_card. #}
+{% extends 'site/base.html.twig' %}
+{% import 'site/partials/_schema.html.twig' as schema %}
+{% trans_default_domain 'messages' %}
+{% set locale = app.request.locale %}
+{% set alternates = site_alternates('site_solutions')|filter((url, l) => l in solution_locales|default([app.request.locale])) %}
+{% block title %}{{ 'site.solution.title'|trans }} | {{ site_name }}{% endblock %}
+{% block metaDescription %}{{ 'site.solution.description'|trans({site: site_name}) }}{% endblock %}
+{% block schema %}
+    {{ schema.crumbs([{name: site_name, url: url('site_home')}, {name: 'site.solution.title'|trans}]) }}
+{% endblock %}
+{% block bodyClass %} page-solutions{% endblock %}
+{% block body %}
+    <ol class="crumbs"><li><a href="{{ path('site_home') }}">{{ site_name }}</a></li><li>{{ 'site.solution.title'|trans }}</li></ol>
+    <h1>{{ 'site.solution.title'|trans }}</h1>
+    {% for row in groups %}
+        <section class="solution-group">
+            {% if row.group and tr(row.group) %}<h2>{{ tr(row.group).title }}</h2>{% elseif groups|length > 1 %}<h2>{{ 'site.solution.other'|trans }}</h2>{% endif %}
+            <ul class="solution-cards">
+                {% for solution in row.solutions %}{% include 'site/solution/_card.html.twig' with {solution: solution, locale: locale} only %}{% endfor %}
+            </ul>
+        </section>
+    {% endfor %}
+{% endblock %}

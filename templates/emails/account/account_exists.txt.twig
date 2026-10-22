@@ -1,0 +1,8 @@
+{{ 'email.account.hello_plain'|trans({}, null, l) }}
+
+{{ 'email.account.account_exists.text'|trans({site: siteName, minutes: ttl}, null, l) }}
+
+{{ url }}
+
+{{ 'email.account.account_exists.outro'|trans({minutes: ttl, hours: ttl // 60}, null, l) }}
+{{ siteName }}

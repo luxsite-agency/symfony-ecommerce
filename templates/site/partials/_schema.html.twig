@@ -1,0 +1,84 @@
+{# JSON-LD макроси: ld(obj) · website() · crumbs(items) · article(post, tr, url, image) · webpage(type, extra) · faq(items)
+   · product(name, description, images, sku, brand, offers, url) · itemList(urls).
+   За зразком внутрішнього проєкту LuxSite (admin-ux-ref), без Organization-полів компанії — їх дасть Settings у Ф3. #}
+{% macro ld(obj) %}
+<script type="application/ld+json">{{ obj|json_encode(constant('JSON_UNESCAPED_SLASHES') b-or constant('JSON_UNESCAPED_UNICODE') b-or constant('JSON_HEX_TAG'))|raw }}</script>
+{% endmacro %}
+
+{% macro website() %}
+{% import _self as s %}
+{% set host = app.request.schemeAndHttpHost %}
+{{ s.ld({
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    '@id': host ~ '/#website',
+    'name': site_name,
+    'url': host ~ '/',
+    'inLanguage': site_locales()|map(l => site_hreflang(l)),
+}) }}
+{% endmacro %}
+
+{# items: list of {name, url?}; останній — поточна сторінка без url #}
+{% macro crumbs(items) %}
+{% import _self as s %}
+{% set list = [] %}
+{% for item in items %}
+    {% set entry = {'@type': 'ListItem', 'position': loop.index, 'name': item.name} %}
+    {% if item.url is defined and item.url %}{% set entry = entry|merge({'item': item.url}) %}{% endif %}
+    {% set list = list|merge([entry]) %}
+{% endfor %}
+{{ s.ld({'@context': 'https://schema.org', '@type': 'BreadcrumbList', 'itemListElement': list}) }}
+{% endmacro %}
+
+{% macro article(post, tr, url, image) %}
+{% import _self as s %}
+{% set obj = {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    'mainEntityOfPage': url,
+    'headline': tr.title,
+    'description': tr.metaDescription ?: tr.excerpt,
+    'datePublished': post.publishedAt ? post.publishedAt|date('c') : null,
+    'dateModified': post.updatedAt|date('c'),
+    'inLanguage': site_hreflang(app.request.locale),
+    'publisher': {'@id': app.request.schemeAndHttpHost ~ '/#website'},
+} %}
+{% if image %}{% set obj = obj|merge({'image': [image]}) %}{% endif %}
+{% if post.authorName %}{% set obj = obj|merge({'author': {'@type': 'Person', 'name': post.authorName}}) %}{% endif %}
+{% if post.tagList|length %}{% set obj = obj|merge({'keywords': post.tagList|join(', ')}) %}{% endif %}
+{{ s.ld(obj|filter(v => v is not null)) }}
+{% endmacro %}
+
+{# items: list of {q, a} — FAQ запису блогу (зовнішня контент-панель) #}
+{% macro faq(items) %}
+{% import _self as s %}
+{% set list = [] %}
+{% for item in items %}
+    {% set list = list|merge([{'@type': 'Question', 'name': item.q, 'acceptedAnswer': {'@type': 'Answer', 'text': item.a}}]) %}
+{% endfor %}
+{% if list is not empty %}{{ s.ld({'@context': 'https://schema.org', '@type': 'FAQPage', 'mainEntity': list}) }}{% endif %}
+{% endmacro %}
+
+{# Product (seo-tech-notes п. 4): offers — Offer/AggregateOffer з App\Site\Seo\ProductSchema або null («ціна за запитом» —
+   без offers), brand — бренд товару або app.seo.brand; rating — {aggregateRating, review} з App\Site\Seo\ReviewSchema
+   (лише схвалені справжні відгуки) або null: без відгуків — без aggregateRating. #}
+{% macro product(name, description, images, sku, brand, offers, url, rating = null) %}
+{% import _self as s %}
+{% set obj = {'@context': 'https://schema.org', '@type': 'Product', 'name': name} %}
+{% if description %}{% set obj = obj|merge({'description': description}) %}{% endif %}
+{% if images is not empty %}{% set obj = obj|merge({'image': images}) %}{% endif %}
+{% if sku %}{% set obj = obj|merge({'sku': sku}) %}{% endif %}
+{% if brand %}{% set obj = obj|merge({'brand': {'@type': 'Brand', 'name': brand}}) %}{% endif %}
+{% if url %}{% set obj = obj|merge({'url': url}) %}{% endif %}
+{% if offers %}{% set obj = obj|merge({'offers': offers}) %}{% endif %}
+{% if rating %}{% set obj = obj|merge({'aggregateRating': rating.aggregateRating, 'review': rating.review}) %}{% endif %}
+{{ s.ld(obj) }}
+{% endmacro %}
+
+{# ItemList категорії (п. 21): адреси товарів поточної сторінки лістингу в її порядку #}
+{% macro itemList(urls) %}
+{% import _self as s %}
+{% set list = [] %}
+{% for url in urls %}{% set list = list|merge([{'@type': 'ListItem', 'position': loop.index, 'url': url}]) %}{% endfor %}
+{% if list is not empty %}{{ s.ld({'@context': 'https://schema.org', '@type': 'ItemList', 'itemListElement': list}) }}{% endif %}
+{% endmacro %}

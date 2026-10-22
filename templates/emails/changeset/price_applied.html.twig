@@ -1,0 +1,20 @@
+{% trans_default_domain 'admin' %}
+<div style="font-family:system-ui,sans-serif;font-size:15px;color:#1a1f24;max-width:640px">
+    <h1 style="font-size:20px">{{ 'email_changeset.price_applied.heading'|trans({id: cs.id ~ '', title: cs.title}) }}</h1>
+    <p>
+        <strong>{{ 'email_changeset.price_applied.created_by'|trans }}</strong> {{ cs.author }} ({{ cs.source|trans }}), {{ cs.createdAt|date_short(true) }}<br>
+        <strong>{{ 'email_changeset.price_applied.applied_by'|trans }}</strong> {{ cs.appliedByName }}, {{ cs.appliedAt|date_short(true) }}<br>
+        <strong>{{ 'email_changeset.price_applied.operations'|trans }}</strong> {{ 'email_changeset.price_applied.operations_value'|trans({count: cs.operations|length ~ '', price: (rows|length + more) ~ ''}) }}
+        {% if cs.riskFlags is not empty %}<br><strong>{{ 'email_changeset.price_applied.risk_flags'|trans }}</strong> {{ 'email_changeset.price_applied.risk_flags_value'|trans({flags: cs.riskFlags|join(', '), name: cs.riskConfirmedByName}) }}{% endif %}
+    </p>
+    <table style="border-collapse:collapse;width:100%" cellpadding="4">
+        <thead><tr style="text-align:left;border-bottom:1px solid #ccc"><th>{{ 'email_changeset.price_applied.col_target'|trans }}</th><th>{{ 'email_changeset.price_applied.col_field'|trans }}</th><th>{{ 'email_changeset.price_applied.col_before'|trans }}</th><th>{{ 'email_changeset.price_applied.col_after'|trans }}</th></tr></thead>
+        <tbody>
+        {% for r in rows %}
+            <tr><td>{{ r.target }}</td><td>{{ r.field }}</td><td>{{ r.before ?? '—' }}</td><td>{{ r.after ?? '—' }}{% if r.percent %} <span style="color:#777">({{ r.percent }})</span>{% endif %}</td></tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% if more > 0 %}<p>…{{ 'email_changeset.price_applied.more'|trans({count: more ~ ''}) }}</p>{% endif %}
+    <p><a href="{{ url }}">{{ 'email_changeset.price_applied.link_changeset'|trans }}</a> · <a href="{{ audit_url }}">{{ 'email_changeset.price_applied.link_audit'|trans }}</a></p>
+</div>

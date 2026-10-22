@@ -1,0 +1,67 @@
+{% extends '@EasyAdmin/crud/detail.html.twig' %}
+{% trans_default_domain 'admin' %}
+{# Перегляд замовлення: стандартні поля + рядки, суми, історія переходів і кнопки переходів з CSRF-токеном у посиланні. #}
+{% set order = entity.instance %}
+{% block main %}
+    {{ parent() }}
+    <div class="row mt-4">
+        <div class="col-lg-8">
+            <h3 class="h5">{{ 'order.detail.items'|trans }}</h3>
+            <table class="table table-sm datagrid">
+                <thead><tr><th>{{ 'order.detail.sku'|trans }}</th><th>{{ 'order.detail.name'|trans }}</th><th class="text-end">{{ 'order.detail.price'|trans }}</th><th class="text-end">{{ 'order.detail.quantity'|trans }}</th><th class="text-end">{{ 'order.detail.line_total'|trans }}</th><th class="text-end ps-3">{{ 'order.detail.reserved'|trans }}</th></tr></thead>
+                <tbody>
+                {% for item in order.items %}
+                    <tr>
+                        <td>{{ item.sku }}</td>
+                        <td>{% if item.parent %}<span class="text-muted">↳</span> {% endif %}{{ item.name }}{% if item.promotionName %}<div class="small text-muted">{{ 'order.detail.promotion'|trans({name: item.promotionName}) }}</div>{% endif %}</td>
+                        {% if item.parent %}{# компонент опції: ціна вже в батьківському рядку #}
+                        <td class="text-end text-muted">{{ 'order.detail.included'|trans }}</td>
+                        <td class="text-end">{{ item.quantity|qty(item.variant ? item.variant.unit) }}</td>
+                        <td class="text-end text-muted">—</td>
+                        {% else %}
+                        <td class="text-end">{{ item.unitPrice|money }}{% if item.listPrice %} <s class="text-muted">{{ item.listPrice|money }}</s>{% endif %}</td>
+                        <td class="text-end">{{ item.quantity|qty(item.variant ? item.variant.unit) }}</td>
+                        <td class="text-end">{{ item.lineTotal|money }}</td>
+                        {% endif %}
+                        <td class="text-end">{{ item.reservedStock|qty(item.variant ? item.variant.unit) }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr><th colspan="4" class="text-end">{{ 'order.detail.items_total'|trans }}</th><th class="text-end">{{ order.itemsTotal|money }}</th><th></th></tr>
+                    <tr><th colspan="4" class="text-end">{{ 'order.detail.shipping'|trans }}</th><th class="text-end">{{ order.shipping|money }}</th><th></th></tr>
+                    <tr><th colspan="4" class="text-end">{{ 'order.detail.grand_total'|trans }}</th><th class="text-end">{{ order.total|money }}</th><th></th></tr>
+                </tfoot>
+            </table>
+        </div>
+        <div class="col-lg-4">
+            <h3 class="h5">{{ 'order.detail.history'|trans }}</h3>
+            <ul class="list-unstyled small">
+                {% for h in history %}{# OrderHistoryLine: коди переходів і авторів — словами #}
+                    <li class="mb-2" data-history><span class="text-muted">{{ h.at|date_short(true) }}</span> · {{ h.event }} <strong>{{ h.toStatus }}</strong><br><span class="text-muted">{{ h.actor }}</span>{% if h.comment %} — {{ h.comment }}{% endif %}</li>
+                {% endfor %}
+            </ul>
+            {% include 'admin/order/_attachments.html.twig' %}
+        </div>
+    </div>
+{% endblock %}
+{% block page_actions %}
+    {# порядок (аудит UX A5): «Скасувати замовлення» окремо ліворуч з підтвердженням → «Повернутися до списку» → наступний крок
+       (основна кнопка) → «Редагувати» #}
+    {% set token = csrf_token('order-transition-' ~ order.id) %}
+    {% set transitions = entity.actions|filter(a => a.name starts with 'transition_') %}
+    {% set others = entity.actions|filter(a => not (a.name starts with 'transition_')) %}
+    {% for action in transitions|filter(a => a.name == 'transition_cancel') %}{{ _self.transition_form(action, token, order) }}{% endfor %}
+    {% for action in others|filter(a => a.name != 'edit') %}{{ include(action.templatePath, { action: action, group: action, entity: entity }, with_context = false) }}{% endfor %}
+    {% for action in transitions|filter(a => a.name != 'transition_cancel') %}{{ _self.transition_form(action, token, order) }}{% endfor %}
+    {% for action in others|filter(a => a.name == 'edit') %}{{ include(action.templatePath, { action: action, group: action, entity: entity }, with_context = false) }}{% endfor %}
+{% endblock %}
+
+{% macro transition_form(action, token, order) %}
+    {% set transition = action.name|replace({'transition_': ''}) %}
+    <form method="post" action="{{ action.linkUrl }}" class="d-inline-block{% if transition == 'cancel' %} me-auto{% endif %}"{% if transition == 'cancel' %} onsubmit="return confirm('{{ 'order.detail.cancel_confirm'|trans({number: order.number}, 'admin')|e('js') }}')"{% endif %}>
+        <input type="hidden" name="transition" value="{{ transition }}">
+        <input type="hidden" name="token" value="{{ token }}">
+        <button type="submit" class="{{ action.cssClass }}" data-transition="{{ transition }}">{% if action.icon %}<i class="{{ action.icon }}"></i> {% endif %}{{ action.label|trans({}, 'admin') }}</button>
+    </form>
+{% endmacro %}

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- https://phpunit.readthedocs.io/en/latest/configuration.html -->
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
+         colors="true"
+         failOnDeprecation="true"
+         failOnNotice="true"
+         failOnWarning="true"
+         bootstrap="tests/bootstrap.php"
+         cacheDirectory=".phpunit.cache"
+>
+    <php>
+        <ini name="display_errors" value="1" />
+        <ini name="error_reporting" value="-1" />
+        <server name="APP_ENV" value="test" force="true" />
+        <!-- dev-сервер: контейнер задає APP_ENV=dev у реальному оточенні ($_ENV), а KernelTestCase читає $_ENV раніше за $_SERVER -->
+        <env name="APP_ENV" value="test" force="true" />
+        <server name="SHELL_VERBOSITY" value="-1" />
+        <!-- dev-сервер: контейнер shop-engine-mysql; CI: сервіс mysql на localhost (перевизначається env у workflow) -->
+        <env name="DATABASE_URL" value="mysql://root:root@shop-engine-mysql:3306/shop?serverVersion=8.0&amp;charset=utf8mb4" />
+        <env name="MAILER_DSN" value="null://null" />
+        <env name="MESSENGER_TRANSPORT_DSN" value="in-memory://" />
+        <!-- довідники НП у тестах «увімкнені» ключем; HTTP до api.novaposhta.ua мокається (MockHttpClient) -->
+        <env name="NOVA_POSHTA_API_KEY" value="test-np-key" />
+        <env name="SETTINGS_SECRET_KEY" value="dGVzdC1zZXR0aW5ncy1zZWNyZXQta2V5LTMyYnl0ZXM=" />
+    </php>
+
+    <testsuites>
+        <!-- unit: доменна логіка без ядра й БД -->
+        <testsuite name="unit">
+            <directory>tests/Core</directory>
+            <directory>tests/Site</directory>
+            <directory>tests/Unit</directory>
+        </testsuite>
+        <!-- integration: ядро Symfony + MySQL (DAMA відкочує кожен тест) -->
+        <testsuite name="integration">
+            <directory>tests/Integration</directory>
+        </testsuite>
+        <!-- functional: HTTP-запити до адмінки (WebTestCase) -->
+        <testsuite name="functional">
+            <directory>tests/Functional</directory>
+        </testsuite>
+    </testsuites>
+
+    <source ignoreSuppressionOfDeprecations="true"
+            ignoreIndirectDeprecations="true"
+            restrictNotices="true"
+            restrictWarnings="true"
+    >
+        <include>
+            <directory>src</directory>
+        </include>
+
+        <deprecationTrigger>
+            <method>Doctrine\Deprecations\Deprecation::trigger</method>
+            <method>Doctrine\Deprecations\Deprecation::delegateTriggerToBackend</method>
+            <function>trigger_deprecation</function>
+        </deprecationTrigger>
+    </source>
+
+    <extensions>
+        <!-- DAMA: кожен тест у транзакції з відкатом. Тести на конкурентність stock (ADR D12) — окремий suite без DAMA. -->
+        <bootstrap class="DAMA\DoctrineTestBundle\PHPUnit\PHPUnitExtension" />
+        <bootstrap class="Zenstruck\Foundry\PHPUnit\FoundryExtension" />
+    </extensions>
+</phpunit>

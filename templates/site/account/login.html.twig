@@ -1,0 +1,39 @@
+{% extends 'site/base.html.twig' %}
+{% set noindex = true %}
+{% block title %}{{ 'site.account.login.title'|trans }} | {{ site_name }}{% endblock %}
+{% block body %}
+    <h1>{{ 'site.account.login.title'|trans }}</h1>
+    {% include 'site/account/_flashes.html.twig' %}
+    {% if error %}<p class="flash flash-error" role="alert">{{ error starts with 'site.' ? error|trans(error_data) : error|trans(error_data, 'security') }}</p>{% endif %}
+    <form method="post" action="{{ path('site_account_login') }}" class="account-form">
+        <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+        <label>{{ 'site.account.email'|trans }} <input type="email" name="email" value="{{ last_email }}" autocomplete="username" required autofocus></label>
+        <label>{{ 'site.account.password'|trans }} <input type="password" name="password" autocomplete="current-password" required></label>
+        <label class="check"><input type="checkbox" name="_remember_me" value="1"> {{ 'site.account.login.remember'|trans }}</label>
+        <button type="submit" class="btn btn-primary">{{ 'site.account.login.submit'|trans }}</button>
+    </form>
+    {% include 'site/account/_google_button.html.twig' with {next: app.request.query.get('next')} only %}
+    {% if demo_logins is defined and demo_logins %}
+        <section class="demo-access">
+            <h2>{{ 'site.account.demo.title'|trans }}</h2>
+            <p>{{ 'site.account.demo.text'|trans }}</p>
+            <dl class="demo-credentials">
+                {% for kind, email in demo_logins %}<dt>{{ ('site.account.demo.'~kind)|trans }}</dt><dd><code>{{ email }}</code></dd>{% endfor %}
+                <dt>{{ 'site.account.password'|trans }}</dt><dd><code>{{ demo_password }}</code></dd>
+            </dl>
+            {% for kind, email in demo_logins %}
+                <form method="post" action="{{ path('site_account_login') }}" class="demo-login demo-login-{{ kind }}">
+                    <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+                    <input type="hidden" name="email" value="{{ email }}">
+                    <input type="hidden" name="password" value="{{ demo_password }}">
+                    <button type="submit" class="btn btn-outline">{{ ('site.account.demo.login_'~kind)|trans }}</button>
+                </form>
+            {% endfor %}
+        </section>
+    {% endif %}
+    <ul class="account-links">
+        <li><a href="{{ path('site_account_login_link') }}">{{ 'site.account.login.by_link'|trans }}</a></li>
+        <li><a href="{{ path('site_account_password') }}">{{ 'site.account.login.forgot'|trans }}</a></li>
+        <li><a href="{{ path('site_account_register') }}">{{ 'site.account.login.register'|trans }}</a></li>
+    </ul>
+{% endblock %}

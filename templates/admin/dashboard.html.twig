@@ -1,0 +1,292 @@
+{% extends '@EasyAdmin/page/content.html.twig' %}
+{% trans_default_domain 'admin' %}
+
+{% block content_title %}{{ 'dashboard.title'|trans }}{% endblock %}
+
+{% block head_stylesheets %}
+    {{ parent() }}
+    <style>
+        {# сітка карток тягнеться на всю ширину контенту, як шапка (EasyAdmin типово обмежує 1440 px) #}
+        .content-wrapper { max-inline-size: none; }
+        .dash-stack { display: grid; gap: 1rem; }
+        .dash-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); gap: 1rem; align-items: start; }
+        .dash-main { display: grid; grid-template-columns: minmax(0, 1fr); gap: 1rem; align-items: start; }
+        @media (min-width: 1200px) { .dash-main { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } }
+        @media (min-width: 1600px) { .dash-main { grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); } }
+        .dash-card { min-width: 0; background: var(--white, #fff); border: 1px solid var(--border-color, #e3e7ee); border-radius: .5rem; padding: 1rem; }
+        .dash-head { display: flex; flex-wrap: wrap; align-items: baseline; column-gap: .5rem; row-gap: .25rem; margin: 0 0 .75rem; }
+        .dash-head h2 { font-size: 1rem; margin: 0; }
+        .dash-head .dash-link { margin-inline-start: auto; white-space: nowrap; }
+        .dash-compact { padding: .6rem 1rem; }
+        .dash-compact .dash-head { margin: 0; }
+        .dash-compact .dash-scroll { margin-top: .6rem; }
+        .dash-empty { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        @media (min-width: 576px) { .dash-compact .dash-head { flex-wrap: nowrap; } .dash-compact h2 { white-space: nowrap; } }
+        .dash-kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: .75rem; }
+        .dash-kpi { border-radius: .5rem; background: var(--gray-100, #f6f7f9); padding: .6rem .75rem; }
+        .dash-kpi .v { font-size: 1.5rem; font-weight: 600; line-height: 1.2; }
+        .dash-kpi .l { font-size: .75rem; color: var(--text-muted, #6c757d); }
+        .dash-scroll { overflow-x: auto; }
+        .dash-table { width: 100%; font-size: .875rem; }
+        .dash-table th, .dash-table td { padding: .3rem .3rem; border-bottom: 1px solid var(--border-color, #e3e7ee); text-align: left; vertical-align: top; overflow-wrap: break-word; }
+        .dash-table .num { text-align: right; white-space: nowrap; }
+        .dash-table .nowrap { white-space: nowrap; }
+        .dash-table .num.when { white-space: normal; min-width: 3.2rem; }
+        .dash-cut { display: inline-block; max-width: 9rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; vertical-align: bottom; }
+        .dash-muted { color: var(--text-muted, #6c757d); font-size: .75rem; }
+        .dash-status { display: inline-flex; flex-wrap: wrap; gap: .4rem; }
+        {# графік: HTML-стовпці, текст осей не розтягується, як у SVG з preserveAspectRatio=none #}
+        .dash-chart { display: grid; grid-template-columns: auto minmax(0, 1fr); column-gap: .5rem; }
+        .dash-chart-y { position: relative; height: 180px; min-width: 3rem; }
+        .dash-chart-y span { position: absolute; right: 0; transform: translateY(50%); font-size: .75rem; color: var(--text-muted, #6c757d); white-space: nowrap; }
+        .dash-chart-plot { position: relative; height: 180px; border-bottom: 1px solid var(--text-muted, #6c757d); display: flex; align-items: stretch; }
+        .dash-chart-grid { position: absolute; left: 0; right: 0; border-top: 1px dashed var(--border-color, #e3e7ee); }
+        .dash-chart-col { position: relative; flex: 1 1 0; min-width: 0; display: flex; align-items: flex-end; justify-content: center; }
+        .dash-chart-col:hover { background: var(--gray-100, #f6f7f9); }
+        .dash-chart-bar { width: 70%; max-width: 2.5rem; background: var(--color-primary, #3f6ad8); border-radius: 2px 2px 0 0; }
+        .dash-chart-col:hover .dash-chart-bar { background: var(--color-primary-dark, #2f57b8); }
+        .dash-chart-col.zero .dash-chart-bar { height: 2px; background: var(--border-color, #c9ced6); }
+        .dash-chart-x { position: absolute; top: 100%; margin-top: .3rem; left: 50%; transform: translateX(-50%); font-size: .75rem; color: var(--text-muted, #6c757d); white-space: nowrap; }
+        .dash-chart-col:first-child .dash-chart-x { left: 0; transform: none; }
+        .dash-chart-col:last-child .dash-chart-x { left: auto; right: 0; transform: none; }
+        .dash-chart-xspace { grid-column: 2; height: 1.5rem; }
+        @media (max-width: 575.98px) { .dash-chart-x.odd { display: none; } .dash-cut { max-width: 6rem; } }
+        {# топ товарів: вкладки без JS (radio + label) #}
+        .dash-tabs > input { position: absolute; opacity: 0; pointer-events: none; }
+        .dash-tabs .dash-panel { display: none; }
+        #dash-top-total:checked ~ .dash-panel-total, #dash-top-quantity:checked ~ .dash-panel-quantity { display: block; }
+        #dash-top-total:checked ~ .btn-group label[for="dash-top-total"], #dash-top-quantity:checked ~ .btn-group label[for="dash-top-quantity"] { background: var(--bs-secondary, #6c757d); border-color: var(--bs-secondary, #6c757d); color: #fff; }
+        .dash-tabs > input:focus-visible ~ .btn-group { outline: 2px solid var(--color-primary, #3f6ad8); outline-offset: 2px; border-radius: .25rem; }
+    </style>
+{% endblock %}
+
+{# Кількість — фільтр qty (FormatExtension): без зайвих нулів, з одиницею варіанта: 32 шт, 2,5 м; видалений варіант — без одиниці #}
+
+{% block main %}
+    {% set s = snapshot %}
+    {% set locale = app.request.locale %}
+    {# ea_url() — один мутабельний генератор, після generateUrl() стан скидається: кожне посилання будуємо з нуля #}
+
+    {% set range_label = 'dashboard.range.span'|trans({from: range.from|date_short, to: range.to|date_short}) %}
+    {% set orders_url = ea_url().setController('App\\Admin\\Controller\\Crud\\OrderCrudController').setAction('index').set('filters', {placedAt: {comparison: 'between', value: range.from|date('Y-m-d') ~ 'T00:00:00', value2: range.to|date('Y-m-d') ~ 'T23:59:59'}}) %}
+    <form method="get" action="{{ path('admin') }}" class="d-flex flex-wrap align-items-center gap-2 mb-3 dash-range" data-range="{{ range.from|date('Y-m-d') }}_{{ range.to|date('Y-m-d') }}">
+        <span class="dash-muted">{{ 'dashboard.period.label'|trans }}:</span>
+        <div class="btn-group btn-group-sm period-filter flex-wrap" role="group">
+            {% for key in presets %}
+                <a class="btn btn-outline-secondary{% if range.isPreset(key) %} active{% endif %}" href="{{ path('admin', {period: key}) }}" data-period="{{ key }}">{{ ('dashboard.period.' ~ key)|trans }}</a>
+            {% endfor %}
+        </div>
+        <label class="dash-muted mb-0">{{ 'dashboard.range.from'|trans }} <input type="date" name="from" class="form-control form-control-sm d-inline-block w-auto" value="{{ range.from|date('Y-m-d') }}" max="{{ 'now'|date('Y-m-d') }}" required></label>
+        <label class="dash-muted mb-0">{{ 'dashboard.range.to'|trans }} <input type="date" name="to" class="form-control form-control-sm d-inline-block w-auto" value="{{ range.to|date('Y-m-d') }}" max="{{ 'now'|date('Y-m-d') }}" required></label>
+        <button type="submit" class="btn btn-sm btn-secondary">{{ 'dashboard.range.show'|trans }}</button>
+        <span class="dash-muted ms-auto">{{ 'dashboard.generated_at'|trans({time: s.generatedAt|date('H:i')}) }}</span>
+    </form>
+    {% if range.error %}
+        <div class="alert alert-warning py-2" role="alert" data-range-error="{{ range.error }}">{{ ('dashboard.range.error.' ~ range.error)|trans({max: constant('App\\Admin\\Dashboard\\DashboardRange::MAX_DAYS')}) }} {{ 'dashboard.range.fallback'|trans }}</div>
+    {% endif %}
+
+    <div class="dash-stack">
+        <section class="dash-card" id="dashboard-orders">
+            <div class="dash-head">
+                <h2>{{ 'dashboard.orders.title'|trans }}</h2>
+                <span class="dash-muted" data-range-label>{{ range_label }}</span>
+                <span class="dash-muted">({{ 'dashboard.orders.excluding_cancelled'|trans }})</span>
+                <a class="dash-muted dash-link" href="{{ orders_url }}" data-orders-in-range>{{ 'dashboard.orders.in_list'|trans }} →</a>
+            </div>
+            <div class="dash-kpis">
+                <div class="dash-kpi"><div class="v" data-kpi="new">{{ s.orders.new }}</div><div class="l">{{ 'dashboard.orders.new'|trans }}</div></div>
+                <div class="dash-kpi"><div class="v" data-kpi="today">{{ s.orders.today }}</div><div class="l">{{ 'dashboard.orders.today'|trans }}</div></div>
+                <div class="dash-kpi"><div class="v" data-kpi="last7">{{ s.orders.last7Days }}</div><div class="l">{{ 'dashboard.orders.last7'|trans }}</div></div>
+                <div class="dash-kpi"><div class="v" data-kpi="last30">{{ s.orders.last30Days }}</div><div class="l">{{ 'dashboard.orders.last30'|trans }}</div></div>
+                <div class="dash-kpi"><div class="v" data-kpi="period-count">{{ s.orders.periodCount }}</div><div class="l">{{ 'dashboard.orders.period_count'|trans }}</div></div>
+                <div class="dash-kpi"><div class="v" data-kpi="period-total">{{ s.orders.periodTotal.format(locale) }}</div><div class="l">{{ 'dashboard.orders.period_total'|trans }}</div></div>
+                <div class="dash-kpi"><div class="v" data-kpi="average">{{ s.orders.averageCheck.format(locale) }}</div><div class="l">{{ 'dashboard.orders.average_check'|trans }}</div></div>
+            </div>
+            <div class="mt-3 dash-status" data-by-status>
+                <span class="dash-muted">{{ 'dashboard.orders.by_status'|trans }}:</span>
+                {% for status, count in s.orders.byStatus %}
+                    <span class="badge bg-{{ status == 'cancelled' ? 'secondary' : (status == 'new' ? 'warning' : 'light text-dark') }}" data-status="{{ status }}">{{ enum('App\\Core\\Order\\Enum\\OrderStatus').from(status)|trans }}: {{ count }}</span>
+                {% endfor %}
+            </div>
+        </section>
+
+        <section class="dash-card" id="dashboard-sales">
+            <div class="dash-head"><h2>{{ ('dashboard.sales.title_' ~ range.granularity)|trans }}</h2> <span class="dash-muted">{{ range_label }}</span></div>
+            {% if s.orders.periodCount == 0 %}
+                <p class="dash-muted mb-0">{{ 'dashboard.sales.empty'|trans }}</p>
+            {% else %}
+                {% set n = s.salesByDay|length %}
+                {% set top = s.salesTicks|last %}
+                {# підпис дати під кожним k-м стовпцем: 6–8 підписів на будь-якому періоді + останній #}
+                {% set every = max(1, (n / 7)|round(0, 'ceil')) %}
+                {% set date_format = range.granularity == 'month' ? 'm.Y' : 'd.m' %}
+                <div class="dash-chart" role="img" aria-label="{{ ('dashboard.sales.title_' ~ range.granularity)|trans }}, {{ range_label }}">
+                    <div class="dash-chart-y" aria-hidden="true">
+                        {% for tick in s.salesTicks %}
+                            <span style="bottom: {{ (100 * tick.amount / top.amount)|round(2) }}%" data-tick>{{ (tick.amount / 100)|format_currency(tick.currency, {fraction_digit: 0}, locale) }}</span>
+                        {% endfor %}
+                    </div>
+                    <div class="dash-chart-plot">
+                        {% for tick in s.salesTicks|slice(1) %}
+                            <div class="dash-chart-grid" style="bottom: {{ (100 * tick.amount / top.amount)|round(2) }}%" aria-hidden="true"></div>
+                        {% endfor %}
+                        {% for point in s.salesByDay %}
+                            {% set day = (range.granularity == 'month' ? point.date ~ '-01' : point.date)|date(date_format) %}
+                            {% set tip = ('dashboard.sales.tip_' ~ range.granularity)|trans({date: day, total: point.total.format(locale), count: point.count}) %}
+                            <div class="dash-chart-col{% if point.count == 0 %} zero{% endif %}" title="{{ tip }}" data-point="{{ point.date }}" data-count="{{ point.count }}">
+                                <div class="dash-chart-bar"{% if point.count > 0 %} style="height: {{ point.percent }}%"{% endif %} data-percent="{{ point.percent }}"></div>
+                                {% if loop.last or (loop.index0 % every == 0 and n - 1 - loop.index0 >= every / 2) %}<span class="dash-chart-x{% if (loop.index0 // every) is odd and not loop.last %} odd{% endif %}" data-x-label>{{ day }}</span>{% endif %}
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <div class="dash-chart-xspace"></div>
+                </div>
+            {% endif %}
+        </section>
+
+        <div class="dash-main">
+            <section class="dash-card" id="dashboard-recent">
+                <div class="dash-head"><h2>{{ 'dashboard.recent.title'|trans }}</h2> <a class="dash-muted dash-link" href="{{ ea_url().setController('App\\Admin\\Controller\\Crud\\OrderCrudController').setAction('index') }}">{{ 'dashboard.recent.all'|trans }} →</a></div>
+                {% if s.recentOrders is empty %}
+                    <p class="dash-muted mb-0">{{ 'dashboard.recent.empty'|trans }}</p>
+                {% else %}
+                    <div class="dash-scroll">
+                        <table class="dash-table">
+                            <thead><tr><th>{{ 'dashboard.columns.number'|trans }}</th><th>{{ 'dashboard.columns.status'|trans }}</th><th>{{ 'dashboard.columns.customer'|trans }}</th><th class="num">{{ 'dashboard.columns.total'|trans }}</th><th class="num">{{ 'dashboard.columns.placed_at'|trans }}</th></tr></thead>
+                            <tbody>
+                            {% for o in s.recentOrders %}
+                                <tr><td class="nowrap"><a href="{{ ea_url().setController('App\\Admin\\Controller\\Crud\\OrderCrudController').setAction('detail').setEntityId(o.id) }}">{{ o.number }}</a></td><td class="nowrap">{{ o.status|trans }}</td><td>{{ o.customerName }}</td><td class="num">{{ o.total.format(locale) }}</td><td class="num when">{{ o.placedAt|date('d.m H:i') }}</td></tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% endif %}
+            </section>
+
+            <section class="dash-card" id="dashboard-top">
+                <div class="dash-head"><h2>{{ 'dashboard.top.title'|trans }}</h2> <span class="dash-muted">{{ range_label }}</span></div>
+                {% if s.topByTotal is empty %}
+                    <p class="dash-muted mb-0">{{ 'dashboard.top.empty'|trans }}</p>
+                {% else %}
+                    <div class="dash-tabs">
+                        <input type="radio" name="dash-top" id="dash-top-total" checked>
+                        <input type="radio" name="dash-top" id="dash-top-quantity">
+                        <div class="btn-group btn-group-sm mb-2" role="group">
+                            <label class="btn btn-outline-secondary mb-0" for="dash-top-total">{{ 'dashboard.top.by_total'|trans }}</label>
+                            <label class="btn btn-outline-secondary mb-0" for="dash-top-quantity">{{ 'dashboard.top.by_quantity'|trans }}</label>
+                        </div>
+                        {% for key, rows in {total: s.topByTotal, quantity: s.topByQuantity} %}
+                            <div class="dash-panel dash-panel-{{ key }} dash-scroll" data-top="{{ key }}">
+                                <table class="dash-table">
+                                    <thead><tr><th>{{ 'dashboard.columns.sku'|trans }}</th><th>{{ 'dashboard.columns.name'|trans }}</th><th class="num">{{ 'dashboard.columns.quantity'|trans }}</th><th class="num">{{ 'dashboard.columns.total'|trans }}</th></tr></thead>
+                                    <tbody>
+                                    {% for t in rows %}
+                                        <tr><td><span class="dash-cut" title="{{ t.sku }}">{{ t.sku }}</span></td><td>{{ t.name }}</td><td class="num" data-qty>{{ t.quantity|qty(t.unit, locale) }}</td><td class="num">{{ t.total.format(locale) }}</td></tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </section>
+        </div>
+
+        <div class="dash-grid">
+            <section class="dash-card dash-compact" id="dashboard-quick">
+                <div class="dash-head">
+                    <h2>{{ 'dashboard.quick.title'|trans }}</h2> <span class="badge bg-{{ s.quickRequestsCount > 0 ? 'warning text-dark' : 'light text-dark' }}" data-quick-count>{{ s.quickRequestsCount }}</span>
+                    {% if s.quickRequests is empty %}<span class="dash-muted dash-empty">{{ 'dashboard.quick.empty'|trans }}</span>{% endif %}
+                </div>
+                {% if s.quickRequests is not empty %}
+                    <div class="dash-scroll">
+                        <table class="dash-table">
+                            <thead><tr><th>{{ 'dashboard.columns.number'|trans }}</th><th>{{ 'dashboard.columns.customer'|trans }}</th><th>{{ 'dashboard.columns.phone'|trans }}</th><th class="num">{{ 'dashboard.columns.total'|trans }}</th><th class="num">{{ 'dashboard.columns.placed_at'|trans }}</th></tr></thead>
+                            <tbody>
+                            {% for o in s.quickRequests %}
+                                <tr><td class="nowrap"><a href="{{ ea_url().setController('App\\Admin\\Controller\\Crud\\OrderCrudController').setAction('detail').setEntityId(o.id) }}">{{ o.number }}</a></td><td>{{ o.customerName }}</td><td class="nowrap">{{ o.phone }}</td><td class="num">{{ o.total.format(locale) }}</td><td class="num when">{{ o.placedAt|date('d.m H:i') }}</td></tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% endif %}
+            </section>
+
+            <section class="dash-card dash-compact" id="dashboard-reviews">
+                <div class="dash-head">
+                    <h2>{{ 'dashboard.reviews.title'|trans }}</h2> <span class="badge bg-{{ s.pendingReviewsCount > 0 ? 'warning text-dark' : 'light text-dark' }}" data-reviews-count>{{ s.pendingReviewsCount }}</span>
+                    {% if s.pendingReviews is empty %}<span class="dash-muted dash-empty">{{ 'dashboard.reviews.empty'|trans }}</span>{% endif %}
+                    <a class="dash-muted dash-link" href="{{ ea_url().setController('App\\Admin\\Controller\\Crud\\ProductReviewCrudController').setAction('index') }}">{{ 'dashboard.reviews.all'|trans }} →</a>
+                </div>
+                {% if s.pendingReviews is not empty %}
+                    <div class="dash-scroll">
+                        <table class="dash-table">
+                            <tbody>
+                            {% for r in s.pendingReviews %}
+                                <tr><td><a href="{{ ea_url().setController('App\\Admin\\Controller\\Crud\\ProductReviewCrudController').setAction('detail').setEntityId(r.id) }}">{{ r.productName }}</a></td><td class="num">{{ r.rating }} ★</td><td>{{ r.customerName }}</td><td class="dash-muted">{{ r.excerpt }}</td><td class="num">{{ r.createdAt|date('d.m H:i') }}</td></tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% endif %}
+            </section>
+        </div>
+
+        <div class="dash-grid">
+            <section class="dash-card" id="dashboard-stock">
+                <div class="dash-head">
+                    <h2>{{ 'dashboard.stock.title'|trans }}</h2>
+                    <span class="badge bg-danger" data-stock-out>{{ 'dashboard.stock.out'|trans }}: {{ s.outOfStockCount }}</span>
+                    <span class="badge bg-warning text-dark" data-stock-low>{{ 'dashboard.stock.low'|trans({threshold: low_stock_threshold}) }}: {{ s.lowStockCount }}</span>
+                </div>
+                {% if s.stockAlerts is empty %}
+                    <p class="dash-muted mb-0">{{ 'dashboard.stock.empty'|trans }}</p>
+                {% else %}
+                    <div class="dash-scroll">
+                        <table class="dash-table">
+                            <thead><tr><th>{{ 'dashboard.columns.sku'|trans }}</th><th>{{ 'dashboard.columns.name'|trans }}</th><th class="num">{{ 'dashboard.columns.stock'|trans }}</th></tr></thead>
+                            <tbody>
+                            {% for a in s.stockAlerts %}
+                                <tr><td><a class="dash-cut" href="{{ ea_url().setController('App\\Admin\\Controller\\Crud\\ProductCrudController').setAction('edit').setEntityId(a.productId) }}" title="{{ a.sku }}">{{ a.sku }}</a></td><td>{{ a.productName ?? '—' }}</td><td class="num {{ a.isOut ? 'text-danger' : 'text-warning' }}" data-qty>{{ a.stock|qty(a.unit, locale) }}</td></tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% endif %}
+            </section>
+
+            {% if is_granted('ROLE_ADMIN') %}
+                {% set i = s.integrations %}
+                <section class="dash-card" id="dashboard-integrations">
+                    <div class="dash-head">
+                        <h2>{{ 'dashboard.integrations.title'|trans }}</h2>
+                        {% if i.failedMessages > 0 %}<span class="badge bg-danger" data-failed>{{ 'dashboard.integrations.failed'|trans }}: {{ i.failedMessages }}</span>{% else %}<span class="badge bg-success">{{ 'dashboard.integrations.ok'|trans }}</span>{% endif %}
+                    </div>
+                    <table class="dash-table">
+                        <tr><th>{{ 'dashboard.integrations.crm'|trans }}</th><td>{{ i.crmSystem }}</td></tr>
+                        <tr><th>{{ 'dashboard.integrations.crm_push'|trans }}</th><td>{{ (i.crmPushOrders ? 'dashboard.yes' : 'dashboard.no')|trans }}</td></tr>
+                        <tr><th>{{ 'dashboard.integrations.last_order_push'|trans }}</th><td>{{ i.lastOrderPushAt ? i.lastOrderPushAt|date_short(true) : 'dashboard.integrations.never'|trans }}</td></tr>
+                        <tr><th>{{ 'dashboard.integrations.last_catalog_sync'|trans }}</th><td>{{ i.lastCatalogSyncAt ? i.lastCatalogSyncAt|date_short(true) : 'dashboard.integrations.never'|trans }}</td></tr>
+                        {% if i.crmPushOrders %}<tr><th>{{ 'dashboard.integrations.without_ref'|trans }}</th><td data-without-ref>{{ i.ordersWithoutCrmRef }}</td></tr>{% endif %}
+                        <tr><th>{{ 'dashboard.integrations.failed'|trans }}</th><td data-failed-count>{{ i.failedMessages }}</td></tr>
+                        <tr><th>{{ 'dashboard.integrations.pending'|trans }}</th><td>{{ i.pendingMessages }}{% if i.oldestPendingAt %} <span class="dash-muted">({{ 'dashboard.integrations.oldest_pending'|trans }}: {{ i.oldestPendingAt|date('d.m H:i') }})</span>{% endif %}</td></tr>
+                    </table>
+                </section>
+
+                {% set an = s.analytics %}
+                <section class="dash-card" id="dashboard-analytics">
+                    <div class="dash-head"><h2>{{ 'dashboard.analytics.title'|trans }}</h2> <a class="dash-muted dash-link" href="{{ ea_url().setController('App\\Admin\\Controller\\Crud\\SettingCrudController').setAction('index') }}">{{ 'dashboard.analytics.settings'|trans }} →</a></div>
+                    {% if not an.anyConfigured %}
+                        <p class="dash-muted">{{ 'dashboard.analytics.none'|trans }}</p>
+                    {% endif %}
+                    <div class="dash-status mb-2">
+                        <span class="badge bg-{{ an.gtm ? 'success' : 'light text-dark' }}" data-tag="gtm">{{ 'dashboard.analytics.gtm'|trans }}: {{ (an.gtm ? 'dashboard.yes' : 'dashboard.no')|trans }}</span>
+                        <span class="badge bg-{{ an.ga4 ? 'success' : 'light text-dark' }}" data-tag="ga4">{{ 'dashboard.analytics.ga4'|trans }}: {{ (an.ga4 ? 'dashboard.yes' : 'dashboard.no')|trans }}</span>
+                        <span class="badge bg-{{ an.pixel ? 'success' : 'light text-dark' }}" data-tag="pixel">{{ 'dashboard.analytics.pixel'|trans }}: {{ (an.pixel ? 'dashboard.yes' : 'dashboard.no')|trans }}</span>
+                    </div>
+                    <p class="mb-0 {{ an.enabled ? 'text-success' : 'dash-muted' }}" data-tags-enabled="{{ an.enabled ? '1' : '0' }}">{{ (an.enabled ? 'dashboard.analytics.enabled' : 'dashboard.analytics.disabled')|trans }}</p>
+                </section>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

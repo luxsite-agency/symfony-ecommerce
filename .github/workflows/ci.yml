@@ -1,0 +1,83 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: shop
+        ports: ["3306:3306"]
+        options: >-
+          --health-cmd "mysqladmin ping -h 127.0.0.1 -proot"
+          --health-interval 5s --health-timeout 5s --health-retries 20
+    env:
+      APP_ENV: test
+      DATABASE_URL: "mysql://root:root@127.0.0.1:3306/shop?serverVersion=8.0&charset=utf8mb4"
+      MAILER_DSN: "null://null"
+      MESSENGER_TRANSPORT_DSN: "in-memory://"
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: intl, pdo_mysql, gd, zip, bcmath, opcache
+          coverage: none
+          tools: composer:v2
+
+      - name: Composer install
+        run: composer install --no-interaction --no-progress --prefer-dist
+
+      - name: Security audit
+        run: composer audit
+
+      - name: Lint (yaml, twig, container)
+        run: |
+          bin/console lint:yaml config --parse-tags
+          bin/console lint:twig templates
+          bin/console lint:container
+          python3 tools/spdx-headers.py --check
+
+      - name: Code style
+        run: vendor/bin/php-cs-fixer fix --dry-run --diff
+
+      - name: Warm cache for PHPStan
+        run: APP_ENV=dev bin/console cache:warmup
+
+      - name: PHPStan
+        run: vendor/bin/phpstan analyse --no-progress --memory-limit=1G
+
+      - name: Schema from migrations on empty DB + validate
+        run: |
+          bin/console doctrine:database:create --if-not-exists --env=test
+          bin/console doctrine:migrations:migrate --no-interaction --env=test --allow-no-migration
+          bin/console doctrine:schema:validate --env=test
+
+      - name: PHPUnit
+        run: vendor/bin/phpunit
+
+      - name: Store registry, packs, template (bin/store validate|new)
+        run: |
+          python3 -c 'import yaml' || pip install pyyaml
+          shellcheck -x bin/store.d/new.sh bin/store.d/validate.sh bin/store.d/theme.sh tests/store/registry-pack-test.sh
+          bin/store validate --all
+          bin/store validate store-template
+          bash tests/store/registry-pack-test.sh
+
+  # Система магазинів (bin/store, docker-compose.store.yml): shellcheck, compose config, сухі прогони DRY_RUN=1
+  store-ops:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: PyYAML для bin/store
+        run: python3 -c 'import yaml' || pip install pyyaml
+      - name: tests/store/run.sh
+        run: bash tests/store/run.sh

@@ -1,0 +1,71 @@
+# syntax=docker/dockerfile:1
+# Прод-образи Symfony ecommerce LuxSite: магазини системи (docker-compose.store.yml, bin/store deploy) і стара схема старий прод-сервер
+# (docker-compose.prod.yml). Контекст збірки — корінь репо (git archive, без vendor/var).
+#   target php   — php-fpm + worker: код, vendor --no-dev, прогрітий кеш prod, opcache без перевірки файлів + preload
+#   target nginx — nginx зі статикою public/ (bundles з assets:install) і шаблоном docker/nginx/prod.conf
+# Параметри розгортання (хости) — config/store/parameters.local.yaml, тема — public/themes/<key>, Twig теми — templates/store/:
+# bin/store deploy кладе їх з паку магазину в контекст до збірки (скрипт деплою старої схеми — лише parameters),
+# бо контейнер Symfony компілюється тут, у кеш образу. Секрети в образ не потрапляють: лише env у рантаймі.
+
+FROM php:8.4-fpm AS base
+# Розширення як у dev-образі + pcntl (graceful stop воркера messenger:consume по SIGTERM); -dev пакети після компіляції
+# прибираються, лишаються тільки рантайм-бібліотеки.
+RUN set -eux; \
+    savedAptMark="$(apt-mark showmanual)"; \
+    apt-get update; \
+    apt-get install -y --no-install-recommends libicu-dev libzip-dev libpng-dev libjpeg-dev libwebp-dev libfreetype-dev; \
+    docker-php-ext-configure gd --with-jpeg --with-webp --with-freetype; \
+    docker-php-ext-install -j"$(nproc)" intl pdo_mysql zip opcache gd bcmath pcntl; \
+    pecl install redis; \
+    docker-php-ext-enable redis; \
+    rm -rf /tmp/pear; \
+    apt-mark auto '.*' > /dev/null; \
+    [ -z "$savedAptMark" ] || apt-mark manual $savedAptMark > /dev/null; \
+    find /usr/local -type f -executable -exec ldd '{}' ';' 2>/dev/null \
+        | awk '/=>/ { so = $(NF-1); if (index(so, "/usr/local/") == 1) { next }; gsub("^/(usr/)?", "", so); printf "*%s\n", so }' \
+        | sort -u | xargs -r dpkg-query --search 2>/dev/null | grep -v '^diversion' | cut -d: -f1 | sort -u | xargs -r apt-mark manual > /dev/null; \
+    apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false; \
+    rm -rf /var/lib/apt/lists/*; \
+    if php -m 2>&1 | grep -qi 'warning'; then php -m; exit 1; fi; \
+    for ext in intl gd pdo_mysql zip bcmath pcntl redis 'Zend OPcache'; do php -m | grep -qix "$ext"; done
+ENV APP_ENV=prod APP_DEBUG=0
+
+FROM base AS build
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+ENV COMPOSER_ALLOW_SUPERUSER=1 COMPOSER_NO_INTERACTION=1
+WORKDIR /app
+# Спершу лише lock-файли: шар vendor кешується, поки не змінився composer.lock
+COPY composer.json composer.lock symfony.lock ./
+# path-пакети (packages/*/*) і packages/addons.require — до composer install
+COPY packages ./packages
+RUN composer install --no-dev --no-scripts --no-autoloader --prefer-dist --no-progress
+# Необов'язкові пакети магазину (store.yaml addons → packages/addons.require від bin/store deploy, docs/addons.md): поверх
+# composer.lock, решта залежностей лишається зафіксованою; без файла — рушій як є. --no-plugins: Flex не дописує бандл у
+# config/bundles.php (його реєструє Kernel::ADDON_BUNDLES)
+RUN if [ -s packages/addons.require ]; then xargs -a packages/addons.require composer require --update-no-dev --no-scripts --no-plugins --no-progress; fi
+COPY . .
+# cache:clear (auto-scripts) компілює контейнер prod у var/cache/prod разом із *.preload.php; assets:install → public/bundles
+# lint:twig — синтаксис усіх шаблонів разом із темою паку (templates/store/, E14): зламаний Twig валить збірку образу, не прод
+# license:components — перелік сторонніх пакетів з composer.lock у var/license/ для сторінки ліцензії (lock не парситься на запитах)
+RUN composer dump-autoload --no-dev --optimize --classmap-authoritative \
+    && composer run-script --no-dev post-install-cmd \
+    && php bin/console lint:twig templates \
+    && php bin/console license:components \
+    && mkdir -p var/log var/share/lock public/media public/feeds \
+    && rm -rf tests .github docker local *.md phpunit.dist.xml phpstan.neon.dist docker-compose*.yml
+
+FROM base AS php
+COPY docker/php/prod.ini /usr/local/etc/php/conf.d/zz-prod.ini
+COPY docker/php/fpm-prod.conf /usr/local/etc/php-fpm.d/zz-prod.conf
+RUN groupadd -g 1000 app && useradd -u 1000 -g 1000 -M -d /app -s /usr/sbin/nologin app \
+    && sed -i -e 's/^user = .*/user = app/' -e 's/^group = .*/group = app/' /usr/local/etc/php-fpm.d/www.conf
+COPY --from=build --chown=app:app /app /app
+WORKDIR /app
+USER app
+
+FROM nginx:1.27-alpine AS nginx
+# Шаблон рендерить entrypoint образу nginx (envsubst лише для оголошених змінних, $uri тощо лишаються)
+COPY docker/nginx/prod.conf /etc/nginx/templates/default.conf.template
+# Шаблон для docker-compose.store.yml (вмикається NGINX_ENVSUBST_TEMPLATE_DIR=/etc/nginx/store-templates)
+COPY docker/nginx/store.conf /etc/nginx/store-templates/default.conf.template
+COPY --from=build /app/public /app/public

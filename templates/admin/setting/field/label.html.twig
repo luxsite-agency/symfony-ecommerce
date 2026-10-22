@@ -1,0 +1,5 @@
+{# @var field \EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto #}
+{# @var entity \EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto #}
+{# Назва налаштування в списку — посилання на редагування рядка (formattedValue — «група → підпис» мовою адмінки, SettingCrudController); технічний ключ — дрібно під ним. #}
+<a href="{{ ea_url().setAction('edit').setEntityId(entity.primaryKeyValue) }}" data-setting-edit="{{ entity.instance.code }}" title="{{ 'setting.action.edit'|trans({}, 'admin') }}">{{ field.formattedValue|raw }}</a>
+<div class="small text-muted"><code class="text-muted">{{ entity.instance.code }}</code></div>

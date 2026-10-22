@@ -1,0 +1,4 @@
+external_id,sku,name_uk,name_en,description_uk,description_en,price,currency,stock,category,category_en,brand,images
+demo-001,DEMO-001,Демо-товар 1,Demo product 1,[Опис з перевірених характеристик],[Description from verified specs],450.00,UAH,10,Демо-категорія,Demo category,,
+demo-002,DEMO-002,Демо-товар 2,Demo product 2,[Опис з перевірених характеристик],[Description from verified specs],890.00,UAH,5,Демо-категорія,Demo category,,
+demo-003,DEMO-003,Демо-товар 3 (ціна за запитом),Demo product 3 (price on request),[Опис з перевірених характеристик],[Description from verified specs],,UAH,0,Демо-категорія / Підкатегорія,Demo category / Subcategory,,

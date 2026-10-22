@@ -1,0 +1,5 @@
+{# поле форми в розмітці сайту: label + input + помилки (ключі перекладу site.account.error.*) #}
+<label>{{ label }}
+    <input type="{{ type }}" name="{{ field_name(field) }}" value="{{ type == 'password' ? '' : field_value(field) }}" autocomplete="{{ autocomplete }}" required{% if field_errors(field)|length %} aria-invalid="true"{% endif %}>
+    {% for error in field_errors(field) %}<span class="form-error">{{ error|trans }}</span>{% endfor %}
+</label>

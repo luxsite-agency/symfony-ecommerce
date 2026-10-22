@@ -1,0 +1,5 @@
+# Перевизначення перекладів EasyAdmin (аудит UX 18.10): порожнє значення — людськими словами, не «Null».
+label:
+    'null': 'not set'
+action:
+    add_new_item: 'Add'

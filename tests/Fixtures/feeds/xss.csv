@@ -1,0 +1,2 @@
+product_id;external_id;sku;name_uk;price;currency;stock;category;description_uk
+XSS2;9201;XSS-2;Двері XSS CSV;10,00;UAH;1;Двері;"<p>Полотно <em>МДФ</em></p><script>alert('csv')</script><iframe src='https://evil.example/'></iframe><a href='javascript:alert(1)'>зле</a>"

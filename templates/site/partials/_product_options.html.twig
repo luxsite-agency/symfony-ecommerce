@@ -1,0 +1,32 @@
+{# Опції картки без JS (ADR Rev 5/9) усередині форми «в кошик». options — ProductOptionsForm::build(); keep — query осей варіанта для «порахувати». #}
+{% trans_default_domain 'site_catalog' %}
+<fieldset class="product-options">
+    <legend>{{ 'catalog.options.title'|trans }}</legend>
+    {% for group in options.groups %}
+        <div class="option-group{% if group.error %} has-error{% endif %}" data-option-group="{{ group.code }}">
+            <div class="option-label">{{ group.label }}{% if group.required %} <span aria-hidden="true">*</span>{% endif %}</div>
+            {% if group.number %}
+                <label><input type="number" name="options[{{ group.code }}]" value="{{ group.value }}" min="{{ group.min }}" max="{{ group.max }}" step="{{ group.step }}" inputmode="decimal"{% if group.required %} required{% endif %}>{% if group.unit %} {{ group.unit }}{% endif %}</label>
+                <span class="muted">{{ 'catalog.options.range'|trans({min: group.min, max: group.max, step: group.step}) }}</span>
+            {% else %}
+                {% if not group.multiple and not group.required %}
+                    <label><input type="radio" name="options[{{ group.code }}]" value=""{% if group.values|filter(v => v.selected)|length == 0 %} checked{% endif %}> {{ 'catalog.options.none'|trans }}</label>
+                {% endif %}
+                {# зняті чекбокси браузер не надсилає — порожній маркер відрізняє «без опції» від «не обирав» (тоді — за замовчуванням) #}
+                {% if group.multiple %}<input type="hidden" name="options[{{ group.code }}][]" value="">{% endif %}
+                {% for value in group.values %}
+                    <label>
+                        {% if group.multiple %}<input type="checkbox" name="options[{{ group.code }}][]" value="{{ value.code }}"{% if value.selected %} checked{% endif %}>
+                        {% else %}<input type="radio" name="options[{{ group.code }}]" value="{{ value.code }}"{% if value.selected %} checked{% endif %}{% if group.required %} required{% endif %}>{% endif %}
+                        {{ value.label }}{% if value.hint %} <span class="muted">({{ value.hint }})</span>{% endif %}
+                    </label>
+                {% endfor %}
+            {% endif %}
+            {% if group.error %}<p class="flash flash-error" role="alert">{{ group.error }}</p>{% endif %}
+        </div>
+    {% endfor %}
+    {% if options.errors[''] is defined %}<p class="flash flash-error" role="alert">{{ options.errors[''] }}</p>{% endif %}
+    {% if options.price %}<p class="price price-with-options" data-options-price="{{ options.price.toDecimalString() }}">{{ 'catalog.options.price'|trans({price: options.price.format(app.request.locale)}) }}{% if options.oldPrice %} <span class="old-price">{{ options.oldPrice.format(app.request.locale) }}</span>{% endif %}{% if options.retailPrice %} <span class="retail-price muted">{{ 'catalog.price_retail'|trans({price: options.retailPrice.format(app.request.locale)}) }}</span>{% endif %}</p>{% endif %}
+    {% for name, value in keep %}<input type="hidden" name="{{ name }}" value="{{ value }}">{% endfor %}
+    <button type="submit" class="btn btn-outline" formmethod="get" formaction="{{ calc_url }}" name="calc" value="1" formnovalidate>{{ 'catalog.options.calculate'|trans }}</button>
+</fieldset>

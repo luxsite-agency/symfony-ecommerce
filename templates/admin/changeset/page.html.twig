@@ -1,0 +1,9 @@
+{% extends '@EasyAdmin/page/content.html.twig' %}
+{# Та сама сторінка пакета поза EasyAdmin-контекстом сутності: відповідь 422 (без підтвердження ризику) чи 409 (конфлікт). #}
+{% block content_title %}#{{ cs.id }} {{ cs.title }}{% endblock %}
+{% block page_actions %}
+    {{ include('admin/changeset/_actions.html.twig') }}
+{% endblock %}
+{% block main %}
+    {{ include('admin/changeset/_body.html.twig') }}
+{% endblock %}

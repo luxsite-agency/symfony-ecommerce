@@ -1,0 +1,16 @@
+{% extends 'site/base.html.twig' %}
+{% set noindex = true %}
+{% block title %}{{ 'site.account.profile.change_email'|trans }} | {{ site_name }}{% endblock %}
+{% block body %}
+    <h1>{{ 'site.account.profile.change_email'|trans }}</h1>
+    {% if ok %}
+        <p>{{ 'site.account.profile.email_confirm_text'|trans({email: email}) }}</p>
+        <form method="post" class="account-form email-confirm">
+            <input type="hidden" name="_token" value="{{ csrf_token('account') }}">
+            <button type="submit" class="btn btn-primary">{{ 'site.account.profile.email_confirm_submit'|trans }}</button>
+        </form>
+    {% else %}
+        <p class="flash flash-error" role="alert">{{ 'site.account.error.link_invalid'|trans }}</p>
+    {% endif %}
+    <ul class="account-links"><li><a href="{{ path('site_account_profile') }}">{{ 'site.account.profile.back'|trans }}</a></li></ul>
+{% endblock %}

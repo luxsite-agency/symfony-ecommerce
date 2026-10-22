@@ -1,0 +1,18 @@
+{% extends 'site/base.html.twig' %}
+{% set noindex = true %}
+{% block title %}{{ 'site.account.profile.change_email'|trans }} | {{ site_name }}{% endblock %}
+{% block body %}
+    <h1>{{ 'site.account.profile.change_email'|trans }}</h1>
+    <p>{{ 'site.account.profile.email_text'|trans({email: customer.email}) }}</p>
+    {% if app.user.password is null %}
+        {% include 'site/account/_no_password.html.twig' %}
+    {% else %}
+        <form method="post" action="{{ path('site_account_profile_email') }}" class="account-form email-form" novalidate>
+            <input type="hidden" name="{{ field_name(form._token) }}" value="{{ field_value(form._token) }}">
+            {% include 'site/account/_field.html.twig' with {field: form.email, label: 'site.account.profile.new_email'|trans, type: 'email', autocomplete: 'email'} only %}
+            {% include 'site/account/_field.html.twig' with {field: form.current, label: 'site.account.profile.current_password'|trans, type: 'password', autocomplete: 'current-password'} only %}
+            <button type="submit" class="btn btn-primary">{{ 'site.account.profile.email_submit'|trans }}</button>
+        </form>
+    {% endif %}
+    <ul class="account-links"><li><a href="{{ path('site_account_profile') }}">{{ 'site.account.profile.back'|trans }}</a></li></ul>
+{% endblock %}

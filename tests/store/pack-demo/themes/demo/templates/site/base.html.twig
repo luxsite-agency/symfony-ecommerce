@@ -1,0 +1,16 @@
+{# Фікстура теми паку (CI рушія: tests/Functional/Site/PackRenderTest, tests/store/registry-pack-test.sh). Заготовка з
+   bin/store theme new: успадковано з рушія (@engine/site/base.html.twig), усі блоки = parent(); у header_actions дописано
+   посилання — так тема паку додає своє в шапку, не копіюючи її (контракт docs/themes.md). #}
+{% extends '@engine/site/base.html.twig' %}
+{% block title %}{{ parent() }}{% endblock %}
+{% block metaDescription %}{{ parent() }}{% endblock %}
+{% block ogType %}{{ parent() }}{% endblock %}
+{% block ogImage %}{{ parent() }}{% endblock %}
+{% block schema %}{{ parent() }}{% endblock %}
+{% block head %}{{ parent() }}{% endblock %}
+{% block bodyClass %}{{ parent() }}{% endblock %}
+{% block header %}{{ parent() }}{% endblock %}
+{% block header_actions %}{{ parent() }}<a class="header-link demo-pack-link" href="#demo-pack">Demo pack</a>{% endblock %}
+{% block nav %}{{ parent() }}{% endblock %}
+{% block body %}{{ parent() }}{% endblock %}
+{% block footer %}{{ parent() }}{% endblock %}

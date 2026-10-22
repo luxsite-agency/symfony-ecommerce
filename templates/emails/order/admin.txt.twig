@@ -1,0 +1,10 @@
+{% set l = adminLocale %}{{ 'email_order.admin.title'|trans({number: order.number, source: order.source|trans({}, null, l)}, 'admin', l) }}
+
+{{ 'email_order.admin.customer'|trans({}, 'admin', l) }}: {{ order.customerName }}, {{ order.phone }}{% if order.email %}, {{ order.email }}{% endif %}
+{{ 'email_order.admin.shipping'|trans({}, 'admin', l) }}: {{ order.shippingMethod|trans({}, null, l) }}{% if order.shippingCity %}, {{ order.shippingCity }}{% endif %}{% if order.shippingAddress %}, {{ order.shippingAddress }}{% endif %}
+{{ 'email_order.admin.payment'|trans({}, 'admin', l) }}: {{ order.paymentMethod|trans({}, null, l) }} · {{ 'email_order.admin.language'|trans({}, 'admin', l) }}: {{ order.locale }}
+{% if order.comment %}{{ 'email_order.admin.comment'|trans({}, 'admin', l) }}: {{ order.comment }}
+{% endif %}
+{% for item in order.items %}{% if item.parent is null %}- {{ item.sku }} {{ item.name }} × {{ item.quantity|qty(item.variant ? item.variant.unit, l) }} = {{ item.lineTotal|money(l) }}
+{% else %}    {{ 'email_order.included_line'|trans({}, 'admin', l) }}: {{ item.sku }} {{ item.name }} × {{ item.quantity|qty(item.variant ? item.variant.unit, l) }}
+{% endif %}{% endfor %}{{ 'email_order.grand_total'|trans({}, 'admin', l) }}: {{ order.total|money(l) }}

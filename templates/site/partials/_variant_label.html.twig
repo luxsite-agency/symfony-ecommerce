@@ -1,0 +1,5 @@
+{# Підпис варіанта мовою сторінки: значення осей через « · » (переклад поточної мови, не перший-ліпший), без осей — SKU;
+   with_price — «, ціна картки» (з акціями, як на картці; крім «ціни за запитом»). v — ProductVariant. #}
+{%- set axes = v.axisValues|map(a => tr(a.value) ? tr(a.value).value : a.value.code)|filter(l => l is not empty) -%}
+{{- axes ? axes|join(' · ') : v.sku -}}
+{%- if with_price|default(false) and v.product.priceMode.value != 'on_request' %}, {{ site_card_price(v).format(app.request.locale) }}{% endif -%}

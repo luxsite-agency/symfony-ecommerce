@@ -1,0 +1,78 @@
+framework:
+    messenger:
+        failure_transport: failed
+
+        transports:
+            # Doctrine-транспорт на тому ж connection = outbox: диспатч у транзакції checkout атомарний із замовленням (ADR D7)
+            async:
+                dsn: '%env(MESSENGER_TRANSPORT_DSN)%'
+                options:
+                    use_notify: true
+                    check_delayed_interval: 60000
+                retry_strategy:
+                    max_retries: 3
+                    multiplier: 2
+            # Merchant feed (500k карток — хвилини): своя черга й свій воркер, щоб не тримати async (листи, CRM)
+            feeds:
+                dsn: '%env(MESSENGER_TRANSPORT_DSN)%'
+                options:
+                    queue_name: feeds
+                    check_delayed_interval: 60000
+                retry_strategy:
+                    max_retries: 1
+            # Листи входу/реєстрації (E12, App\Core\Shared\Messenger\AuthMailMessage): своя черга й свій воркер
+            # (mail-worker), щоб не чекати за імпортом у async; посилання з листа живе 15–60 хв
+            auth_mail:
+                dsn: '%env(MESSENGER_TRANSPORT_DSN)%'
+                options:
+                    queue_name: auth_mail
+                retry_strategy:
+                    max_retries: 3
+                    delay: 5000
+                    multiplier: 2
+            failed: 'doctrine://default?queue_name=failed'
+            sync: 'sync://'
+
+        routing:
+            App\Core\Shared\Messenger\AuthMailMessage: auth_mail
+            App\Core\Catalog\Import\Message\ProcessImportChunk: async
+            App\Core\Catalog\Import\Message\ImportProductMedia: async
+            App\Core\Catalog\Url\Message\RebuildCategoryPaths: async
+            App\Core\Catalog\FilterIndex\Message\ReindexProducts: async
+            App\Core\Catalog\FilterIndex\Message\RefreshCategoryFacets: async
+            App\Core\Catalog\Import\Message\ImportCompleted: async
+            App\Site\Feed\Message\GenerateMerchantFeeds: feeds
+            # ADR D7: outbox — доставка в CRM і листи після коміту транзакції замовлення
+            App\Core\Order\Message\PushOrderToCrm: async
+            App\Core\Order\Message\SendCustomerOrderEmail: async
+            App\Core\Order\Message\SendShopOrderEmail: async
+            # Ф3: довідники Нової пошти — щодня зі Scheduler або shipping:np:sync --async
+            App\Core\Shipping\NovaPoshta\Message\SyncNovaPoshtaDirectory: async
+            # E3: прибирання журналу 404 — щоночі зі Scheduler
+            App\Core\Seo\Message\PruneNotFoundLog: async
+            # E12: прибирання неперевірених покупців — щоночі зі Scheduler
+            App\Core\Customer\Message\PurgeUnverifiedCustomers: async
+            App\Core\Demo\Message\ResetDemoCustomers: async
+            # E12 PR-6: експорт даних покупця у файл, далі лист через auth_mail
+            App\Core\Customer\Message\ExportCustomerData: async
+            # E15: прибирання журналу змін адмінки — щоночі зі Scheduler
+            App\Core\Audit\Message\PruneAdminAudit: async
+            # E15 BYOK: прибирання журналу використання AI — щоночі зі Scheduler
+            App\Core\Ai\Message\PruneAiUsage: async
+            # E15 PR-4: лист відповідальним за ціни після застосування цінового пакета
+            App\Core\Changeset\Message\SendChangesetAppliedMail: async
+            # черга failed старша за app.messenger_failed_days — щоночі зі Scheduler
+            App\Core\Shared\Messenger\Message\PruneFailedMessages: async
+
+when@test:
+    framework:
+        messenger:
+            transports:
+                async: 'in-memory://'
+                feeds: 'in-memory://'
+                auth_mail: 'in-memory://'
+                failed: 'in-memory://'
+            # зведення фасетів у тестах перераховується одразу (затримка 0, services.yaml when@test)
+            routing:
+                App\Core\Catalog\Url\Message\RebuildCategoryPaths: sync
+                App\Core\Catalog\FilterIndex\Message\RefreshCategoryFacets: sync

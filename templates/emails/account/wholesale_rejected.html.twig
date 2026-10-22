@@ -1,0 +1,6 @@
+<p>{{ 'email.account.hello'|trans({name: name}, null, l) }}</p>
+<p>{{ 'email.account.wholesale_rejected.text'|trans({site: siteName}, null, l) }}</p>
+{% if reason %}<p>{{ 'email.account.wholesale_rejected.reason'|trans({}, null, l) }} {{ reason }}</p>{% endif %}
+<p><a href="{{ url }}">{{ 'email.account.wholesale_rejected.button'|trans({}, null, l) }}</a></p>
+<p style="color:#666">{{ 'email.account.wholesale_rejected.outro'|trans({}, null, l) }}</p>
+<p>{{ siteName }}</p>

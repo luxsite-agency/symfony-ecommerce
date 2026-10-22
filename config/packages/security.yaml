@@ -1,0 +1,116 @@
+security:
+    password_hashers:
+        Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'auto'
+
+    # ADR D10: менеджер клієнта не бачить Налаштування/Users; адміністратор бачить усе.
+    role_hierarchy:
+        ROLE_ADMIN: [ROLE_MANAGER]
+
+    providers:
+        admin_users:
+            entity:
+                class: App\Core\Security\Entity\User
+                property: email
+        # Покупці сайту (E12): вхід за email (CustomerRepository::loadUserByIdentifier — регістр і пробіли не важать);
+        # адмінські облікові записи (admin_users) на хості сайту не входять ніколи.
+        customers:
+            entity:
+                class: App\Core\Customer\Entity\Customer
+
+    firewalls:
+        dev:
+            pattern: ^/(_profiler|_wdt|assets|build)/
+            security: false
+        # E15 PR-2: REST (/api/admin) і MCP (/mcp) для AI-керування — персональні токени Bearer shp_… (AdminApiTokens),
+        # без сесії; стоїть ПЕРЕД admin, бо той самий хост. Вимкнений користувач → 401 (user_checker), без скоупу → 403 JSON.
+        admin_api:
+            host: '^%admin_host%$'
+            pattern: ^/(api/admin|mcp)(/|$)
+            stateless: true
+            provider: admin_users
+            user_checker: App\Core\Security\ActiveUserChecker
+            custom_authenticators: [App\Core\AdminApi\Auth\ApiTokenAuthenticator]
+            entry_point: App\Core\AdminApi\Auth\ApiTokenAuthenticator
+            access_denied_handler: App\Core\AdminApi\Auth\ApiAccessDeniedHandler
+        # Адмінка живе лише на хості admin.* (параметр admin_host): на хості магазину цих маршрутів нема.
+        admin:
+            host: '^%admin_host%$'
+            lazy: true
+            provider: admin_users
+            user_checker: App\Core\Security\ActiveUserChecker
+            form_login:
+                login_path: admin_login
+                check_path: admin_login
+                enable_csrf: true
+                default_target_path: admin
+            # вихід лише з CSRF-токеном (консиліум безпеки 10.10, п. 9): посилання «Вийти» в меню несе його (DashboardController)
+            logout:
+                path: admin_logout
+                target: admin_login
+                enable_csrf: true
+            login_throttling:
+                max_attempts: 5
+        # Публічний сайт (E12, консиліум 07.10 п. 1): без host — будь-який домен магазину (www/non-www, кілька доменів,
+        # worktree); стоїть ПІСЛЯ admin, тож хост адмінки сюди не потрапляє. Окремий context — токен адмінки тут не діє.
+        site:
+            lazy: true
+            provider: customers
+            context: site
+            user_checker: App\Core\Customer\Security\CustomerChecker
+            entry_point: form_login
+            # вхід через Google (13.10.2026): перехоплює /account/google/callback у режимі входу (App\Site\Account\Google)
+            custom_authenticators:
+                - App\Site\Account\Google\GoogleAuthenticator
+            form_login:
+                login_path: site_account_login
+                check_path: site_account_login
+                username_parameter: email
+                password_parameter: password
+                enable_csrf: true
+                default_target_path: site_account
+            # одноразове посилання (15 хв): POST з проміжної сторінки (сканери пошти відкривають посилання GET-ом),
+            # max_uses 1; у підписі authVersion і lastLoginAt — посилання гасне після будь-якого входу чи «вийти всюди»;
+            # POST несе CSRF `account` (App\Site\Account\LoginLinkCsrf, рев'ю безпеки #45, п. 3)
+            login_link:
+                check_route: site_account_login_link_check
+                check_post_only: true
+                signature_properties: [email, authVersion, lastLoginAt]
+                lifetime: '%app.customer_login_link_ttl%'
+                max_uses: 1
+                failure_path: site_account_login
+                default_target_path: site_account
+            # з IP і на пару email+IP (консиліум 07.10, П1)
+            login_throttling:
+                max_attempts: 5
+                interval: '15 minutes'
+            # signature-based: cookie недійсна після зміни пароля чи authVersion («вийти на всіх пристроях»)
+            remember_me:
+                secret: '%kernel.secret%'
+                name: SHOP_REMEMBER
+                lifetime: 2592000
+                path: /
+                samesite: lax
+                secure: auto
+                httponly: true
+                signature_properties: [password, authVersion]
+            logout:
+                path: site_account_logout
+                target: site_home
+                enable_csrf: true
+
+    access_control:
+        - { host: '^%admin_host%$', path: ^/login$, roles: PUBLIC_ACCESS }
+        - { host: '^%admin_host%$', path: ^/, roles: ROLE_MANAGER }
+        # Кабінет покупця на хості сайту (усе, що не admin_host, — правила вище перехоплюють адмінку цілком):
+        # вхід, реєстрація, відновлення — усім; решта /account… і /<мова>/account… — лише покупцю.
+        - { path: '^/(?:[a-z]{2,3}(?:_[A-Z]{2})?/)?account/(?:login|logout|login-link|register|verify|password|email-revert|google/(?:start|callback))(?:/|$)', roles: PUBLIC_ACCESS }
+        - { path: '^/(?:[a-z]{2,3}(?:_[A-Z]{2})?/)?account(?:/|$)', roles: ROLE_CUSTOMER }
+
+when@test:
+    security:
+        password_hashers:
+            Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface:
+                algorithm: auto
+                cost: 4
+                time_cost: 3
+                memory_cost: 10

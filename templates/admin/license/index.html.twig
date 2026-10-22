@@ -1,0 +1,36 @@
+{% extends '@EasyAdmin/page/content.html.twig' %}
+{% trans_default_domain 'admin' %}
+{# Ліцензія платформи (LicenseController адмінки): Apache 2.0, розробники платформи LuxSite, реквізити розгортання, договір з LuxSite (app.license), текст ліцензії (templates/license/, мова адмінки або en), сторонні
+   компоненти. Змінні: license (PlatformLicense), release (EngineRelease), text_locale, components (list {name, version, license}).
+   Підписи — мовою адмінки (license.*); сам текст ліцензії — юридичний, окремим шаблоном на мову. #}
+{% block content_title %}{{ 'license.title'|trans }}{% endblock %}
+{% block main %}
+    <table class="table datagrid" id="license-summary">
+        <tbody>
+            <tr><th scope="row">{{ 'license.field.platform'|trans }}</th><td>Symfony ecommerce LuxSite</td></tr>
+            <tr><th scope="row">{{ 'license.field.code_license'|trans }}</th><td data-code-license><a href="https://www.apache.org/licenses/LICENSE-2.0" rel="noopener" target="_blank">Apache License 2.0</a>, {{ 'license.open_source'|trans }}</td></tr>
+            <tr><th scope="row">{{ 'license.field.developers'|trans }}</th><td data-developers><a href="https://luxsite.agency/" rel="noopener" target="_blank">LuxSite</a></td></tr>
+            <tr><th scope="row">{{ 'license.field.licensee'|trans }}</th><td data-licensee>{{ license.licensee(app.request.locale) }}{% if not license.isConfigured %} <span class="text-muted small">({{ 'license.licensee_default'|trans }})</span>{% endif %}</td></tr>
+            <tr><th scope="row">{{ 'license.field.site_host'|trans }}</th><td data-site-host>{{ license.siteHost }}</td></tr>
+            <tr><th scope="row">{{ 'license.field.admin_host'|trans }}</th><td data-admin-host>{{ license.adminHost }}</td></tr>
+            <tr><th scope="row">{{ 'license.field.engine'|trans }}</th><td data-engine-sha>{{ release.sha ?? 'license.engine.unknown'|trans }}{% if release.ref %} ({{ release.ref }}){% endif %}{% if release.builtAt %}, {{ 'license.engine.built'|trans }} {{ release.builtAt|date_short(true) }}{% endif %}{% if release.packHash %}, {{ 'license.engine.pack'|trans }} {{ release.packHash }}{% endif %}</td></tr>
+            <tr><th scope="row">{{ 'license.field.type'|trans }}</th><td data-license-type>{{ ('license.type.' ~ (license.type in ['subscription', 'perpetual'] ? license.type : 'none'))|trans }}</td></tr>
+            {% if license.contract %}<tr><th scope="row">{{ 'license.field.contract'|trans }}</th><td data-contract>{{ license.contract }}</td></tr>{% endif %}
+            {% if license.since %}<tr><th scope="row">{{ 'license.field.since'|trans }}</th><td data-since>{{ license.since|date_short }}</td></tr>{% endif %}
+        </tbody>
+    </table>
+    <section class="mt-4 license-text" id="license-text">
+        {% include 'license/text.' ~ text_locale ~ '.html.twig' with {site: license.siteHost, licensee: license.licensee(text_locale), heading: 'h2'} only %}
+    </section>
+    <section class="mt-4" id="license-components">
+        <h2 class="h5">{{ 'license.components.title'|trans }}</h2>
+        <p class="text-muted small">{{ 'license.components.help'|trans }} <code>bin/console license:components</code> {{ 'license.components.help_build'|trans }}</p>
+        <table class="table table-sm datagrid">
+            <thead><tr><th>{{ 'license.components.package'|trans }}</th><th>{{ 'license.components.version'|trans }}</th><th>{{ 'license.components.license'|trans }}</th></tr></thead>
+            <tbody>
+            {% for c in components %}<tr><td>{{ c.name }}</td><td>{{ c.version }}</td><td>{{ c.license }}</td></tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </section>
+{% endblock %}

@@ -1,0 +1,19 @@
+{% extends 'site/base.html.twig' %}
+{% set noindex = true %}
+{% block title %}{{ 'site.account.verify.title'|trans }} | {{ site_name }}{% endblock %}
+{% block body %}
+    <h1>{{ 'site.account.verify.title'|trans }}</h1>
+    {% if form %}
+        {# GET лише показує форму (посилання з листа відкривають і сканери пошти); імʼя й пароль задає власник скриньки #}
+        <form method="post" class="account-form" novalidate>
+            <input type="hidden" name="{{ field_name(form._token) }}" value="{{ field_value(form._token) }}">
+            <p>{{ 'site.account.verify.text'|trans }}</p>
+            {% include 'site/account/_field.html.twig' with {field: form.name, label: 'site.account.name'|trans, type: 'text', autocomplete: 'name'} only %}
+            {% include 'site/account/_field.html.twig' with {field: form.password, label: 'site.account.password_new'|trans, type: 'password', autocomplete: 'new-password'} only %}
+            <button type="submit" class="btn btn-primary">{{ 'site.account.verify.submit'|trans }}</button>
+        </form>
+    {% else %}
+        <p class="flash flash-error" role="alert">{{ 'site.account.error.link_invalid'|trans }}</p>
+        <p><a href="{{ path('site_account_register') }}">{{ 'site.account.login.register'|trans }}</a> · <a href="{{ path('site_account_login') }}">{{ 'site.account.login.title'|trans }}</a></p>
+    {% endif %}
+{% endblock %}

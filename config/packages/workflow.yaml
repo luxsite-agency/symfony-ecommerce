@@ -1,0 +1,19 @@
+framework:
+    workflows:
+        # ADR D6: new → confirmed → processing → shipped → completed; cancel з будь-якого до shipped.
+        # Усі переходи — лише через OrderTransitionService (історія, повернення залишку при cancel).
+        order:
+            type: state_machine
+            marking_store:
+                type: method
+                property: status
+            supports:
+                - App\Core\Order\Entity\Order
+            initial_marking: new
+            places: [new, confirmed, processing, shipped, completed, cancelled]
+            transitions:
+                confirm: { from: new, to: confirmed }
+                process: { from: confirmed, to: processing }
+                ship: { from: processing, to: shipped }
+                complete: { from: shipped, to: completed }
+                cancel: { from: [new, confirmed, processing], to: cancelled }

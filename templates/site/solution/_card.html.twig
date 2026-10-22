@@ -1,0 +1,10 @@
+{# Контракт теми (docs/themes.md, template_contract 1). Картка рішення (список, «Інші рішення», блок на картці товару).
+   Змінні: solution (Solution, видиме мовою locale), locale. Стабільні класи: solution-card. #}
+{% set t = solution.translation(locale) %}
+<li class="solution-card">
+    <a href="{{ path('site_solution', {slug: t.slug, _locale: locale}) }}">
+        {% if solution.cover %}<img src="{{ ('media/' ~ solution.cover.path)|imagine_filter('product_card') }}" alt="{{ solution.cover.alt ?: t.title }}" loading="lazy" width="400" height="400">{% endif %}
+        <h3>{{ t.title }}</h3>
+    </a>
+    {% if t.intro %}<p class="muted">{{ t.intro|length > 160 ? t.intro|slice(0, 159) ~ '…' : t.intro }}</p>{% endif %}
+</li>

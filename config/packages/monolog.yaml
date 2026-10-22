@@ -1,0 +1,73 @@
+monolog:
+    channels: # To see all channels, run bin/console debug:autowiring logger
+        - deprecation # Deprecations are logged in the dedicated "deprecation" channel when it exists
+        # журнал безпеки покупців (Core\Customer\Auth\AuthAudit): на проді — окремий файл у томі log, 12 міс.
+        - security_audit
+        # журнал запитів до /api/admin і /mcp (Core\AdminApi\Auth\ApiAccessLog): метод, маршрут/інструмент, token_id, статус — без вмісту
+        - admin_api
+
+when@dev:
+    monolog:
+        handlers:
+            main:
+                type: stream
+                path: "%kernel.logs_dir%/%kernel.environment%.log"
+                level: debug
+                channels: ["!event"]
+            console:
+                type: console
+                process_psr_3_messages: false
+                channels: ["!event", "!doctrine", "!console"]
+
+when@test:
+    monolog:
+        handlers:
+            main:
+                type: fingers_crossed
+                action_level: error
+                handler: nested
+                excluded_http_codes: [404, 405]
+                channels: ["!event"]
+            nested:
+                type: stream
+                path: "%kernel.logs_dir%/%kernel.environment%.log"
+                level: debug
+
+when@prod:
+    monolog:
+        handlers:
+            main:
+                type: fingers_crossed
+                action_level: error
+                handler: nested
+                excluded_http_codes: [404, 405]
+                channels: ["!deprecation"]
+                buffer_size: 50 # How many messages should be saved? Prevent memory leaks
+            nested:
+                type: stream
+                path: php://stderr
+                level: debug
+                formatter: monolog.formatter.json
+            console:
+                type: console
+                process_psr_3_messages: false
+                channels: ["!event", "!doctrine"]
+            deprecation:
+                type: stream
+                channels: [deprecation]
+                path: php://stderr
+                formatter: monolog.formatter.json
+            security_audit:
+                type: rotating_file
+                channels: [security_audit]
+                path: "%kernel.logs_dir%/security_audit.log"
+                max_files: 366
+                level: info
+                formatter: monolog.formatter.json
+            admin_api:
+                type: rotating_file
+                channels: [admin_api]
+                path: "%kernel.logs_dir%/admin_api.log"
+                max_files: 366
+                level: info
+                formatter: monolog.formatter.json

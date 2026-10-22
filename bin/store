@@ -1,0 +1,49 @@
+#!/usr/bin/env bash
+# SPDX-License-Identifier: Apache-2.0
+# Copyright 2026 LuxSite (https://luxsite.agency). See LICENSE and NOTICE.
+# bin/store — команди системи магазинів Symfony ecommerce LuxSite (етап 1, внутрішня документація).
+#
+#   bin/store <команда> [аргументи]      bin/store help      bin/store <команда> --help
+#
+# Диспетчер: кожна підкоманда — окремий файл bin/store.d/<команда>.sh (виконується bash-ем, не source),
+# спільні функції — bin/store.d/_lib.sh (підкоманда підключає їх сама: source "$STORE_LIB").
+# Рядок «# summary: …» у файлі підкоманди — опис для `bin/store help`. Файли з «_» на початку — не команди.
+# Нову команду додавати новим файлом, цей диспетчер не правити (A: deploy/backup/restore/archive/doctor; B: new/validate).
+#
+# Змінні: STORES_FILE (реєстр, типово <рушій>/stores.yaml), DRY_RUN=1 (лише показати дії), STORE_DEBUG=1 (set -x).
+set -euo pipefail
+
+STORE_ENGINE_DIR="$(cd "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")/.." && pwd)"
+STORE_CMD_DIR="$STORE_ENGINE_DIR/bin/store.d"
+export STORE_ENGINE_DIR STORE_CMD_DIR
+export STORE_LIB="$STORE_CMD_DIR/_lib.sh"
+export STORES_FILE="${STORES_FILE:-$STORE_ENGINE_DIR/stores.yaml}"
+
+usage() {
+    echo "Використання: bin/store <команда> [аргументи]   (DRY_RUN=1 — сухий прогін)"
+    echo
+    echo "Команди:"
+    local f name summary
+    for f in "$STORE_CMD_DIR"/*.sh; do
+        [ -e "$f" ] || continue
+        name="$(basename "$f" .sh)"
+        case "$name" in _*) continue ;; esac
+        summary="$(sed -n 's/^# summary: //p' "$f" | head -n1)"
+        printf '  %-10s %s\n' "$name" "$summary"
+    done
+}
+
+cmd="${1:-help}"
+case "$cmd" in
+    help | -h | --help) usage; exit 0 ;;
+    _* | */* | .*) echo "store: невідома команда '$cmd'" >&2; exit 2 ;;
+esac
+file="$STORE_CMD_DIR/$cmd.sh"
+if [ ! -f "$file" ]; then
+    echo "store: невідома команда '$cmd'" >&2
+    usage >&2
+    exit 2
+fi
+shift
+if [ "${STORE_DEBUG:-0}" = 1 ]; then exec bash -x "$file" "$@"; fi
+exec bash "$file" "$@"

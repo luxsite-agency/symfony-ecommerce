@@ -1,0 +1,14 @@
+{% trans_default_domain 'admin' %}
+{{ 'email_changeset.price_applied.heading'|trans({id: cs.id ~ '', title: cs.title}) }}
+
+{{ 'email_changeset.price_applied.created_by'|trans }} {{ cs.author }} ({{ cs.source|trans }}), {{ cs.createdAt|date_short(true) }}
+{{ 'email_changeset.price_applied.applied_by'|trans }} {{ cs.appliedByName }}, {{ cs.appliedAt|date_short(true) }}
+{{ 'email_changeset.price_applied.operations'|trans }} {{ 'email_changeset.price_applied.operations_value'|trans({count: cs.operations|length ~ '', price: (rows|length + more) ~ ''}) }}
+{% if cs.riskFlags is not empty %}{{ 'email_changeset.price_applied.risk_flags'|trans }} {{ 'email_changeset.price_applied.risk_flags_value'|trans({flags: cs.riskFlags|join(', '), name: cs.riskConfirmedByName}) }}
+{% endif %}
+{% for r in rows %}- {{ r.target }} {{ r.field }}: {{ r.before ?? '—' }} → {{ r.after ?? '—' }}{% if r.percent %} ({{ r.percent }}){% endif %}
+
+{% endfor %}{% if more > 0 %}…{{ 'email_changeset.price_applied.more'|trans({count: more ~ ''}) }}
+{% endif %}
+{{ 'email_changeset.price_applied.text_changeset'|trans }} {{ url }}
+{{ 'email_changeset.price_applied.text_audit'|trans }} {{ audit_url }}

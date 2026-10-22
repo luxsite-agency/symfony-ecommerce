@@ -1,0 +1,5 @@
+<p>{{ 'email.account.hello_plain'|trans({}, null, l) }}</p>
+<p>{{ 'email.account.account_exists.text'|trans({site: siteName, minutes: ttl}, null, l) }}</p>
+<p><a href="{{ url }}">{{ 'email.account.account_exists.button'|trans({}, null, l) }}</a></p>
+<p style="color:#666">{{ 'email.account.account_exists.outro'|trans({minutes: ttl, hours: ttl // 60}, null, l) }}</p>
+<p>{{ siteName }}</p>

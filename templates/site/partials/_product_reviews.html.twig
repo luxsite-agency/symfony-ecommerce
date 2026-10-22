@@ -1,0 +1,66 @@
+{# Блок відгуків на картці товару: product, tr (ProductTranslation), reviews (ProductReviewsBlock: summary ?RatingSummary, items,
+   page, pages, access allowed|login|google, form ?FormView, mine ?ProductReview, login_path, google_path).
+   Стабільні класи: .product-reviews, .review, .review-verified, .review-demo, .review-reply, .reviews-login, .review-form. #}
+{% trans_default_domain 'site_catalog' %}
+<section class="product-reviews" id="reviews">
+    <h2>{{ 'catalog.reviews.title'|trans }}</h2>
+    {# оцінка й кількість один раз: «★★★★★ 5,0 з 5 · 1 відгук» (UX-аудит S9) #}
+    {% if reviews.summary %}
+        <p class="reviews-summary">{% include 'site/partials/_rating_stars.html.twig' with {average: reviews.summary.average, stars: reviews.summary.stars, count: reviews.summary.count, show_count: false} only %} <span class="reviews-summary-text">{{ 'catalog.reviews.summary'|trans({average: reviews.summary.average, count: reviews.summary.count}) }}</span></p>
+    {% endif %}
+    {# Загальна оцінка магазину з віджета gbp-manager (gmb_rating_badge, app.gbp_reviews.token; власник 18.10.2026 — у кожному блоці відгуків).
+       |raw — HTML збирає Renderer пакета з екрануванням. Без розмітки: aggregateRating магазину — один, в OnlineStore головної; тут schema.org лише Product.aggregateRating товару. #}
+    {% set store_rating = gmb_rating_badge(null, {link: true, schema: false}) %}
+    {% if store_rating %}<div class="reviews-store"><span class="muted">{{ 'catalog.reviews.store_rating'|trans }}</span> {{ store_rating|raw }}</div>{% endif %}
+
+    {% if reviews.items %}
+        <ul class="reviews-list">
+            {% for r in reviews.items %}
+                <li class="review{{ r.demo ? ' review-demo' : '' }}" data-review-id="{{ r.id }}">
+                    <div class="review-head">
+                        <span class="rating-stars" aria-label="{{ 'catalog.reviews.rating_of'|trans({rating: r.rating}) }}">{% for i in 1..5 %}<span class="star{{ i <= r.rating ? ' star-on' : '' }}" aria-hidden="true">★</span>{% endfor %}</span>
+                        <span class="review-author">{{ r.author ?: 'catalog.reviews.anonymous'|trans }}</span>
+                        <time class="muted" datetime="{{ r.date|date('Y-m-d') }}">{{ r.date|date_short }}</time>
+                        {% if r.verified %}<span class="review-verified">{{ 'catalog.reviews.verified'|trans }}</span>{% endif %}
+                        {% if r.demo %}<span class="review-demo-badge">{{ 'catalog.reviews.demo'|trans }}</span>{% endif %}
+                    </div>
+                    <p class="review-text">{{ r.text|nl2br }}</p>
+                    {% if r.reply %}
+                        <div class="review-reply">
+                            <div class="review-head"><strong>{{ 'catalog.reviews.reply'|trans }}</strong>{% if r.reply.by %} <span class="muted">{{ r.reply.by }}</span>{% endif %} <time class="muted" datetime="{{ r.reply.date|date('Y-m-d') }}">{{ r.reply.date|date_short }}</time></div>
+                            <p class="review-text">{{ r.reply.text|nl2br }}</p>
+                        </div>
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+        {% if reviews.pages > 1 %}
+            {% set base = path('site_product', {slug: tr.slug, _locale: app.request.locale}) %}
+            <nav class="pager reviews-pager" aria-label="{{ 'catalog.pager.label'|trans }}">
+                {% if reviews.page > 1 %}<a href="{{ base }}?reviews_page={{ reviews.page - 1 }}#reviews" rel="nofollow">&larr; {{ 'catalog.pager.prev'|trans }}</a>{% endif %}
+                <span class="muted">{{ reviews.page }} / {{ reviews.pages }}</span>
+                {% if reviews.page < reviews.pages %}<a href="{{ base }}?reviews_page={{ reviews.page + 1 }}#reviews" rel="nofollow">{{ 'catalog.pager.next'|trans }} &rarr;</a>{% endif %}
+            </nav>
+        {% endif %}
+    {% else %}
+        <p class="empty reviews-empty">{{ 'catalog.reviews.empty'|trans }}</p>
+    {% endif %}
+
+    {% if reviews.access == 'allowed' and reviews.form %}
+        <form method="post" action="{{ reviews.form.vars.action }}" class="review-form account-form" novalidate>
+            <h3>{{ (reviews.mine ? 'catalog.reviews.edit_mine' : 'catalog.reviews.write')|trans }}</h3>
+            {% include 'site/partials/_review_form.html.twig' with {form: reviews.form, existing: reviews.mine, submit_label: 'catalog.reviews.submit'|trans} only %}
+        </form>
+    {% elseif reviews.access == 'login' %}
+        <div class="reviews-login">
+            <p>{{ 'catalog.reviews.login_hint'|trans }}</p>
+            <a class="btn btn-outline" href="{{ reviews.login_path }}" rel="nofollow">{{ 'catalog.reviews.login'|trans }}</a>
+            {% if reviews.google_path %}<a class="btn btn-outline btn-google" href="{{ reviews.google_path }}" rel="nofollow">{{ 'catalog.reviews.login_google'|trans }}</a>{% endif %}
+        </div>
+    {% elseif reviews.access == 'google' %}
+        <div class="reviews-login reviews-google-required">
+            <p>{{ 'catalog.reviews.google_required'|trans }}</p>
+            {% if reviews.google_path %}<a class="btn btn-outline btn-google" href="{{ reviews.google_path }}" rel="nofollow">{{ 'catalog.reviews.login_google'|trans }}</a>{% endif %}
+        </div>
+    {% endif %}
+</section>

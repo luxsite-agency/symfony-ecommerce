@@ -1,0 +1,9 @@
+{# Рядок ліцензії внизу кожної сторінки адмінки: «Symfony ecommerce LuxSite · відкритий код, Apache 2.0 · розробники платформи: LuxSite ·
+   Ліцензія» → admin_license (власник 11.10.2026, під Apache 2.0 — 17.10.2026). Підключають bundles/EasyAdminBundle/layout.html.twig (усі сторінки EasyAdmin) і admin/security/login.html.twig (вхід —
+   він рендериться без контексту EasyAdmin, поза layout). Посилання — лише тим, хто сторінку відкриє (ROLE_ADMIN; менеджеру й на вході —
+   текст без посилання). Стиль тут же, щоб обом не дублювати <head>. #}
+<footer class="app-license-footer">Symfony ecommerce LuxSite · {{ 'license_footer.open_source'|trans({}, 'admin') }} · {{ 'license_footer.developers'|trans({}, 'admin') }} <a href="https://luxsite.agency/" rel="noopener" target="_blank">LuxSite</a> · {% if is_granted('ROLE_ADMIN') %}<a href="{{ path('admin_license') }}">{{ 'license_footer.link'|trans({}, 'admin') }}</a>{% else %}{{ 'license_footer.link'|trans({}, 'admin') }}{% endif %}</footer>
+<style>
+    .app-license-footer { padding: .75rem 1rem 1rem; text-align: center; font-size: .75rem; color: var(--text-muted, #6c757d); }
+    .app-license-footer a { color: inherit; text-decoration: underline; }
+</style>

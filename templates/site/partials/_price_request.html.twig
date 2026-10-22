@@ -1,0 +1,15 @@
+{# «Запитати ціну» (ціна за запитом) у buy-box теми: ім'я, телефон, коментар → лід у CRM. product — Product. #}
+{% set variants = product.variants|filter(v => v.active) %}
+{% if variants|length > 0 %}
+<form method="post" action="{{ path('site_price_request') }}" class="price-request checkout" id="price-request">
+    <p class="meta">{{ 'site.price_request.note'|trans }}</p>
+    <input type="hidden" name="_token" value="{{ csrf_token('price_request') }}">
+    <input type="hidden" name="locale" value="{{ app.request.locale }}">
+    {% if variants|length == 1 %}<input type="hidden" name="variant" value="{{ (variants|first).id }}">
+    {% else %}<label>{{ 'site.cart.variant'|trans }} <select name="variant">{% for v in variants %}<option value="{{ v.id }}">{{ v.sku }}</option>{% endfor %}</select></label>{% endif %}
+    <label>{{ 'site.checkout.name'|trans }} <input type="text" name="name" required autocomplete="name" maxlength="120"></label>
+    <label>{{ 'site.checkout.phone'|trans }} <input type="tel" name="phone" required autocomplete="tel" placeholder="+380"></label>
+    <label>{{ 'site.price_request.comment'|trans }} <textarea name="comment" rows="3" maxlength="1000"></textarea></label>
+    <button type="submit" class="btn btn-primary btn-block">{{ 'site.price_request.submit'|trans }}</button>
+</form>
+{% endif %}

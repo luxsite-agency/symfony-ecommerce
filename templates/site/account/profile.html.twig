@@ -1,0 +1,43 @@
+{% extends 'site/base.html.twig' %}
+{% set noindex = true %}
+{% block title %}{{ 'site.account.profile.title'|trans }} | {{ site_name }}{% endblock %}
+{% block body %}
+    <h1>{{ 'site.account.profile.title'|trans }}</h1>
+    {% include 'site/account/_flashes.html.twig' %}
+    <form method="post" action="{{ path('site_account_profile') }}" class="account-form profile-form" novalidate>
+        <input type="hidden" name="{{ field_name(form._token) }}" value="{{ field_value(form._token) }}">
+        <p>{{ 'site.account.email'|trans }}: <strong>{{ customer.email }}</strong> <a href="{{ path('site_account_profile_email') }}">{{ 'site.account.profile.change_email'|trans }}</a></p>
+        {% include 'site/account/_field.html.twig' with {field: form.name, label: 'site.account.name'|trans, type: 'text', autocomplete: 'name'} only %}
+        <label>{{ 'site.account.profile.phone'|trans }}
+            <input type="tel" name="{{ field_name(form.phone) }}" value="{{ field_value(form.phone) }}" autocomplete="tel" placeholder="+380"{% if field_errors(form.phone)|length %} aria-invalid="true"{% endif %}>
+            {% for error in field_errors(form.phone) %}<span class="form-error">{{ error|trans }}</span>{% endfor %}
+        </label>
+        <label>{{ 'site.account.profile.locale'|trans }}
+            <select name="{{ field_name(form.locale) }}">{% for locale in locales %}<option value="{{ locale }}"{% if field_value(form.locale) == locale %} selected{% endif %}>{{ locale|upper }}</option>{% endfor %}</select>
+        </label>
+        <label class="checkbox"><input type="checkbox" name="{{ field_name(form.marketing) }}" value="1"{% if form.marketing.vars.checked %} checked{% endif %}> {{ 'site.account.consent.marketing_email'|trans }}</label>
+        <button type="submit" class="btn btn-primary">{{ 'site.account.profile.save'|trans }}</button>
+    </form>
+    {% if google_sign_in_enabled() %}
+        <section class="google-link" aria-labelledby="google-link-title">
+            <h2 id="google-link-title">{{ 'site.account.google.title'|trans }}</h2>
+            {% if customer.googleLinked %}
+                <p>{{ 'site.account.google.linked'|trans({email: customer.googleEmail ?? '', date: customer.googleLinkedAt ? customer.googleLinkedAt|format_date('long', locale=app.request.locale) : ''}) }}</p>
+                {% if customer.password is not null %}
+                    <form method="post" action="{{ path('site_account_google_unlink') }}" class="google-unlink">
+                        <input type="hidden" name="_token" value="{{ csrf_token('account') }}">
+                        <button type="submit" class="btn btn-outline">{{ 'site.account.google.unlink'|trans }}</button>
+                    </form>
+                {% else %}
+                    <p class="meta">{{ 'site.account.google.only_method'|trans }} <a href="{{ path('site_account_password') }}">{{ 'site.account.google.set_password'|trans }}</a></p>
+                {% endif %}
+            {% else %}
+                <p>{{ 'site.account.google.not_linked'|trans }} <a href="{{ path('site_account_google_link') }}">{{ 'site.account.google.link'|trans }}</a></p>
+            {% endif %}
+        </section>
+    {% endif %}
+    <ul class="account-links">
+        {% if customer.password is null %}<li><a href="{{ path('site_account_password') }}">{{ 'site.account.google.set_password'|trans }}</a></li>{% else %}<li><a href="{{ path('site_account_profile_password') }}">{{ 'site.account.profile.change_password'|trans }}</a></li>{% endif %}
+        <li><a href="{{ path('site_account') }}">{{ 'site.account.wholesale.back'|trans }}</a></li>
+    </ul>
+{% endblock %}

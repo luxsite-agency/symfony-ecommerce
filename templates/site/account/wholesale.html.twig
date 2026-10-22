@@ -1,0 +1,48 @@
+{% extends 'site/base.html.twig' %}
+{% set noindex = true %}
+{% block title %}{{ 'site.account.wholesale.title'|trans }} | {{ site_name }}{% endblock %}
+{% block body %}
+    <h1>{{ 'site.account.wholesale.title'|trans }}</h1>
+    {% include 'site/account/_flashes.html.twig' %}
+    {% if member %}
+        <p class="flash flash-success wholesale-status" role="status">{{ 'site.account.wholesale.status.approved'|trans({company: member.company.name, group: customer.customerGroup ? customer.customerGroup.name : ''}) }}</p>
+        <dl class="wholesale-company">
+            <dt>{{ 'site.account.wholesale.field.company'|trans }}</dt><dd>{{ member.company.name }}</dd>
+            <dt>{{ 'site.account.wholesale.field.tax_id'|trans }}</dt><dd>{{ member.company.taxId }}</dd>
+            <dt>{{ 'site.account.wholesale.field.vat'|trans }}</dt><dd>{{ (member.company.vatPayer ? 'site.account.wholesale.yes' : 'site.account.wholesale.no')|trans }}</dd>
+            <dt>{{ 'site.account.wholesale.field.contact'|trans }}</dt><dd>{{ member.company.contactName }}{% if member.company.contactPhone %}, {{ member.company.contactPhone }}{% endif %}</dd>
+        </dl>
+        {% if customer.customerGroup %}
+            <p class="wholesale-price-list"><a class="btn btn-primary" href="{{ path('site_account_price_list') }}">{{ 'site.account.price_list.link'|trans }}</a><br><small>{{ 'site.account.price_list.hint'|trans }}</small></p>
+        {% endif %}
+    {% elseif latest and latest.pending %}
+        <p class="flash flash-success wholesale-status" role="status">{{ 'site.account.wholesale.status.pending'|trans({date: latest.createdAt|date_short}) }}</p>
+    {% else %}
+        {% if latest and latest.status.value == 'rejected' %}
+            <p class="flash flash-error wholesale-status" role="status">{{ 'site.account.wholesale.status.rejected'|trans({date: latest.reviewedAt|date_short}) }}{% if latest.reviewComment %} {{ latest.reviewComment }}{% endif %}</p>
+        {% endif %}
+        {% if limited %}<p class="flash flash-error" role="alert">{{ 'site.account.error.too_many'|trans }}</p>{% endif %}
+        {% if form %}
+            <p>{{ 'site.account.wholesale.text'|trans }}</p>
+            <form method="post" action="{{ path('site_account_wholesale') }}" class="account-form wholesale-form" novalidate>
+                <input type="hidden" name="{{ field_name(form._token) }}" value="{{ field_value(form._token) }}">
+                {% include 'site/account/_field.html.twig' with {field: form.companyName, label: 'site.account.wholesale.field.company'|trans, type: 'text', autocomplete: 'organization'} only %}
+                {% include 'site/account/_field.html.twig' with {field: form.taxId, label: 'site.account.wholesale.field.tax_id'|trans, type: 'text', autocomplete: 'off'} only %}
+                <label class="checkbox"><input type="checkbox" name="{{ field_name(form.vatPayer) }}" value="1"{% if form.vatPayer.vars.checked %} checked{% endif %}> {{ 'site.account.wholesale.field.vat'|trans }}</label>
+                {% include 'site/account/_field.html.twig' with {field: form.contactName, label: 'site.account.wholesale.field.contact'|trans, type: 'text', autocomplete: 'name'} only %}
+                <label>{{ 'site.account.wholesale.field.phone'|trans }}
+                    <input type="tel" name="{{ field_name(form.contactPhone) }}" value="{{ field_value(form.contactPhone) }}" autocomplete="tel"{% if field_errors(form.contactPhone)|length %} aria-invalid="true"{% endif %}>
+                    {% for error in field_errors(form.contactPhone) %}<span class="form-error">{{ error|trans }}</span>{% endfor %}
+                </label>
+                <label>{{ 'site.account.wholesale.field.note'|trans }}
+                    <textarea name="{{ field_name(form.note) }}" rows="4"{% if field_errors(form.note)|length %} aria-invalid="true"{% endif %}>{{ field_value(form.note) }}</textarea>
+                    {% for error in field_errors(form.note) %}<span class="form-error">{{ error|trans }}</span>{% endfor %}
+                </label>
+                <button type="submit" class="btn btn-primary">{{ 'site.account.wholesale.submit'|trans }}</button>
+            </form>
+        {% endif %}
+    {% endif %}
+    <ul class="account-links">
+        <li><a href="{{ path('site_account') }}">{{ 'site.account.wholesale.back'|trans }}</a></li>
+    </ul>
+{% endblock %}

@@ -1,0 +1,144 @@
+# Повідомлення валідації (домен validators, формат Symfony без ICU: {{ limit }}). Ключі <область>.<сутність>.<поле>.<правило>.
+catalog:
+  attribute:
+    code:
+      not_blank: Укажите код
+      unique: Характеристика с таким кодом уже есть
+  attribute_value:
+    code:
+      not_blank: Укажите код
+      unique: Значение с таким кодом уже есть в этой характеристике
+  brand:
+    name:
+      not_blank: Укажите название
+    slug:
+      not_blank: Укажите слаг
+      unique: Бренд с таким слагом уже есть
+  media:
+    file:
+      extensions: Разрешены только файлы .jpg, .jpeg, .png, .webp, .gif, .avif
+      mime_types: Разрешены только изображения JPEG, PNG, WebP, GIF, AVIF
+      not_null: Загрузите файл
+    path:
+      unique: Файл с таким путём уже есть
+  option_group:
+    code:
+      not_blank: Укажите код
+      unique: Группа с таким кодом уже есть в товаре
+  option_value:
+    code:
+      not_blank: Укажите код
+      unique: Значение с таким кодом уже есть в группе
+  product:
+    variants:
+      min_count: Товар должен иметь хотя бы один вариант
+  product_translation:
+    slug:
+      unique: Товар с таким слагом уже есть на этом языке
+  product_variant:
+    external_id:
+      unique: Вариант с таким externalId уже есть
+    sku:
+      not_blank: Укажите SKU
+      unique: Вариант с таким SKU уже есть
+changeset:
+  changeset:
+    operations:
+      min_count: 'operations: пустой пакет'
+    title:
+      max_length: 'title: не длиннее 255 символов'
+      not_blank: 'title: пустой заголовок'
+  operation:
+    min_quantity:
+      format: 'min_quantity: число с точкой, до 3 знаков'
+    old_price:
+      format: 'old_price: число с точкой, до 2 знаков'
+    price:
+      format: 'price: число с точкой, до 2 знаков'
+    product:
+      not_blank: 'product: id или SKU'
+    variant:
+      not_blank: 'variant: id или SKU'
+  set_product_categories:
+    categories:
+      max_count: 'categories: не больше 50'
+      min_count: 'categories: хотя бы одна категория'
+    main:
+      positive: 'main: id главной категории'
+  set_translation:
+    entity:
+      choice: 'entity: product, category, page или post'
+    fields:
+      min_count: 'fields: хотя бы одно поле'
+    id:
+      positive: 'id: положительное целое'
+    locale:
+      format: 'locale: код языка (uk, ru, en…)'
+content:
+  solution_option:
+    product:
+      unique: 'Этот товар уже есть среди вариантов решения.'
+  solution_translation:
+    slug:
+      unique: 'Решение с таким слагом уже есть на этом языке.'
+  page_translation:
+    slug:
+      reserved: 'Адрес «{{ slug }}» служебный (корзина, кабинет, блог…), выберите другой слаг.'
+      category: 'Такой слаг уже у корневой категории на этом языке: страницы и категории делят адреса в корне сайта.'
+      product: 'Такой слаг уже у товара на этом языке: страницы и товары делят адреса в корне сайта.'
+      unique: Страница с таким слагом уже есть на этом языке
+  post_category:
+    code:
+      not_blank: Укажите код
+      unique: Рубрика с таким кодом уже есть
+  post_category_translation:
+    slug:
+      unique: Рубрика с таким слагом уже есть на этом языке
+  post_translation:
+    slug:
+      unique: Запись с таким слагом уже есть на этом языке
+customer:
+  customer_group:
+    code:
+      not_blank: Укажите код
+      unique: Группа с таким кодом уже есть
+    name:
+      not_blank: Укажите название
+pricing:
+  promotion:
+    ends_at:
+      after_start: Окончание акции должно быть позже начала
+    name:
+      not_blank: Укажите название акции
+security:
+  api_token:
+    days:
+      not_blank: Укажите срок
+      range: От {{ min }} до {{ max }} дней
+    name:
+      max_length: Не длиннее 100 символов
+      not_blank: Укажите название
+    scopes:
+      min_count: Выберите хотя бы одно разрешение
+  user:
+    email:
+      email: Не похоже на электронную почту
+      not_blank: Укажите электронную почту
+      unique: Пользователь с такой почтой уже есть
+    name:
+      not_blank: Укажите имя
+    password:
+      min_length: Пароль должен быть не короче 8 символов
+      not_blank: Укажите пароль
+seo:
+  redirect:
+    source:
+      invalid: 'Невалидный адрес: нужен путь от корня сайта (/staryj-adres) или полный URL старой страницы'
+      not_blank: Укажите адрес, с которого переадресовать (путь от корня сайта)
+      unique: Для этого адреса правило уже есть
+    target:
+      external_denied: Цель на другом сайте может задать только администратор; менеджеру — путь от корня (/…)
+      invalid: 'Невалидная цель: путь от корня (/…) или полный URL https://…'
+  redirect_import:
+    file:
+      not_null: Выберите файл

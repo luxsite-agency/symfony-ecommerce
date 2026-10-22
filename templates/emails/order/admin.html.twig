@@ -1,0 +1,14 @@
+{# Лист магазину про нове замовлення — мовою адмінки (adminLocale з OrderMailer), домен admin; дані покупця — як ввів покупець. #}
+{% set l = adminLocale %}
+<div style="font-family:system-ui,sans-serif;font-size:15px;color:#1a1f24;max-width:640px">
+    <h1 style="font-size:20px">{{ 'email_order.admin.title'|trans({number: order.number, source: order.source|trans({}, null, l)}, 'admin', l) }}</h1>
+    <p>
+        <strong>{{ 'email_order.admin.customer'|trans({}, 'admin', l) }}:</strong> {{ order.customerName }}, <a href="tel:{{ order.phone }}">{{ order.phone }}</a>{% if order.email %}, {{ order.email }}{% endif %}<br>
+        {% if order.company %}<strong>{{ 'email_order.admin.company'|trans({}, 'admin', l) }}:</strong> {{ order.company }}<br>{% endif %}
+        <strong>{{ 'email_order.admin.shipping'|trans({}, 'admin', l) }}:</strong> {{ order.shippingMethod|trans({}, null, l) }}{% if order.shippingCity %}, {{ order.shippingCity }}{% endif %}{% if order.shippingAddress %}, {{ order.shippingAddress }}{% endif %}<br>
+        <strong>{{ 'email_order.admin.payment'|trans({}, 'admin', l) }}:</strong> {{ order.paymentMethod|trans({}, null, l) }} · <strong>{{ 'email_order.admin.language'|trans({}, 'admin', l) }}:</strong> {{ order.locale }}
+    </p>
+    {% if order.comment %}<p><strong>{{ 'email_order.admin.comment'|trans({}, 'admin', l) }}:</strong> {{ order.comment }}</p>{% endif %}
+    {% include 'emails/order/_items.html.twig' with {items_locale: l, items_domain: 'admin', items_prefix: 'email_order.'} %}
+    {% if order.attachments|length > 0 %}<p><strong>{{ 'email_order.admin.attachments'|trans({}, 'admin', l) }}:</strong> {% for a in order.attachments %}{{ a.originalName }} ({{ (a.size / 1024)|round }} KB){% if not loop.last %}, {% endif %}{% endfor %} — {{ 'email_order.admin.attachments_hint'|trans({}, 'admin', l) }}</p>{% endif %}
+</div>

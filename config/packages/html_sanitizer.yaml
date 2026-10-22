@@ -1,0 +1,61 @@
+# HTML, який сайт виводить |raw (консиліум безпеки 10.10 п. 2): описи товарів і категорій (імпорт із фідів постачальників —
+# ContentHtml у ProductRowApplier; адмінка — опція sanitize_html у формах перекладів), сторінки й записи блогу з адмінки.
+# Статті від зовнішньої контент-панелі санітизує StudioHtml сам (той самий підхід, окремий білий список).
+# Невідомі теги (h1, section, font…) знімаються, текст усередині лишається; script/style/iframe/форми — разом із вмістом;
+# атрибути поза списком (style, class, on*) — теж. Посилання лише http(s)/mailto/tel або відносні, картинки — http(s) або відносні.
+# Разова чистка вже збережених текстів — bin/console catalog:html:sanitize --dry-run.
+framework:
+    html_sanitizer:
+        sanitizers:
+            app.content_html:
+                default_action: block
+                allow_elements:
+                    p: []
+                    br: []
+                    hr: []
+                    h2: [id]
+                    h3: [id]
+                    h4: [id]
+                    h5: []
+                    h6: []
+                    div: []
+                    span: []
+                    ul: []
+                    ol: [start]
+                    li: []
+                    dl: []
+                    dt: []
+                    dd: []
+                    strong: []
+                    b: []
+                    em: []
+                    i: []
+                    u: []
+                    s: []
+                    del: []
+                    sub: []
+                    sup: []
+                    small: []
+                    code: []
+                    pre: []
+                    blockquote: [cite]
+                    a: [href, title, rel, target]
+                    img: [src, alt, width, height, loading]
+                    figure: [class]
+                    figcaption: []
+                    # <section class="post-sources"> — блок «Джерела» StudioHtml у статтях студії (редагування в адмінці його не знімає)
+                    section: [class]
+                    table: []
+                    caption: []
+                    thead: []
+                    tbody: []
+                    tfoot: []
+                    tr: []
+                    th: [colspan, rowspan, scope]
+                    td: [colspan, rowspan]
+                drop_elements: [script, style, iframe, object, embed, noscript, template, form, input, button, select, textarea, svg, math, head, title, meta, link, base]
+                allowed_link_schemes: [http, https, mailto, tel]
+                allow_relative_links: true
+                allowed_media_schemes: [http, https]
+                allow_relative_medias: true
+                max_input_length: 1000000

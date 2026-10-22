@@ -1,0 +1,12 @@
+# Необов'язкові пакети рушія (docs/addons.md). Магазин вмикає аддон у store.yaml паку: addons: [<ключ>]; bin/store deploy
+# пише packages/addons.require, збірка образу (docker/php/Dockerfile.prod) ставить їх composer require поверх composer.lock.
+# Рушій без них ставиться і проходить тести (CI — без аддонів): бандл і config/addons/<config> реєструє Kernel::ADDON_BUNDLES
+# лише встановленими. Dev: bash local/addon.sh <ключ> on|off <worktree>.
+#   packages — аргументи composer require; path — тека path-пакета (composer repositories packages/*/*): без неї аддон у цій
+#   копії рушія недоступний (публічна копія — без приватних пакетів), bin/store validate про це каже.
+gmb-reviews:
+    title: 'Оцінка й відгуки магазину з gbp-manager (платний сервіс LuxSite)'
+    packages: ['luxsite/gmb-reviews-bundle:^1.2']
+    path: packages/symfony/gmb-reviews-bundle
+    # параметр паку, без якого аддон нічого не показує
+    parameter: app.gbp_reviews.token

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<yml_catalog date="2026-10-10 10:00">
+  <shop>
+    <name>XSS</name>
+    <currencies><currency id="UAH" rate="1"/></currencies>
+    <categories>
+      <category id="1">Двері</category>
+    </categories>
+    <offers>
+      <offer id="9101" available="true">
+        <name>Двері XSS</name>
+        <vendorCode>XSS-1</vendorCode>
+        <price>10</price>
+        <currencyId>UAH</currencyId>
+        <categoryId>1</categoryId>
+        <description><![CDATA[<p>Полотно <strong>МДФ</strong></p><script>alert('xss')</script><img src="x" onerror="alert(1)"><a href="javascript:alert(2)">зле</a><a href="https://example.com/doc" target="_blank">паспорт</a><ul><li style="color:red" onclick="alert(3)">Висота 2000</li></ul>]]></description>
+      </offer>
+    </offers>
+  </shop>
+</yml_catalog>

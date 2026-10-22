@@ -1,0 +1,21 @@
+{% extends 'site/base.html.twig' %}
+{% set noindex = true %}
+{% block title %}{{ 'site.account.privacy.title'|trans }} | {{ site_name }}{% endblock %}
+{% block body %}
+    <h1>{{ 'site.account.privacy.title'|trans }}</h1>
+    {% include 'site/account/_flashes.html.twig' %}
+    <h2>{{ 'site.account.privacy.consents'|trans }}</h2>
+    <dl class="consents">
+        {% for purpose, granted in consents %}
+            <dt>{{ ('site.account.consent.' ~ purpose)|trans }}</dt><dd class="consent-{{ purpose }}">{{ (granted ? 'site.account.privacy.granted' : 'site.account.privacy.not_granted')|trans }}</dd>
+        {% endfor %}
+    </dl>
+    <p class="meta">{{ 'site.account.privacy.policy_version'|trans({version: policyVersion}) }}</p>
+    <h2>{{ 'site.account.privacy.export_title'|trans }}</h2>
+    <p>{{ 'site.account.privacy.export_text'|trans }}</p>
+    <p><a class="btn btn-outline" href="{{ path('site_account_export') }}">{{ 'site.account.privacy.export_link'|trans }}</a></p>
+    <h2>{{ 'site.account.privacy.delete_title'|trans }}</h2>
+    <p>{{ 'site.account.privacy.delete_text'|trans }}</p>
+    <p><a class="btn btn-outline" href="{{ path('site_account_delete') }}">{{ 'site.account.privacy.delete_link'|trans }}</a></p>
+    <ul class="account-links"><li><a href="{{ path('site_account') }}">{{ 'site.account.wholesale.back'|trans }}</a></li></ul>
+{% endblock %}

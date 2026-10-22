@@ -1,0 +1,4 @@
+product_id;external_id;sku;name_uk;name_ru;price;old_price;currency;stock;brand;category;attr:material;attr:features;axis:color;images;updated_at
+ML14;1001;ML-14-WHITE;Двері ML 14;Двери ML 14;4262,00;5000;UAH;3;Solo;Двері / Міжкімнатні;МДФ;glass|lock;Білий;https://example.test/a.jpg,https://example.test/b.jpg;2026-09-20 12:00:00
+ML14;1002;ML-14-BLACK;Двері ML 14;Двери ML 14;4562,50;;UAH;0;Solo;Двері / Міжкімнатні;МДФ;glass|lock;Чорний;;2026-09-20 12:00:00
+;2001;FORT-1;Двері вхідні Форт;;12000;;UAH;5;;Двері > Вхідні;Метал;;;;

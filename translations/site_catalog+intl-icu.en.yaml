@@ -1,0 +1,91 @@
+# Public catalog (agent B): category, filters, product page
+catalog:
+    filters: Filters
+    reset: Clear all filters
+    apply: Apply
+    from: from
+    to: to
+    from_value: 'from {value}'
+    to_value: 'to {value}'
+    flag_yes: 'Yes'
+    flag_no: 'No'
+    facet:
+        brand: Brand
+        price: Price
+        in_stock: Availability
+        in_stock_only: In stock only
+        clear: Clear
+    sort:
+        label: Sort by
+        price_asc: Price, low to high
+        price_desc: Price, high to low
+        newest: Newest
+    found: '{count, plural, one {# product} other {# products}}'
+    empty: No products in this category yet.
+    empty_filtered: No products match the selected filters.
+    subcategories: Subcategories
+    page_suffix: 'page {page}'
+    pager:
+        label: Pages
+        prev: Previous
+        next: Next
+    price_on_request: Price on request
+    price_from: 'from {price}'
+    price_retail: 'retail {price}'
+    availability:
+        in_stock: In stock
+        to_order: Made to order
+        out_of_stock: Out of stock
+        available: Available
+    lead_time: 'Lead time: {days, plural, one {# day} other {# days}}'
+    stock_exact: 'Stock: {stock}'
+    options:
+        title: Options
+        none: None
+        range: 'from {min} to {max}, step {step}'
+        price: 'Price with options: {price}'
+        calculate: Calculate
+    product:
+        sku: SKU
+        attributes: Specifications
+        category: Category
+        categories: Product categories
+        description: Description
+        choose: Choose an option
+        unavailable: out of stock
+    wishlist:
+        add: Add to wishlist
+        remove: Remove from wishlist
+    reviews:
+        title: Reviews
+        store_rating: 'Store rating:'
+        count: '{count, plural, one {# review} other {# reviews}}'
+        average: 'Rated {average} out of 5'
+        summary: '{average, number, ::.0} out of 5 · {count, plural, one {# review} other {# reviews}}'
+        rating_of: 'Rated {rating} out of 5'
+        anonymous: Customer
+        verified: Verified purchase
+        demo: Demo review
+        reply: Store reply
+        empty: No reviews yet. Be the first to share your experience.
+        write: Write a review
+        edit_mine: Your review
+        submit: Save review
+        login_hint: Reviews are written by signed-in customers.
+        login: Sign in to write a review
+        login_google: Sign in with Google to write a review
+        google_required: Sign in with Google to write a review.
+    az:
+        label: Products A to Z
+        clear: Show all letters
+    search:
+        title: Search
+        title_for: 'Search: {q}'
+        label: Search products
+        placeholder: Product name, SKU or brand
+        button: Search
+        hint: Enter at least 2 characters to search by product name, SKU or brand.
+        found: '{count, plural, =0 {Nothing found for “{q}”} one {# product for “{q}”} other {# products for “{q}”}}'
+        empty: 'Nothing found for “{q}”. Try another spelling or a shorter query.'
+    viewed:
+        title: Recently viewed

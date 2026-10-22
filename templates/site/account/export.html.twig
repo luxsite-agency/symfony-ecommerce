@@ -1,0 +1,18 @@
+{% extends 'site/base.html.twig' %}
+{% set noindex = true %}
+{% block title %}{{ 'site.account.privacy.export_title'|trans }} | {{ site_name }}{% endblock %}
+{% block body %}
+    <h1>{{ 'site.account.privacy.export_title'|trans }}</h1>
+    {% if limited %}<p class="flash flash-error" role="alert">{{ 'site.account.error.too_many'|trans }}</p>{% endif %}
+    <p>{{ 'site.account.privacy.export_text'|trans }}</p>
+    {% if app.user.password is null %}
+        {% include 'site/account/_no_password.html.twig' %}
+    {% else %}
+        <form method="post" action="{{ path('site_account_export') }}" class="account-form export-form" novalidate>
+            <input type="hidden" name="{{ field_name(form._token) }}" value="{{ field_value(form._token) }}">
+            {% include 'site/account/_field.html.twig' with {field: form.current, label: 'site.account.profile.current_password'|trans, type: 'password', autocomplete: 'current-password'} only %}
+            <button type="submit" class="btn btn-primary">{{ 'site.account.privacy.export_submit'|trans }}</button>
+        </form>
+    {% endif %}
+    <ul class="account-links"><li><a href="{{ path('site_account_privacy') }}">{{ 'site.account.privacy.back'|trans }}</a></li></ul>
+{% endblock %}

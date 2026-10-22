@@ -1,0 +1,85 @@
+{# Публічний каркас магазину без build-кроку. Вигляд — тема з параметра app.theme (App\Site\Theme\SiteTheme): CSS-змінні й
+   @font-face (swap, БЕЗ preload шрифтів — PSI) у site_theme_style(), стилі — public/assets/site.css (+ CSS теми).
+   Меню без JS: чекбокс #nav-toggle відкриває панель категорій (мобільна — усе меню). Мова — перемикач у футері.
+   Контракт тем паку (docs/themes.md, template_contract 1): блоки title, metaDescription, ogType, ogImage, schema, head, bodyClass,
+   header, header_actions, nav, body, footer; шапка й футер — partials site/partials/_header*, _nav, _footer зі списком змінних
+   у коментарі кожного. Тема паку розширює базу як {% extends '@engine/site/base.html.twig' %}. Поза контрактом (не чіпати в
+   темах): <head> до site_theme_style() — canonical/hreflang/og, referrer кабінету, analytics_head/body_start/body_end,
+   schema.website(). Лого обов'язкове (SiteTheme), перемикач мов — текстом UA/RU/EN.
+   Мультимовність: alternates — URL поточної сторінки по мовах (site_alternates у шаблоні сторінки або site_home за замовчуванням);
+   hreflang лише для мов, де сторінка існує; canonical — URL поточної мови. #}
+{% import 'site/partials/_schema.html.twig' as schema %}
+{% set locale = app.request.locale %}
+{# alternates задає шаблон сторінки; порожній масив = «без canonical/hreflang» (не default, бо |default([]) дав би головну) #}
+{% set alternates = alternates is defined ? alternates : site_alternates('site_home') %}
+{% set brand_name = site_theme_text('brand.name') ?: site_name ~ '' %}
+{% set brand_tagline = site_theme_text('brand.tagline') %}
+{% set logo = site_theme('logo.src') %}
+{% set cart_count = site_cart_count() %}
+{% set phone = site_theme('footer.phone') %}
+{% set theme_css = site_theme('stylesheet') %}
+<!DOCTYPE html>
+<html lang="{{ site_hreflang(locale) }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    {# кабінет: Referrer-Policy і в HTML — проксі (Cloudflare «security headers») може перезаписати заголовок на strict-origin-when-cross-origin, і токен з адреси листа пішов би в document.referrer наступної сторінки свого сайту (рев'ю безпеки #45, п. A) #}
+    {% if app.request and app.request.pathInfo matches '#^/(?:[a-z]{2,3}(?:_[A-Z]{2})?/)?account(?:/|$)#i' %}<meta name="referrer" content="strict-origin">{% endif %}{# той самий шаблон, що AccountPath::PATTERN #}
+    {% block meta_generator %}{% endblock %}{# meta generator рушія додає App\Core\Shared\Http\ResponseMarker; блок — для свого generator теми #}
+    <title>{% block title %}{{ site_name }}{% endblock %}</title>
+    {% if noindex|default(false) %}<meta name="robots" content="noindex, follow">{% endif %}
+    {% if alternates[locale] is defined %}<link rel="canonical" href="{{ alternates[locale] }}">{% endif %}
+    {% if alternates|length > 1 %}
+    {% for l, href in alternates %}<link rel="alternate" hreflang="{{ site_hreflang(l) }}" href="{{ href }}">
+    {% endfor %}
+    {% if alternates[site_default_locale()] is defined %}<link rel="alternate" hreflang="x-default" href="{{ alternates[site_default_locale()] }}">{% endif %}
+    {% endif %}
+    {% set _desc %}{% block metaDescription %}{% endblock %}{% endset %}
+    {% set _desc = _desc|striptags|trim|replace({'&nbsp;': ' ', '&amp;': '&', '&quot;': '"', '&#039;': "'"}) %}
+    {% if _desc %}<meta name="description" content="{{ _desc|slice(0, 300) }}">{% endif %}
+    <meta property="og:type" content="{% block ogType %}website{% endblock %}">
+    <meta property="og:title" content="{{ block('title')|striptags|trim }}">
+    {% if _desc %}<meta property="og:description" content="{{ _desc|slice(0, 300) }}">{% endif %}
+    <meta property="og:url" content="{{ alternates[locale] ?? app.request.uri }}">
+    <meta property="og:site_name" content="{{ site_name }}">
+    {% set _ogImage %}{% block ogImage %}{% endblock %}{% endset %}
+    {% if _ogImage|trim %}<meta property="og:image" content="{{ _ogImage|trim }}">{% endif %}
+    {# og:locale — мова_РЕГІОН (uk_UA, en_US); alternate — мови, де ця сторінка є (alternates); twitter:card — велика картка, якщо є зображення #}
+    <meta property="og:locale" content="{{ site_og_locale(locale) }}">
+    {% for l, href in alternates|filter((href, l) => l != locale) %}<meta property="og:locale:alternate" content="{{ site_og_locale(l) }}">
+    {% endfor %}
+    <meta name="twitter:card" content="{{ _ogImage|trim ? 'summary_large_image' : 'summary' }}">
+    <meta name="theme-color" content="{{ site_theme('colors.header_bg') }}">
+    {% if site_theme('favicon') %}<link rel="icon" href="{{ site_asset(site_theme('favicon')) }}">{% endif %}
+    {% if site_theme('apple_touch_icon') %}<link rel="apple-touch-icon" href="{{ site_asset(site_theme('apple_touch_icon')) }}">{% endif %}
+    <link rel="stylesheet" href="{{ site_asset('assets/site.css') }}">
+    {% if theme_css %}<link rel="stylesheet" href="{{ site_asset(theme_css) }}">{% endif %}
+    {{ site_theme_style() }}
+    {% set live_css = site_theme_live_css() %}{# живий theme.css під токеном theme:write (docs/themes.md «Живий дизайн»): після рушія, паку й токенів теми #}
+    {% if live_css %}<link rel="stylesheet" href="{{ live_css }}">{% endif %}
+    {{ schema.website() }}
+    {% block schema %}{% endblock %}
+    {# Аналітика й теги (Settings): consent default → GTM/gtag → Pixel → верифікація → «Код у head». Порожньо, якщо вимкнено. #}
+    {{ analytics_head() }}
+    {# точка розширення для сторінок і Store: додаткові теги в <head> (просив агент B для каталогу) #}
+    {% block head %}{% endblock %}
+</head>
+<body class="theme-{{ site_theme('key') }}{% block bodyClass %}{% endblock %}">
+{{ analytics_body_start() }}
+<a class="skip-link" href="#main">{{ 'site.a11y.skip'|trans }}</a>
+{# Шапка: партіал _header.html.twig отримує HTML блоків header_actions і nav — їх можна перевизначити окремо (тема паку:
+   {% block header_actions %}{{ parent() }}<a …>Обране</a>{% endblock %}), не чіпаючи каркас. Контракт блоків — docs/themes.md. #}
+{% block header %}
+    {% set header_actions %}{% block header_actions %}{% include 'site/partials/_header_actions.html.twig' %}{% endblock %}{% endset %}
+    {% set nav %}{% block nav %}{% include 'site/partials/_nav.html.twig' %}{% endblock %}{% endset %}
+    {% include 'site/partials/_header.html.twig' with {header_actions: header_actions, nav: nav} %}
+{% endblock %}
+<main id="main">
+    <div class="container">
+        {% block body %}{% endblock %}
+    </div>
+</main>
+{% block footer %}{% include 'site/partials/_footer.html.twig' %}{% endblock %}
+{{ analytics_body_end() }}
+</body>
+</html>

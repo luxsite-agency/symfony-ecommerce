@@ -1,0 +1,4 @@
+# Лише APP_ENV=test: маршрути з #[IsGranted('scope:…')] для перевірки 403 insufficient_scope (E15 PR-2); справжні ресурси — PR-4
+admin_api_test_fixture:
+    resource: '../../../tests/Functional/AdminApi/Fixture/ScopedController.php'
+    type: attribute

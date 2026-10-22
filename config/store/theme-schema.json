@@ -1,0 +1,108 @@
+{
+    "key": null,
+    "color_scheme": null,
+    "colors": {
+        "bg": null,
+        "surface": null,
+        "surface_2": null,
+        "ink": null,
+        "muted": null,
+        "line": null,
+        "accent": null,
+        "accent_ink": null,
+        "accent_bg": null,
+        "accent_bg_hover": null,
+        "link": null,
+        "highlight": null,
+        "ok": null,
+        "warn": null,
+        "danger": null,
+        "header_bg": null,
+        "footer_bg": null,
+        "input_bg": null,
+        "focus": null,
+        "hero_bg": null,
+        "support_bg": null,
+        "support_ink": null
+    },
+    "radius": null,
+    "radius_small": null,
+    "container": null,
+    "font": {
+        "family": null,
+        "fallback": null,
+        "faces": null
+    },
+    "heading": {
+        "weight": null,
+        "letter_spacing": null,
+        "transform": null
+    },
+    "brand": {
+        "name": null,
+        "tagline": null
+    },
+    "seo": {
+        "home_title": null,
+        "home_description": null
+    },
+    "organization": {
+        "legal_name": null,
+        "tax_id": null,
+        "phone": null,
+        "email": null,
+        "address": {
+            "street": null,
+            "city": null,
+            "postal_code": null,
+            "region": null,
+            "country": null
+        },
+        "same_as": null
+    },
+    "logo": {
+        "src": null,
+        "width": null,
+        "height": null
+    },
+    "favicon": null,
+    "apple_touch_icon": null,
+    "placeholder": null,
+    "stylesheet": null,
+    "hero": {
+        "title": null,
+        "text": null,
+        "eyebrow": null,
+        "emblem": null,
+        "emblem_width": null,
+        "emblem_height": null,
+        "image": null,
+        "image_srcset": null,
+        "image_mobile": null,
+        "image_width": null,
+        "image_height": null,
+        "image_alt": null,
+        "cta_label": null,
+        "secondary_label": null,
+        "secondary_url": null
+    },
+    "product_perks": null,
+    "support": {
+        "enabled": null,
+        "title": null,
+        "text": null,
+        "points": null,
+        "button_label": null,
+        "button_url": null,
+        "note": null
+    },
+    "footer": {
+        "about": null,
+        "phone": null,
+        "email": null,
+        "address": null,
+        "hours": null,
+        "legal": null,
+        "socials": null
+    }
+}

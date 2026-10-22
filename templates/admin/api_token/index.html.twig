@@ -1,0 +1,14 @@
+{% extends '@EasyAdmin/crud/index.html.twig' %}
+{% trans_default_domain 'admin' %}
+{# API-токени (AdminApiTokenCrudController): над списком — щойно створений токен (token_plain із сесії), показується один раз. #}
+{% block main %}
+    {% if token_plain is defined and token_plain %}
+        {% set plain = token_plain %}
+        <div class="alert alert-warning" id="api-token-plain" role="alert">
+            <p class="mb-2"><strong>{{ 'api_token.plain.title'|trans }}</strong> {{ 'api_token.plain.text'|trans }}</p>
+            <input type="text" class="form-control font-monospace" readonly value="{{ plain }}" onclick="this.select()" aria-label="{{ 'api_token.plain.value'|trans }}" autocomplete="off">
+            <p class="text-muted small mt-2 mb-0">Claude Code: <code>claude mcp add --transport http shop {{ app.request.schemeAndHttpHost }}/mcp --header "Authorization: Bearer ${SHOP_TOKEN}"</code> ({{ 'api_token.plain.env_hint'|trans }}). {{ 'api_token.plain.check'|trans }} <code>curl -H "Authorization: Bearer …" {{ app.request.schemeAndHttpHost }}/api/admin/v1/me</code>.</p>
+        </div>
+    {% endif %}
+    {{ parent() }}
+{% endblock %}

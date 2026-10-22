@@ -1,0 +1,18 @@
+{% extends 'site/base.html.twig' %}
+{% set noindex = true %}
+{% block title %}{{ 'site.account.google.link'|trans }} | {{ site_name }}{% endblock %}
+{% block body %}
+    <h1>{{ 'site.account.google.link'|trans }}</h1>
+    {% include 'site/account/_flashes.html.twig' %}
+    <p>{{ 'site.account.google.link_text'|trans }}</p>
+    {% if app.user.password is null %}
+        {% include 'site/account/_no_password.html.twig' %}
+    {% else %}
+        <form method="post" action="{{ path('site_account_google_link') }}" class="account-form google-link-form" novalidate>
+            <input type="hidden" name="{{ field_name(form._token) }}" value="{{ field_value(form._token) }}">
+            {% include 'site/account/_field.html.twig' with {field: form.current, label: 'site.account.profile.current_password'|trans, type: 'password', autocomplete: 'current-password'} only %}
+            <button type="submit" class="btn btn-primary">{{ 'site.account.google.link_submit'|trans }}</button>
+        </form>
+    {% endif %}
+    <ul class="account-links"><li><a href="{{ path('site_account_profile') }}">{{ 'site.account.profile.back'|trans }}</a></li></ul>
+{% endblock %}

@@ -1,0 +1,78 @@
+{# Футер: бренд і «про нас», категорії, сторінки для покупців, контакти, реквізити, copyright, рядок ліцензії платформи, перемикач мов.
+   Виводиться блоком footer базового шаблону. Змінні з контексту base.html.twig: brand_name, brand_tagline, logo, phone,
+   locale, alternates (мапа мова → URL цієї сторінки; порожня — перемикач веде на головні), powered_by (глобальна).
+   Функції: site_theme(), site_theme_text(), site_asset(), site_nav_categories(), site_nav_pages('footer'), site_url(), tr(),
+   site_locales(), site_hreflang(), path(), trans. Стабільні класи: site-footer, footer-grid, footer-brand, footer-title,
+   nav-footer, socials, footer-bottom, footer-legal, footer-powered, footer-license, lang (+ .current).
+   Правило власника 09.10.2026: перемикач мов текстом UA/RU/EN без прапорів, uk → UA; hreflang/lang на посиланнях не губити.
+   Рядок платформи — include site/partials/_platform_credit.html.twig: повний, коротко або нічого за налаштуванням
+   «Рядок платформи у футері» (site.platform_credit, власник 19.10.2026). Тема паку з повною копією цього partial-а має
+   include-ити той самий partial, а не копіювати рядок, — bin/store theme update <key> після оновлення рушія. #}
+<footer class="site-footer">
+    <div class="container">
+        <div class="footer-grid">
+            <div class="footer-brand">
+                <a class="brand" href="{{ path('site_home') }}">
+                    <img class="brand-logo" src="{{ site_asset(logo) }}" width="{{ site_theme('logo.width') }}" height="{{ site_theme('logo.height') }}" alt="" loading="lazy">
+                    <span class="brand-text"><span class="brand-name">{{ brand_name }}</span>{% if brand_tagline %}<span class="brand-tagline">{{ brand_tagline }}</span>{% endif %}</span>
+                </a>
+                {% set about = site_theme_text('footer.about') %}
+                {% if about %}<p>{{ about }}</p>{% endif %}
+                {% set socials = site_theme('footer.socials', []) %}
+                {% if socials %}
+                    <ul class="socials" aria-label="{{ 'site.footer.socials'|trans }}">
+                        {% for s in socials %}{% if s.url is defined and s.name is defined %}<li><a href="{{ s.url }}" rel="noopener" target="_blank">{{ s.name }}</a></li>{% endif %}{% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
+            <div>
+                <p class="footer-title">{{ 'site.nav.catalog'|trans }}</p>
+                <ul>
+                    {% for category in site_nav_categories()|slice(0, 8) %}{% set url = site_url(category) %}{% set t = tr(category) %}
+                        {% if url and t %}<li><a href="{{ url }}">{{ t.name }}</a></li>{% endif %}
+                    {% endfor %}
+                </ul>
+            </div>
+            <div>
+                <p class="footer-title">{{ 'site.footer.buyers'|trans }}</p>
+                <ul class="nav-footer">
+                    {% for page in site_nav_pages('footer') %}{% set url = site_url(page) %}{% set t = tr(page) %}
+                        {% if url and t %}<li><a href="{{ url }}">{{ t.title }}</a></li>{% endif %}
+                    {% endfor %}
+                    {% if site_has_solutions() %}<li><a href="{{ path('site_solutions') }}">{{ 'site.nav.solutions'|trans }}</a></li>{% endif %}
+                    <li><a href="{{ path('site_blog') }}">{{ 'site.nav.blog'|trans }}</a></li>
+                    <li><a href="{{ path('site_cart') }}" rel="nofollow">{{ 'site.nav.cart'|trans }}</a></li>
+                </ul>
+            </div>
+            <div>
+                <p class="footer-title">{{ 'site.footer.contacts'|trans }}</p>
+                <ul>
+                    {% if phone %}<li><a href="tel:{{ phone|replace({' ': '', '(': '', ')': '', '-': ''}) }}">{{ phone }}</a></li>{% endif %}
+                    {% set email = site_theme('footer.email') %}
+                    {% if email %}<li><a href="mailto:{{ email }}">{{ email }}</a></li>{% endif %}
+                    {% set address = site_theme_text('footer.address') %}
+                    {% if address %}<li>{{ address }}</li>{% endif %}
+                    {% set hours = site_theme_text('footer.hours') %}
+                    {% if hours %}<li>{{ hours }}</li>{% endif %}
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div>
+                {% set legal = site_theme_text('footer.legal') %}
+                {% if legal %}<p class="footer-legal">{{ legal }}</p>{% endif %}
+                <div>{{ 'site.footer.copyright'|trans({year: 'now'|date('Y'), site: brand_name}) }}</div>
+                {% include 'site/partials/_platform_credit.html.twig' %}
+            </div>
+            {% if site_locales()|length > 1 %}
+            <div class="lang" role="navigation" aria-label="{{ 'site.footer.language'|trans }}">
+                {# правило власника 09.10.2026: перемикач текстом, uk → UA (не UK) #}{% set lang_labels = {uk: 'UA'} %}{% for l in site_locales() %}
+                    {% if l == locale %}<span class="current" aria-current="true">{{ lang_labels[l] ?? l|upper }}</span>
+                    {% elseif alternates[l] is defined %}<a href="{{ alternates[l] }}" hreflang="{{ site_hreflang(l) }}" lang="{{ site_hreflang(l) }}">{{ lang_labels[l] ?? l|upper }}</a>
+                    {% else %}<a href="{{ path('site_home', {_locale: l}) }}" hreflang="{{ site_hreflang(l) }}" lang="{{ site_hreflang(l) }}">{{ lang_labels[l] ?? l|upper }}</a>{% endif %}
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</footer>

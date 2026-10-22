@@ -1,0 +1,7 @@
+# Тестовий пак для tests/store/run.sh — повна структура docs/store-pack.md, вміст мінімальний.
+format: 1
+key: demo
+name: Демо-магазин
+locales: [uk, en]
+domains: { site: store-demo.localhost, admin: store-demo-admin.localhost }
+engine: HEAD

@@ -1,0 +1,25 @@
+{% extends 'site/base.html.twig' %}
+{% set noindex = true %}
+{% set product_name = tr ? tr.name : product.defaultVariant.sku %}
+{% block title %}{{ (existing ? 'site.account.reviews.edit_title' : 'site.account.reviews.new_title')|trans }} | {{ site_name }}{% endblock %}
+{% block body %}
+    <h1>{{ (existing ? 'site.account.reviews.edit_title' : 'site.account.reviews.new_title')|trans }}</h1>
+    {% include 'site/account/_flashes.html.twig' %}
+    <p class="review-product">{{ 'site.account.reviews.product'|trans }}:
+        {% if tr and tr.slug and product.active %}<a href="{{ path('site_product', {slug: tr.slug, _locale: app.request.locale}) }}">{{ product_name }}</a>{% else %}{{ product_name }}{% endif %}
+    </p>
+    {% if form %}
+        <form method="post" action="{{ form.vars.action }}" class="review-form account-form" novalidate>
+            {% include 'site/partials/_review_form.html.twig' with {form: form, existing: existing, submit_label: 'site.account.reviews.submit'|trans} only %}
+        </form>
+    {% else %}
+        <div class="reviews-login reviews-google-required">
+            <p>{{ 'site.account.reviews.google_required'|trans }}</p>
+            {% if google_path %}<a class="btn btn-outline btn-google" href="{{ google_path }}">{{ 'site.account.reviews.login_google'|trans }}</a>{% endif %}
+        </div>
+    {% endif %}
+    <ul class="account-links">
+        <li><a href="{{ path('site_account_reviews') }}">{{ 'site.account.reviews.link'|trans }}</a></li>
+        <li><a href="{{ path('site_account') }}">{{ 'site.account.wholesale.back'|trans }}</a></li>
+    </ul>
+{% endblock %}

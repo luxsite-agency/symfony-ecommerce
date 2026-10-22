@@ -1,0 +1,13 @@
+# Маніфест теми паку (bin/store theme): from/engine — звідки й з якої версії рушія зроблено заготовки й копії,
+# contract — версія контракту шаблонів (docs/themes.md), files — sha256 базових файлів рушія на момент копії.
+# Пише bin/store theme new, читає theme diff і bin/store validate. Руками не правити.
+format: 1
+key: demo
+from: engine
+# фікстура: рушій = поточний коміт (bin/store theme new пише тег або sha)
+engine: HEAD
+contract: 1
+created: '2026-10-11'
+files:
+  site/base.html.twig: c5d32b6c3497561be314f1bdd917ac439d7fea0874cc83535e9cfbd319162e70
+  site/home.html.twig: af22dad4a09bf168fc85d19a84b6c790ae5d8f19ebe646968ebd67b7304aa6a2

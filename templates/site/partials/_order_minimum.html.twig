@@ -1,0 +1,10 @@
+{# Мінімум замовлення групи покупця (E13 PR-7): shortfall — Core\Order\Minimum\MinimumShortfall або null #}
+{% if shortfall %}
+    <div class="flash flash-error order-minimum" role="alert">
+        <p>{{ 'site.cart.minimum.title'|trans }}</p>
+        <ul>
+            {% if shortfall.missingAmount %}<li>{{ 'site.cart.minimum.amount'|trans({min: shortfall.minAmount.format(app.request.locale), missing: shortfall.missingAmount.format(app.request.locale)}) }}</li>{% endif %}
+            {% if shortfall.missingQuantity %}<li>{{ 'site.cart.minimum.quantity'|trans({min: shortfall.minQuantity|qty, missing: shortfall.missingQuantity|qty}) }}</li>{% endif %}
+        </ul>
+    </div>
+{% endif %}

@@ -1,0 +1,7 @@
+.env*
+.secrets/
+*.sql
+*.sql.gz
+*.pem
+*.key
+.DS_Store

@@ -1,0 +1,115 @@
+{# Контракт теми (docs/themes.md, template_contract 1). Змінні контролера HomeController: categories (list<Category> — кореневі активні),
+   tiles (мапа id категорії → {image, count} для плиток), cards (list рядків картки товару ProductCards + locale), cards_featured (bool — у вітрині є обрані),
+   analytics_products, analytics_prices (мапи id → дані GA4 для _product_card). Глобальні: app, site_name, powered_by; функції site_*, analytics_*, tr. #}
+{% extends 'site/base.html.twig' %}
+{# Головна: банер теми (фото з srcset — LCP, без lazy), плитки категорій, новинки, блок «куди йдуть кошти» (support.* теми),
+   корисні сторінки й блог. Тексти банера — з теми (hero.*), інакше з перекладів. #}
+{% set alternates = site_alternates('site_home') %}
+{% set locale = app.request.locale %}
+{% set hero_title = site_theme_text('hero.title') ?: site_theme_text('brand.name') ?: site_name %}
+{% set hero_text = site_theme_text('hero.text') ?: 'site.home.intro'|trans %}
+{% set home_seo = site_home_seo() %}
+{% block title %}{{ home_seo.title }}{% endblock %}
+{% block metaDescription %}{{ home_seo.description }}{% endblock %}
+{# og:image головної — банер теми (seo-tech-notes п. 17) #}
+{% block ogImage %}{% if site_theme('hero.image') %}{{ absolute_url(site_asset(site_theme('hero.image'))) }}{% endif %}{% endblock %}
+{% block schema %}{% import 'site/partials/_schema_organization.html.twig' as org %}{{ org.onlineStore() }}{% endblock %}
+{% block body %}
+    {% set hero_image = site_theme('hero.image') %}
+    <section class="hero{{ hero_image ? '' : ' hero-plain' }}" aria-labelledby="hero-title">
+        {% if hero_image %}
+            <picture class="hero-media">
+                {% if site_theme('hero.image_mobile') %}<source media="(max-width: 767px)" srcset="{{ site_asset(site_theme('hero.image_mobile')) }}">{% endif %}
+                {% set srcset = site_theme('hero.image_srcset', {}) %}
+                {% if srcset %}<source media="(min-width: 768px)" srcset="{% for w, src in srcset %}{{ site_asset(src) }} {{ w }}w{{ not loop.last ? ', ' }}{% endfor %}" sizes="(min-width: 1620px) 1572px, 100vw">{% endif %}
+                <img src="{{ site_asset(hero_image) }}" alt="{{ site_theme_text('hero.image_alt') ?? '' }}" width="{{ site_theme('hero.image_width') }}" height="{{ site_theme('hero.image_height') }}" fetchpriority="high">
+            </picture>
+        {% endif %}
+        <div class="hero-body">
+            {% if site_theme('hero.emblem') %}<img class="hero-emblem" src="{{ site_asset(site_theme('hero.emblem')) }}" width="{{ site_theme('hero.emblem_width') }}" height="{{ site_theme('hero.emblem_height') }}" alt="">{% endif %}
+            {% if site_theme_text('hero.eyebrow') %}<p class="hero-eyebrow">{{ site_theme_text('hero.eyebrow') }}</p>{% endif %}
+            <h1 id="hero-title">{{ hero_title }}</h1>
+            <p class="hero-text">{{ hero_text }}</p>
+            <div class="hero-actions">
+                <a class="btn btn-primary" href="#catalog">{{ site_theme_text('hero.cta_label') ?: 'site.home.to_catalog'|trans }}</a>
+                {% set secondary_url = site_theme('hero.secondary_url') ?: (site_theme('support.enabled') ? '#support' : null) %}
+                {% if secondary_url %}<a class="btn btn-outline" href="{{ secondary_url }}">{{ site_theme_text('hero.secondary_label') ?: site_theme_text('support.button_label') ?: 'site.home.support'|trans }}</a>{% endif %}
+            </div>
+        </div>
+    </section>
+
+    {% if categories %}
+    <section class="section" id="catalog" aria-labelledby="catalog-title">
+        <div class="section-head visually-hidden"><h2 id="catalog-title">{{ 'site.home.categories'|trans }}</h2></div>
+        <ul class="tiles">
+            {# від 900 px плитки auto-fit (site.css), ≤4 категорії — не ширші 320 px; від 5 на 1620 колонка ~211–302 px; 800w із product_large — для 2x #}
+            {% set n = max(1, categories|length) %}
+            {% set tile_sizes = n <= 4 ? '(min-width: 900px) 320px, 64px' : '(min-width: 1620px) ' ~ ((1572 - 16 * (min(n, 7) - 1)) / min(n, 7))|round ~ 'px, (min-width: 900px) calc((100vw - 48px) / ' ~ min(n, 4) ~ '), 64px' %}
+            {% for category in categories %}{% set url = site_url(category) %}{% set t = tr(category) %}
+                {% if url and t %}{% set tile = tiles[category.id] ?? {count: 0, image: null} %}
+                <li><a class="tile" href="{{ url }}">
+                    <span class="tile-media">{% if tile.image %}<img src="{{ ('media/' ~ tile.image)|imagine_filter('product_card') }}" srcset="{{ ('media/' ~ tile.image)|imagine_filter('product_card') }} 400w, {{ ('media/' ~ tile.image)|imagine_filter('product_large') }} 800w" sizes="{{ tile_sizes }}" alt="" loading="lazy" width="400" height="400">{% else %}<span class="thumb-ph{{ site_theme('placeholder') ? '' : ' no-image' }}" aria-hidden="true"></span>{% endif %}</span>
+                    <span class="tile-text"><span class="tile-name">{{ t.name }}</span>
+                    <span class="tile-count">{{ 'catalog.found'|trans({count: tile.count}, 'site_catalog') }}</span></span>
+                </a></li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+    </section>
+    {% endif %}
+
+    {% if cards %}
+    <section class="section" aria-labelledby="new-title">
+        {% set list_name = (cards_featured ? 'site.home.popular' : 'site.home.newest')|trans %}
+        <div class="section-head"><h2 id="new-title">{{ list_name }}</h2></div>
+        {% set analytics_items = cards|map(c => analytics_products[c.id] ?? null)|filter(p => p is not null) %}
+        {% if analytics_items is not empty %}{% do analytics_push(analytics_view_item_list(analytics_items, list_name, analytics_prices ?? [])) %}{% endif %}
+        <ul class="cards cards-4 product-grid">
+            {% for card in cards %}{% include 'site/partials/_product_card.html.twig' with {card: card, list_name: list_name, index: loop.index0, eager: false} %}{% endfor %}
+        </ul>
+    </section>
+    {% endif %}
+
+    {# Відгуки про магазин — віджет gbp-manager (app.gbp_reviews.token, власник 18.10.2026): Google або Google + відгуки сайту,
+       як у налаштуваннях віджета; |raw — HTML збирає Renderer пакета з екрануванням даних. Розмітка не тут: ті самі числа йдуть в aggregateRating OnlineStore (OrganizationSchema) —
+       тема паку, що замінює body цілком, має лишити цей блок, інакше розмітка буде без видимої оцінки. #}
+    {% block store_reviews %}
+    {% set store_reviews = gmb_reviews(null, {theme: 'site', schema: false}) %}
+    {% if store_reviews %}<section class="section store-reviews" id="store-reviews">{{ store_reviews|raw }}</section>{% endif %}
+    {% endblock %}
+
+    {% if site_theme('support.enabled') %}
+        {% include 'site/partials/_support.html.twig' with {support_shop_link: false} %}
+    {% endif %}
+
+    {% set pages = site_nav_pages('header')|merge(site_nav_pages('footer')) %}
+    {% if pages %}
+    <section class="section" aria-labelledby="pages-title">
+        <div class="section-head"><h2 id="pages-title">{{ 'site.home.pages'|trans }}</h2></div>
+        <ul class="link-list">
+            {# сторінка може бути і в меню шапки, і у футері — показуємо один раз #}
+            {% set seen = [] %}
+            {% for page in pages %}{% set t = tr(page) %}{% set url = site_url(page) %}
+                {% if t and url and url not in seen %}{% set seen = seen|merge([url]) %}<li><a href="{{ url }}">{{ t.title }}</a></li>{% endif %}
+            {% endfor %}
+        </ul>
+    </section>
+    {% endif %}
+
+    {% set posts = site_latest_posts(3) %}
+    {% if posts %}
+    <section class="section" aria-labelledby="posts-title">
+        <div class="section-head"><h2 id="posts-title">{{ 'site.home.latest_posts'|trans }}</h2><a href="{{ path('site_blog') }}">{{ 'site.home.all_posts'|trans }}</a></div>
+        <ul class="cards cards-posts">
+            {% for post in posts %}{% set t = tr(post) %}{% set url = site_url(post) %}
+                {% if t and url %}<li class="card post-card">
+                    {% if post.cover %}<img src="{{ ('/media/' ~ post.cover.path)|imagine_filter('product_large') }}" alt="" loading="lazy">{% endif %}
+                    <h3><a href="{{ url }}">{{ t.title }}</a></h3>
+                    <p class="meta"><time datetime="{{ post.publishedAt|date('Y-m-d') }}">{{ post.publishedAt|format_date('long', locale=locale) }}</time></p>
+                    {% if t.excerpt %}<p>{{ t.excerpt }}</p>{% endif %}
+                </li>{% endif %}
+            {% endfor %}
+        </ul>
+    </section>
+    {% endif %}
+{% endblock %}

@@ -1,0 +1,11 @@
+# Прод-збірка (docker/php/Dockerfile.prod) іде з git archive, але якщо збирати з робочої копії — не тягнути зайве.
+.git
+vendor
+var
+public/bundles
+public/media/*
+public/feeds
+!public/media/.gitkeep
+.env.local
+.env.*.local
+.secrets

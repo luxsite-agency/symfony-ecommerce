@@ -1,0 +1,18 @@
+{% extends 'site/base.html.twig' %}
+{% set noindex = true %}
+{% block title %}{{ 'site.account.privacy.export_title'|trans }} | {{ site_name }}{% endblock %}
+{% block body %}
+    <h1>{{ 'site.account.privacy.export_title'|trans }}</h1>
+    {% if gone %}
+        <p class="flash flash-error" role="alert">{{ 'site.account.error.link_invalid'|trans }}</p>
+    {% elseif ready %}
+        <p>{{ 'site.account.privacy.export_ready'|trans }}</p>
+        <form method="post" class="account-form export-download">
+            <input type="hidden" name="_token" value="{{ csrf_token('account') }}">
+            <button type="submit" class="btn btn-primary">{{ 'site.account.privacy.export_download'|trans }}</button>
+        </form>
+    {% else %}
+        <p class="flash flash-success export-pending" role="status">{{ 'site.account.privacy.export_pending'|trans }}</p>
+    {% endif %}
+    <ul class="account-links"><li><a href="{{ path('site_account_privacy') }}">{{ 'site.account.privacy.back'|trans }}</a></li></ul>
+{% endblock %}

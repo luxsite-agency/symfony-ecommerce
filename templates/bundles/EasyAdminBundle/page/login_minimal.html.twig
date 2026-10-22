@@ -1,0 +1,42 @@
+{# Копія @EasyAdmin/page/login_minimal.html.twig (EasyAdmin 5.6) з однією зміною: <html lang> мовою запиту — вхід рендериться без
+   контексту EasyAdmin, і в оригіналі lang немає (аудит UX A22). Оновлюючи EasyAdmin, звірити з оригіналом. #}
+{% trans_default_domain translation_domain ?? 'messages' %}
+<!DOCTYPE html>
+<html lang="{{ app.request.locale|default('uk') }}">
+    <head>
+        {% block head_metas %}
+            <meta charset="utf-8">
+            <meta http-equiv="X-UA-Compatible" content="IE=edge">
+            <meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noodp, noimageindex, notranslate, nocache" />
+            <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+            <meta name="generator" content="EasyAdmin" />
+            {% guard function csp_nonce %}
+                {# this is used by Trix + TextEditorField to inject styles dynamically;
+                   'style' returns the nonce bound to the 'style-src' directive #}
+                <meta name="csp-nonce" content="{{ csp_nonce('style') }}">
+            {% endguard %}
+        {% endblock head_metas %}
+
+        {% block head_favicon %}
+            <link rel="shortcut icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⬛</text></svg>">
+        {% endblock %}
+
+        <title>{{ block('page_title')|striptags|raw }}</title>
+
+        {% block head_stylesheets %}
+            <link rel="stylesheet" href="{{ asset('app.css', constant('EasyCorp\\Bundle\\EasyAdminBundle\\Asset\\AssetPackage::PACKAGE_NAME')) }}">
+        {% endblock %}
+
+        {% block head_javascript %}
+            {% guard function csp_nonce %}
+                <script src="{{ asset('app.js', constant('EasyCorp\\Bundle\\EasyAdminBundle\\Asset\\AssetPackage::PACKAGE_NAME')) }}" nonce="{{ csp_nonce('script') }}"></script>
+            {% else %}
+                <script src="{{ asset('app.js', constant('EasyCorp\\Bundle\\EasyAdminBundle\\Asset\\AssetPackage::PACKAGE_NAME')) }}"></script>
+            {% endguard %}
+        {% endblock head_javascript %}
+    </head>
+
+    <body id="{% block body_id %}{% endblock %}" class="ea {% block body_class %}{% endblock %}">
+        {% block wrapper_wrapper %}{% endblock wrapper_wrapper %}
+    </body>
+</html>

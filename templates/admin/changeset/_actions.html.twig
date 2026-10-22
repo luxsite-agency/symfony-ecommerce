@@ -1,0 +1,19 @@
+{# Верхні кнопки: назад до списку; для безризикового proposed — повноцінні форми, для ризикового «Застосувати» — якір на блок підтвердження #}
+{% trans_default_domain 'admin' %}
+<a href="{{ urls.index }}" class="btn btn-secondary"><i class="fa fa-arrow-left"></i> {{ 'changeset.label.plural'|trans }}</a>
+{% if can_reject and conflicts is empty %}
+    <form method="post" action="{{ urls.reject }}" class="d-inline-block ms-1" data-changeset-action="reject">
+        <input type="hidden" name="token" value="{{ csrf_token(csrf.reject) }}">
+        <button type="submit" class="btn btn-outline-danger"><i class="fa fa-xmark"></i> {{ 'changeset.action.reject'|trans }}</button>
+    </form>
+{% endif %}
+{% if can_apply and conflicts is empty %}
+    {% if cs.hasRisk %}
+        <a href="#confirm" class="btn btn-primary ms-1"><i class="fa fa-check"></i> {{ 'changeset.action.apply'|trans }}</a>
+    {% else %}
+        <form method="post" action="{{ urls.apply }}" class="d-inline-block ms-1" data-changeset-action="apply">
+            <input type="hidden" name="token" value="{{ csrf_token(csrf.apply) }}">
+            <button type="submit" class="btn btn-primary"><i class="fa fa-check"></i> {{ 'changeset.action.apply'|trans }}</button>
+        </form>
+    {% endif %}
+{% endif %}

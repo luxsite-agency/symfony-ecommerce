@@ -1,0 +1,9 @@
+{{ 'email.account.hello'|trans({name: name}, null, l) }}
+
+{{ 'email.account.wholesale_rejected.text'|trans({site: siteName}, null, l) }}
+{% if reason %}{{ 'email.account.wholesale_rejected.reason'|trans({}, null, l) }} {{ reason }}
+{% endif %}
+{{ url }}
+
+{{ 'email.account.wholesale_rejected.outro'|trans({}, null, l) }}
+{{ siteName }}

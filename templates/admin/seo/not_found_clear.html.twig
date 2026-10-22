@@ -1,0 +1,12 @@
+{% extends '@EasyAdmin/page/content.html.twig' %}
+{% trans_default_domain 'admin' %}
+{# Підтвердження очищення журналу 404 (NotFoundCrudController::clear): видалення — лише POST з CSRF. #}
+{% block content_title %}{{ 'not_found.clear.title'|trans }}{% endblock %}
+{% block main %}
+    <p>{{ 'not_found.clear.text'|trans }}</p>
+    <form method="post">
+        <input type="hidden" name="token" value="{{ csrf_token('seo-not-found-clear') }}">
+        <button type="submit" class="btn btn-danger"><i class="fa fa-trash"></i> {{ 'not_found.clear.submit'|trans }}</button>
+        <a class="btn btn-secondary" href="{{ ea_url().setController('App\\Admin\\Controller\\Crud\\NotFoundCrudController').setAction('index') }}">{{ 'not_found.clear.cancel'|trans }}</a>
+    </form>
+{% endblock %}

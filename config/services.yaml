@@ -1,0 +1,295 @@
+# yaml-language-server: $schema=../vendor/symfony/dependency-injection/Loader/schema/services.schema.json
+
+parameters:
+    # Мови магазину (ADR Rev 8): для клієнта перевизначаються в config/store, у коді буквальних мов нема
+    app.locales: ['uk', 'ru']
+    app.default_locale: 'uk'
+    # Мови інтерфейсу адмінки (App\Admin\I18n\AdminLocales) — не мови контенту, однакові в кожному магазині: перемикач «UA / EN» у верхній
+    # панелі й на вході (рішення власника 20.10.2026), типова — app.default_locale, якщо вона тут є, інакше en. Переклади ru повні
+    # (admin+intl-icu.ru, validators.ru) — 'ru' можна додати сюди; нову мову — лише з повними перекладами (AdminTranslationCoverageTest).
+    app.admin_locales: ['uk', 'en']
+    # hreflang для мов, де регіон важливий (ru-аудиторія в Україні); відсутня мова → її код як є
+    app.hreflang: { uk: 'uk-UA', ru: 'ru-UA' }
+    app.default_currency: 'UAH'
+    # Хост адмінки (ADR D10). Env у маршрутах Symfony не дозволяє, тому параметр; для іншого магазину — when@prod/файл параметрів.
+    admin_host: 'shop-engine-admin.localhost'
+    # Хост публічного сайту: маршрути site_* прив'язані до нього, щоб «Переглянути на сайті» з адмінки давало правильний URL
+    site_host: 'shop-engine.localhost'
+    # Інші імена того ж магазину (www, другий домен): разом із site_host і admin_host — framework.trusted_hosts у prod
+    # (Kernel::process, рев'ю безпеки #45, п. 5). Запит з іншим Host у prod отримує 400.
+    app.extra_hosts: []
+    app.site_name: 'Symfony ecommerce LuxSite'
+    # Позначка платформи: посилання на luxsite.agency у назві в рядку платформи футера (режим рядка — налаштування
+    # site.platform_credit: повний | коротко | не показувати). Підпис рушія в коді сторінок (коментар, data-engine, meta generator,
+    # X-Powered-By, X-Mailer) від цього не залежить — App\Core\Shared\Http\ResponseMarker. NOTICE у копіях рушія — Apache 2.0, п. 4(d).
+    app.powered_by: true
+    # Адреса статичних сторінок (Page): '' (типово, рішення власника 20.10.2026: «page не повинно бути в структурі URL») → у корені
+    # /{slug}/ з кінцевим слешем; сторінка перевіряється раніше за категорію, слаг не збігається з категорією, товаром і службовими
+    # словами (PageSlugs). '/<слаг>' → /<слаг>/{slug}. Старі /page/{slug} → 301 завжди, крім самого '/page'. Інше — помилка (SiteRouteLoader).
+    app.page_path_prefix: ''
+    # Реквізити сайту для сторінки ліцензії (App\Core\License\PlatformLicense: /license сайту й «Ліцензія» в адмінці; код рушія —
+    # Apache 2.0 для всіх). Пак задає в config/parameters.yaml: licensee — власник сайту, рядок або {uk: …, en: …} (порожньо →
+    # app.site_name); договір з LuxSite: type — subscription | perpetual (порожньо → «не вказано»); contract — номер; since — 'YYYY-MM-DD'.
+    # Без app.license у паку bin/store validate попереджає. Текст ліцензії — templates/license/text.<мова>.html.twig (uk, en;
+    # інші мови → en), змінювати лише разом із власником.
+    app.license: {}
+    # Перелік сторонніх компонентів (runtime-пакети composer.lock: назва, версія, ліцензія) для сторінки ліцензії: пише
+    # bin/console license:components у збірці образу (Dockerfile.prod); нема файлу — рахується з composer.lock при першому запиті
+    app.license_components_file: '%kernel.project_dir%/var/license/components.json'
+    # Тема публічного сайту (App\Site\Theme\SiteTheme::DEFAULTS — нейтральна світла): кольори, шрифт, логотип, банер,
+    # блок «куди йдуть кошти», футер. Для клієнта — у config/store/parameters.local.yaml (пак перекриває параметр цілком),
+    # задаються лише відмінні ключі. Лого обов'язкове (правило власника 09.10.2026): тут — нейтральний знак рушія для dev
+    # і тестів, пак задає свій themes/<key>/… (без logo.src SiteTheme і bin/store validate падають).
+    app.theme:
+        logo: { src: 'assets/logo.svg', width: 40, height: 40 }
+    # Шаблони паку магазину (E14, docs/themes.md): bin/store deploy кладе themes/<key>/templates/** сюди, StoreTemplatesPass
+    # ставить теку першою в головному Twig-namespace (лише коли вона існує); базові шаблони рушія — @engine. Пак цей параметр не задає.
+    app.store_templates_dir: '%kernel.project_dir%/templates/store'
+    # Відправник листів магазину (Mailer); на dev листи ловить mailpit
+    app.mail_from: 'shop@shop-engine.localhost'
+    # Ліміти оформлення (ADR: rate limiting на quick order/checkout; рев'ю PR #6 п. 7): з IP і на телефон за інтервал
+    app.order_rate_limit_ip: 30
+    app.order_rate_limit_phone: 5
+    app.order_rate_limit_interval: '10 minutes'
+    # посилання «дякуємо» з токеном діє добу, далі — сторінка «прийнято» без деталей (консиліум безпеки 10.10.2026, п. 4)
+    app.order_thanks_ttl: 86400
+    # з черги failed видаляються лише листи з токенами (SendCustomerAuthMail) старші за N днів; решта failed лишається для messenger:failed:retry
+    app.messenger_failed_days: 7
+    # Каталог (ADR Rev 11 п. 6): некешовані розрахунки фасетів лістингу з одного IP за інтервал; понад ліміт — без лічильників, не 429
+    app.catalog_listing_rate_limit: 60
+    app.catalog_listing_rate_interval: '1 minute'
+    # Фільтр A–Z за першою літерою назви в категорії (англомовна аптека: 1300+ гомеопатичних назв): лічильники літер
+    # рахуються разом із фасетами (кеш 300 с), тому вмикає пак — app.catalog_letters: true у config/parameters.yaml
+    app.catalog_letters: false
+    # Приймач зовнішньої контент-панелі (/api/studio/*): запитів з одного IP за хвилину
+    app.studio_api_rate_limit: 60
+    # Каталог (ADR Rev 11 п. 4): затримка фонового перерахунку зведення фасетів зміненої категорії, секунд
+    app.catalog_facet_refresh_delay: 120
+    # sitemap.xml: понад стільки адрес — sitemap index із файлами товарів (протокол — до 50 000 URL у файлі)
+    app.sitemap_max_urls: 45000
+    # SEO каталогу (seo-tech-notes п. 4, 8): бренд для schema Product (коли в товару нема свого) і шаблони мети товару
+    # за замовчуванням (коли поля перекладу порожні): {name}, {price}; *_from — «ціна від» (PriceMode::From); рядок або {uk: …, en: …}. Назву магазину в title
+    # дописує base.html.twig, тож тут її нема. Для магазину клієнта — config/store (приклад: themes/legacyshop.yaml.dist).
+    app.seo:
+        brand: ~
+        title_max: 60
+        product:
+            title: '{name}'
+            title_on_request: '{name}'
+            title_from: '{name}'
+            description: ''
+            description_on_request: ''
+            description_from: ''
+    # Імпорт фіду постачальника за URL (catalog:import:feed, консиліум безпеки 10.10 п. 3): найбільший розмір відповіді в байтах,
+    # понад — завантаження перервано з помилкою (/tmp не переповнюється). 512 МБ — із запасом для YML на сотні тисяч offer.
+    app.feed_max_bytes: 536870912
+    # …і найбільший час завантаження разом із редиректами, с (timeout 60 с у коді — лише пауза між чанками)
+    app.feed_max_duration: 1800
+    # Google Merchant feed (Ф3): як часто перегенерувати за розкладом (App\Schedule), крім запуску після імпорту
+    app.merchant_feed_interval: '6 hours'
+    app.merchant_feed_dir: '%kernel.project_dir%/public/feeds'
+    # g:color / g:size у фіді: коди атрибутів-осей варіанта (точний збіг або з суфіксом _… / -…, напр. rozmir-vzuttia)
+    app.merchant_feed_axis_codes:
+        color: [color, colour, kolir, tsvet]
+        size: [size, rozmir, razmer]
+    # g:custom_label_0..4 в обох фідах (групування товарів у кампаніях Google Ads і наборах Meta): поле → джерело.
+    # Джерела: top_category (корінь шляху основної категорії), category (основна категорія), brand (бренд картки),
+    # sale (є sale_price — app.feed_sale_labels.sale, інакше .regular). Порожнє значення (нема бренду) — мітка не виводиться.
+    # Магазин клієнта перевизначає мапу в config/store; {} — без міток.
+    app.feed_custom_labels:
+        custom_label_0: top_category
+        custom_label_1: brand
+        custom_label_2: sale
+    app.feed_sale_labels:
+        sale: 'sale'
+        regular: 'regular'
+    # Дашборд адмінки: TTL кешу агрегатів (с) і поріг «мало на складі» (одиниць залишку)
+    app.dashboard_cache_ttl: 120
+    app.dashboard_low_stock_threshold: '5'
+    # Нова пошта (Ф3, D9): сторінка API при синхронізації довідників і cron щоденного оновлення (Scheduler)
+    app.nova_poshta_page_size: 1000
+    app.nova_poshta_sync_cron: '30 3 * * *'
+    # Журнал 404 сайту (епік E3): не більше рядків і днів з останнього звернення; прибирання — seo:not-found:prune
+    app.seo_not_found_limit: 10000
+    app.seo_not_found_days: 90
+    # Адмінка: вихід після бездіяльності, секунд (сесія сайту живе довше — framework.session.gc_maxlifetime); 0 = вимкнено
+    app.admin_idle_timeout: 7200
+    # журнал змін адмінки (E15 PR-1): скільки місяців зберігати рядки admin_audit_entry; 0 = не прибирати
+    app.admin_audit_months: 24
+    # E15 PR-2: персональні API-токени — найдовший строк (днів), невдалих автентифікацій з IP за хвилину, запитів на токен за хвилину
+    app.admin_api_token_max_days: 90
+    app.admin_api_auth_rate_limit: 30
+    app.admin_api_token_rate_limit: 120
+    # E15 PR-6: спроб створити пакет змін на токен за хвилину (REST і MCP) і найбільше тіло запиту до API/MCP (байт; nginx — 1m)
+    app.admin_api_write_rate_limit: 20
+    app.admin_api_max_body_bytes: 1048576
+    # Живий дизайн під токеном theme:write (рішення власника 20.10.2026, docs/themes.md «Живий дизайн»): теки templates/site/**,
+    # public/theme.css, history/ — у var/share (том share: переживає релізи, спільний для php і worker). Після запису ключові сторінки
+    # рендеряться через HTTP до nginx стека (Host — site_host): адреса nginx зсередини compose; 'kernel' — через ядро без nginx (тести).
+    # Env THEME_SMOKE_URL перекриває (dev і worktree: контейнер nginx має власне ім'я, бо мережа спільна між стеками).
+    app.theme_live_dir: '%kernel.project_dir%/var/share/theme'
+    app.theme_smoke_url_default: 'http://nginx'
+    app.theme_smoke_url: '%env(default:app.theme_smoke_url_default:THEME_SMOKE_URL)%'
+    # скільки секунд put/delete/revert живої теми чекають на блокування іншого запису, далі 409 (ThemeService::locked)
+    app.theme_lock_wait: 60
+    # Пакети змін через AI (E15 PR-3, рішення власника 11.10 п. 5): технічні межі й цінові пороги. Для магазину клієнта — config/store.
+    # Понад стільки операцій у пакеті — 413 (0 = без межі); proposed-пакет живе стільки, далі expired
+    app.ai_changeset_max_ops: 200
+    app.ai_changeset_ttl: '24 hours'
+    # цінових операцій на токен за добу (лімітер PR-4/6; тут лише лічильник з журналу); 0 = без межі
+    app.ai_price_ops_per_day: 1000
+    # Ризикові прапорці — не блокують: попередження з явним підтвердженням менеджера. 0 = правило вимкнене.
+    # стрибок ціни варіанта за пакет, %; сукупна зміна за N днів від ціни до першої AI-зміни (з журналу), %; днів вікна
+    app.ai_price_jump_pct: 30
+    app.ai_price_cumulative_pct: 30
+    app.ai_price_cumulative_days: 7
+    # понад стільки цінових операцій у пакеті — прапорець mass_price; ціна 0 — прапорець zero_price (false = вимкнено)
+    app.ai_mass_price_ops: 50
+    app.ai_flag_zero_price: true
+    # Кабінет покупця (E12): строк дії посилань із листів, секунд; неперевірені реєстрації живуть днів
+    # Демо-покупці публічного демо (DemoAccounts): пароль з паку (parameters.local.yaml) або env DEMO_CUSTOMER_PASSWORD;
+    # порожньо = демо-режим вимкнено (покупці не сіються, блоку «Демо-доступ» на вході нема)
+    app.demo.customer_password: '%env(default:app.demo.no_password:DEMO_CUSTOMER_PASSWORD)%'
+    app.demo.no_password: ''
+    # Справжні фото для демо-даних (DemoPhotos): пак store-demo тримає їх у catalog/demo-images/, bin/store deploy кладе сюди;
+    # нема теки чи файлу — плейсхолдер. Інша тека — опція --images-dir команди app:demo:seed.
+    app.demo.images_dir: '%kernel.project_dir%/config/store/demo-images'
+    app.customer_verify_ttl: 86400
+    app.customer_reset_ttl: 3600
+    app.customer_login_link_ttl: 900
+    # посилання «повернути стару адресу» на стару скриньку після зміни email (рев'ю #60, п. 3)
+    app.customer_revert_ttl: 604800
+    app.customer_unverified_days: 7
+    # Вхід через Google (рішення власника 13.10.2026, docs/google-sign-in.md): ключі вводить клієнт у «Налаштуваннях магазину»
+    # (google.client_id, google.client_secret шифровано, google.sign_in_enabled); env GOOGLE_OAUTH_CLIENT_ID/SECRET з .env.local — лише
+    # fallback стендів, поки перемикач вимкнений (GoogleSignInConfig). Без ключів кнопки нема. Кінцеві точки OIDC Google фіксовані
+    # (у тестах — фейковий сервер; discovery — для кнопки «Перевірити налаштування»), JWKS кешується на jwks_ttl секунд, ліміт з IP за 15 хв
+    app.google.endpoints:
+        discovery: 'https://accounts.google.com/.well-known/openid-configuration'
+        authorization: 'https://accounts.google.com/o/oauth2/v2/auth'
+        token: 'https://oauth2.googleapis.com/token'
+        jwks: 'https://www.googleapis.com/oauth2/v3/certs'
+    app.google.jwks_ttl: 21600
+    app.google.rate_limit_ip: 30
+    # E12 PR-6: версія тексту згод (ConsentLog.policy_version; хеш тексту рахується з перекладу) і тека файлів експорту:
+    # var/share — спільний том php і worker у store/prod (файл пише воркер, віддає php; рев'ю #60, п. 2), поза public/
+    app.consent_policy_version: '2026-10-11'
+    # Відгуки на товари (рішення власника 13.10.2026, контракт з входом через Google — внутрішня документація):
+    # enabled=false — ні форми, ні списку, ні зірок, ні schema (адмінка бачить наявні); premoderation — новий і відредагований
+    # відгук чекає схвалення; require_google — пишуть лише прив'язані до Google (демо-акаунти завжди); daily_limit — нових
+    # відгуків на покупця за 24 год; rate_limit_ip/_interval — POST-и з IP; page_size — відгуків на сторінку картки
+    app.reviews.enabled: true
+    app.reviews.premoderation: true
+    app.reviews.require_google: false
+    app.reviews.daily_limit: 5
+    app.reviews.rate_limit_ip: 20
+    app.reviews.rate_limit_interval: '1 hour'
+    app.reviews.page_size: 10
+    # Віджет відгуків gbp-manager (рішення власника 18.10.2026, docs/reviews.md): token — публічний токен віджета картки
+    # (gbp-manager → картка → «Відгуки на сайті»); порожній — вимкнено. Заданий: на головній блок відгуків компанії
+    # (Google або Google + відгуки сайту — як у налаштуваннях віджета) і aggregateRating у OnlineStore з тими ж числами,
+    # у блоці відгуків товару — рядок «Оцінка магазину» без розмітки (Product.aggregateRating лишається власним). base — адреса gbp-manager.
+    app.gbp_reviews.token: ''
+    app.gbp_reviews.base: 'https://gbp-manager.app'
+    app.customer_export_dir: '%kernel.project_dir%/var/share/exports'
+    # вкладення покупців до замовлень (заявка /request; далі рецепти E16): поза public/, той самий том var/share; ретенція в днях
+    app.order_attachment_dir: '%kernel.project_dir%/var/share/private/attachments'
+    app.order_attachment_retention_days: 180
+    # Дефолти налаштувань (Core/Settings): порожньо = вимкнено; для магазину клієнта — config/store.
+    # AI на ключі клієнта (E15 BYOK, docs/ai.md): OpenRouter, модель за замовчуванням — з каталогу моделей агенції;
+    # стелі — технічні (0 = без стелі для max_input_chars). Ключ шифрування секретів — env SETTINGS_SECRET_KEY (.env.local).
+    app.ai_base_url: 'https://openrouter.ai/api/v1/'
+    app.ai_default_model: 'deepseek/deepseek-v4-pro'
+    app.ai_timeout: 60
+    app.ai_max_input_chars: 20000
+    app.ai_max_output_tokens: 4000
+    app.ai_usage_months: 24
+    app.settings_defaults:
+        analytics.tags_on_dev: '0'
+        # Consent Mode v2: мови зі згодою за замовчуванням (решта — denied + банер). Питання до PR: чи так для uk.
+        analytics.consent_granted_locales: 'uk,ru'
+        # Каталог (ADR Rev 11, рішення власника): лічильники фільтрів за замовчуванням вимкнені; поріг N — карток у наборі
+        catalog.facet_counts_enabled: '0'
+        catalog.facet_counts_max_set: '20000'
+        # AI (E15 BYOK): модель — app.ai_default_model; ліміт витрат 0 = без ліміту
+        ai.monthly_budget_usd: '0'
+        # Вхід через Google: ключі вводить клієнт в адмінці; поки вимкнено — fallback на env GOOGLE_OAUTH_* (стенди)
+        google.sign_in_enabled: '0'
+        # Рядок платформи у футері: full|short|none; «Коротко» — для нових і наявних магазинів (власник 19.10.2026)
+        site.platform_credit: 'short'
+
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+
+    # HTTP-клієнт OIDC Google (GoogleOidcClient): окремий сервіс, щоб у тестах підмінити фейковим сервером (when@test)
+    google_oidc.http_client:
+        alias: Symfony\Contracts\HttpClient\HttpClientInterface
+
+    App\:
+        resource: '../src/'
+        exclude:
+            - '../src/Kernel.php'
+            - '../src/**/Entity/'
+            # DTO повідомлень Messenger — не сервіси; хендлери живуть у **/MessageHandler/ і реєструються autoconfigure
+            - '../src/**/Message/'
+            - '../src/Core/Shared/Money/'
+            # правила й compiler pass шаблонів паку — не сервіси (Kernel::build)
+            - '../src/Site/Theme/Templates/'
+            # заглушки gmb_* — лише без пакета luxsite/gmb-reviews-bundle, реєструє Kernel::configureContainer (docs/addons.md)
+            - '../src/Site/Twig/GmbReviewsFallbackExtension.php'
+
+when@test:
+    parameters:
+        # тестовий набір мов ширший за дефолт, щоб ловити хардкод uk/ru
+        app.locales: ['uk', 'ru', 'en']
+        # ru-переклади адмінки повні — тест-страж перевіряє їх, хоч перемикач у магазинах лише UA / EN
+        app.admin_locales: ['uk', 'en', 'ru']
+        # у тестах десятки оформлень з одного IP/телефону — ліміти не мають заважати (перевіряються окремим тестом через фабрику)
+        app.order_rate_limit_ip: 100000
+        app.order_rate_limit_phone: 100000
+        app.catalog_listing_rate_limit: 100000
+        app.catalog_letters: true
+        app.studio_api_rate_limit: 100000
+        app.admin_api_auth_rate_limit: 100000
+        app.admin_api_token_rate_limit: 100000
+        app.admin_api_write_rate_limit: 100000
+        app.reviews.rate_limit_ip: 100000
+        # віджет gbp-manager у тестах: токен заданий, а gbp-manager «недоступний» (з'єднання відхилено одразу) — блоку нема;
+        # тести оцінки підставляють Luxsite\GmbReviews\Client із фейковою відповіддю (GbpRatingTest)
+        app.gbp_reviews.token: '0123456789abcdef0123456789abcdef'
+        app.gbp_reviews.base: 'http://127.0.0.1:9'
+        # зведення фасетів — одразу після запису в індекс (RefreshCategoryFacets у тестах — sync)
+        app.catalog_facet_refresh_delay: 0
+        app.merchant_feed_dir: '%kernel.project_dir%/var/test-feeds'
+        # тести рендерять сайт крізь фікстурну тему паку (заготовки extends '@engine/…' + посилання в шапці й банер на головній),
+        # як зібраний образ крізь templates/store/: PackRenderTest, і кожен функціональний тест сторінок — на реальному шляху пасу
+        app.store_templates_dir: '%kernel.project_dir%/tests/store/pack-demo/themes/demo/templates'
+        # тести не залежать від фото, покладених у config/store/demo-images локально; фото — лише через --images-dir
+        app.demo.images_dir: '%kernel.project_dir%/tests/Fixtures/demo-images-none'
+        app.customer_export_dir: '%kernel.project_dir%/var/test-exports'
+        # живий дизайн (ThemeApiTest): окрема тека, рендер ключових сторінок — через ядро (у тестах nginx нема)
+        app.theme_live_dir: '%kernel.project_dir%/var/test-theme'
+        app.theme_smoke_url: 'kernel'
+        app.theme_lock_wait: 2
+        app.order_attachment_dir: '%kernel.project_dir%/var/test-attachments'
+        # фейковий Google (tests/Support/Google/FakeGoogle): кінцеві точки — умовні адреси, запити ловить сам фейк
+        app.google.endpoints:
+            discovery: 'https://google.test/.well-known/openid-configuration'
+            authorization: 'https://google.test/o/oauth2/v2/auth'
+            token: 'https://google.test/token'
+            jwks: 'https://google.test/certs'
+    services:
+        _defaults:
+            autowire: true
+            autoconfigure: true
+        # тести викликають відправку листів напряму (Messenger у тестах in-memory)
+        App\Core\Order\Mail\OrderMailer:
+            public: true
+        # E15 PR-2: маршрути зі скоупами для тестів 403 (config/routes/test/admin_api_fixture.yaml); справжні ресурси — PR-4
+        App\Tests\Functional\AdminApi\Fixture\ScopedController: ~
+        App\Tests\Support\Google\FakeGoogle:
+            public: true
+        google_oidc.http_client:
+            alias: App\Tests\Support\Google\FakeGoogle

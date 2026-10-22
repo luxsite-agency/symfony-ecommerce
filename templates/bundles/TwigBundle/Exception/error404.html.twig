@@ -1,0 +1,26 @@
+{% extends 'site/base.html.twig' %}
+{# 404 публічного сайту в темі магазину (TwigErrorRenderer, лише prod; перегляд на dev — /_error/404). Без canonical/hreflang, noindex. #}
+{% set alternates = {} %}
+{% set noindex = true %}
+{% block title %}{{ 'site.error404.title'|trans }} | {{ site_name }}{% endblock %}
+{% block body %}
+    <div class="status-page">
+        <p class="status-code" aria-hidden="true">404</p>
+        <h1>{{ 'site.error404.title'|trans }}</h1>
+        <p class="lead">{{ 'site.error404.text'|trans }}</p>
+        <div class="hero-actions">
+            <a class="btn btn-primary" href="{{ path('site_home') }}">{{ 'site.error404.home'|trans }}</a>
+            <a class="btn btn-outline" href="{{ path('site_home') }}#catalog">{{ 'site.nav.catalog'|trans }}</a>
+        </div>
+    </div>
+    {% set categories = site_nav_categories() %}
+    {% if categories %}
+        <section class="section">
+            <ul class="link-list">
+                {% for category in categories %}{% set url = site_url(category) %}{% set t = tr(category) %}
+                    {% if url and t %}<li><a href="{{ url }}">{{ t.name }}</a></li>{% endif %}
+                {% endfor %}
+            </ul>
+        </section>
+    {% endif %}
+{% endblock %}

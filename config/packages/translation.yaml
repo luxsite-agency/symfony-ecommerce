@@ -1,0 +1,6 @@
+framework:
+    # Мова інтерфейсу адмінки й помилок валідації; мови контенту магазину — app.locales
+    default_locale: uk
+    translator:
+        default_path: '%kernel.project_dir%/translations'
+        providers:

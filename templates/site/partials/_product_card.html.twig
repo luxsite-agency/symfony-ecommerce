@@ -1,0 +1,22 @@
+{# Картка товару в сітці (лістинг категорії, головна). card — рядок ProductCards (+ locale для фолбеку URL на головній; rating —
+   ?{average, stars, count} зі схвалених відгуків); list_name — назва списку для GA4 select_item; index — позиція (0..); eager — перші картки без lazy (LCP). #}
+{% trans_default_domain 'site_catalog' %}
+{% set card_locale = card.locale ?? app.request.locale %}
+{% set href = card.slug ? path('site_product', {slug: card.slug, _locale: card_locale}) : null %}
+<li class="card" data-product-id="{{ card.id }}">
+    <div class="thumb">
+        {% if card.image %}<img src="{{ ('media/' ~ card.image)|imagine_filter('product_card') }}" alt="{{ card.imageAlt ?: card.name }}"{% if not eager %} loading="lazy"{% endif %} width="400" height="400">
+        {% else %}<span class="thumb-ph{{ site_theme('placeholder') ? '' : ' no-image' }}" aria-hidden="true"></span>{% endif %}
+    </div>
+    <h3>{% if href %}<a href="{{ href }}"{% if analytics_products[card.id] is defined %} {{ analytics_select_attr(analytics_products[card.id], list_name, index, analytics_prices[card.id] ?? null) }}{% endif %}>{{ card.name }}</a>{% else %}{{ card.name }}{% endif %}</h3>
+    {% if card.brand %}<div class="muted">{{ card.brand }}</div>{% endif %}
+    {% if card.rating ?? null %}{% include 'site/partials/_rating_stars.html.twig' with {average: card.rating.average, stars: card.rating.stars, count: card.rating.count} only %}{% endif %}
+    <div class="price">
+        {% if card.price is null %}{{ 'catalog.price_on_request'|trans }}
+        {% elseif card.priceFrom %}{{ 'catalog.price_from'|trans({price: card.price.format(app.request.locale)}) }}
+        {% else %}{{ card.price.format(app.request.locale) }}{% endif %}
+        {% if card.retailPrice ?? null %}<span class="retail-price muted">{{ 'catalog.price_retail'|trans({price: card.retailPrice.format(app.request.locale)}) }}</span>{% endif %}
+    </div>
+    <div class="stock-{{ card.availability }}">{{ ('catalog.availability.' ~ card.availability)|trans }}{% if (card.stock ?? null) is not null %} <span class="stock-exact">{{ 'catalog.stock_exact'|trans({stock: card.stock}) }}</span>{% endif %}{% if card.leadTimeDays ?? null %} <span class="muted">({{ 'catalog.lead_time'|trans({days: card.leadTimeDays}) }})</span>{% endif %}</div>
+    {% include 'site/partials/_wishlist_button.html.twig' with {product_id: card.id, compact: true} only %}
+</li>

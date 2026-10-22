@@ -1,0 +1,18 @@
+{# Контракт теми (docs/themes.md, template_contract 1). Змінні OrderController::page (410): noindex (true); деталей замовлення тут немає свідомо. #}
+{# Прострочене посилання «дякуємо» (app.order_thanks_ttl): лише факт, без номера, контактів і позицій — токен у адресі
+   вже міг піти в історію, листи чи журнали, тож деталей за ним більше не показуємо. Аналітика на цій адресі вимкнена. #}
+{% extends 'site/base.html.twig' %}
+{% set alternates = {} %}
+{% block title %}{{ 'site.thanks.accepted_title'|trans }} | {{ site_name }}{% endblock %}
+{% block schema %}
+    {# до будь-яких тегів аналітики: адреса без токена в history (GA4 і Pixel беруть page_location з location у момент виконання) #}
+    <script>(function(){var m=location.pathname.match(/^(.*\/order\/)[a-f0-9]{48}\/thanks$/);if(m&&history.replaceState){history.replaceState(null,'',m[1]+'thanks'+location.search+location.hash);}})();</script>
+{% endblock %}
+{% block body %}
+    <div class="status-page">
+        <div class="status-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></div>
+        <h1>{{ 'site.thanks.accepted_title'|trans }}</h1>
+        <p class="lead">{{ 'site.thanks.accepted_intro'|trans }}</p>
+        <div class="hero-actions"><a class="btn btn-primary" href="{{ path('site_home') }}">{{ 'site.cart.continue'|trans }}</a></div>
+    </div>
+{% endblock %}

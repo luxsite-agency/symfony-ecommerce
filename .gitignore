@@ -1,0 +1,48 @@
+
+###> symfony/framework-bundle ###
+/.env.local
+/.env.local.php
+/.env.*.local
+/config/secrets/prod/prod.decrypt.private.php
+/public/bundles/
+/var/
+/vendor/
+###< symfony/framework-bundle ###
+
+###> friendsofphp/php-cs-fixer ###
+/.php-cs-fixer.php
+/.php-cs-fixer.cache
+###< friendsofphp/php-cs-fixer ###
+
+###> phpunit/phpunit ###
+/phpunit.xml
+/.phpunit.cache/
+###< phpunit/phpunit ###
+
+###> liip/imagine-bundle ###
+/public/media/cache/
+###< liip/imagine-bundle ###
+
+###> catalog media (Vich) ###
+/public/media/*
+!/public/media/.gitkeep
+###< catalog media (Vich) ###
+
+###> shop-engine: параметри розгортання (хости, назва) — поза git ###
+/config/store/*.local.yaml
+/config/store/demo-images/
+###< shop-engine ###
+
+# Google Merchant feed — генерується командою feed:merchant:generate
+/public/feeds/
+
+###> shop-engine: шаблони паку магазину (bin/store deploy кладе themes/<key>/templates/** у контекст збірки) ###
+/templates/store/
+###< shop-engine ###
+
+###> python ###
+__pycache__/
+###< python ###
+
+# необов'язкові пакети магазину: пише bin/store deploy у контекст збірки (docs/addons.md)
+/packages/addons.require

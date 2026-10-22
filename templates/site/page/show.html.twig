@@ -1,0 +1,16 @@
+{# Контракт теми (docs/themes.md, template_contract 1). Змінні PageController::show: page (Page), tr (PageTranslation мовою сторінки). #}
+{% extends 'site/base.html.twig' %}
+{% import 'site/partials/_schema.html.twig' as schema %}
+{% set alternates = site_alternates('site_page', {}, page) %}
+{% block title %}{{ tr.metaTitle ?: tr.title }} | {{ site_name }}{% endblock %}
+{% block metaDescription %}{{ tr.metaDescription ?: tr.body|striptags|slice(0, 200) }}{% endblock %}
+{% block schema %}
+    {{ schema.crumbs([{name: site_name, url: url('site_home')}, {name: tr.title}]) }}
+{% endblock %}
+{% block body %}
+    <ol class="crumbs"><li><a href="{{ path('site_home') }}">{{ site_name }}</a></li><li>{{ tr.title }}</li></ol>
+    <article class="prose">
+        <h1>{{ tr.title }}</h1>
+        {{ tr.body|raw }}
+    </article>
+{% endblock %}

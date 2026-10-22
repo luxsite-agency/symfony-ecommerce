@@ -1,0 +1,6 @@
+{# JSON-LD OnlineStore з параметрів теми (SEO п. 20). Використання на головній у блоці schema:
+   {% import 'site/partials/_schema_organization.html.twig' as org %}{{ org.onlineStore() }} #}
+{% macro onlineStore() %}
+{% import 'site/partials/_schema.html.twig' as s %}
+{{ s.ld(site_organization_schema()) }}
+{% endmacro %}

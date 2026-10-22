@@ -1,0 +1,29 @@
+{# Контракт теми (docs/themes.md, template_contract 1): заборонена зона — пак цей шаблон не перекриває (StoreTemplates::FORBIDDEN),
+   текст ліцензії і перелік компонентів лишаються такими, як у рушії. Змінні LicenseController: license (PlatformLicense: siteHost,
+   licensee(мова)), text_locale (мова тексту: uk|en — інші мови сайту отримують en), components (list {name, version, license} — на сайті
+   показуються лише назва й ліцензія: точні версії пакетів анонімам не потрібні і полегшують підбір CVE, вони є в адмінці; рев'ю #67 M1),
+   noindex (true). Без аналітичних e-commerce подій. #}
+{% extends 'site/base.html.twig' %}
+{% import 'site/partials/_schema.html.twig' as schema %}
+{% set alternates = site_alternates('site_license') %}
+{% block title %}{{ 'site.license.title'|trans }} | {{ site_name }}{% endblock %}
+{% block metaDescription %}{{ 'site.license.description'|trans({site: license.siteHost}) }}{% endblock %}
+{% block schema %}
+    {{ schema.crumbs([{name: site_name, url: url('site_home')}, {name: 'site.license.title'|trans}]) }}
+{% endblock %}
+{% block body %}
+    <ol class="crumbs"><li><a href="{{ path('site_home') }}">{{ site_name }}</a></li><li>{{ 'site.license.title'|trans }}</li></ol>
+    <article class="prose license">
+        {% if text_locale != app.request.locale %}<p class="license-note">{{ 'site.license.in_english'|trans }}</p>{% endif %}
+        {% include 'license/text.' ~ text_locale ~ '.html.twig' with {site: license.siteHost, licensee: license.licensee(text_locale), heading: 'h1'} only %}
+        <h2 id="components">{{ 'site.license.components'|trans }}</h2>
+        <p>{{ 'site.license.components_note'|trans }}</p>
+        <table class="license-components">
+            <thead><tr><th>{{ 'site.license.package'|trans }}</th><th>{{ 'site.license.license'|trans }}</th></tr></thead>
+            <tbody>
+            {% for c in components %}<tr><td>{{ c.name }}</td><td>{{ c.license }}</td></tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </article>
+{% endblock %}

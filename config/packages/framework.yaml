@@ -1,0 +1,118 @@
+# see https://symfony.com/doc/current/reference/configuration/framework.html
+framework:
+    secret: '%env(APP_SECRET)%'
+
+    # Note that the session will be started ONLY if you read or write from it.
+    # Сесії — у MySQL (PdoSessionHandler з DATABASE_URL, таблиця sessions — міграцією): файли в контейнері губились на
+    # кожному деплої (адмінку й майбутній кабінет розлогінювало) і жили 24 хв (консиліум 07.10 п. 2). TTL — доба без
+    # активності; довше для покупця тримає remember_me (firewall site). Прибирання протухлих — gc на 1 % закриттів сесії
+    # (DELETE за індексом sess_lifetime). Сторінки каталогу сесію не стартують (stateless CSRF, csrf.yaml).
+    session:
+        handler_id: '%env(DATABASE_URL)%'
+        gc_maxlifetime: 86400
+        gc_probability: 1
+        gc_divisor: 100
+        cookie_secure: auto
+        cookie_samesite: lax
+        cookie_httponly: true
+
+    # За traefik/nginx у docker-мережі: інакше Symfony генерує http:// у редиректах і не бачить https.
+    trusted_proxies: 'private_ranges'
+
+    # ADR: rate limiting на quick order/checkout — цифри в параметрах app.order_rate_limit_* (services.yaml)
+    rate_limiter:
+        order_submit:
+            policy: sliding_window
+            limit: '%app.order_rate_limit_ip%'
+            interval: '%app.order_rate_limit_interval%'
+        order_submit_phone:
+            policy: sliding_window
+            limit: '%app.order_rate_limit_phone%'
+            interval: '%app.order_rate_limit_interval%'
+        # ADR Rev 11 п. 6: некешовані розрахунки фасетів лістингу (CatalogQuery::search), ключ — IP
+        catalog_listing:
+            policy: sliding_window
+            limit: '%app.catalog_listing_rate_limit%'
+            interval: '%app.catalog_listing_rate_interval%'
+        # E15 PR-2: невдалі автентифікації API-токенами з IP (ApiTokenAuthenticator) і запити на токен (ApiRateLimitListener)
+        admin_api_auth_ip:
+            policy: sliding_window
+            limit: '%app.admin_api_auth_rate_limit%'
+            interval: '1 minute'
+        admin_api_token:
+            policy: sliding_window
+            limit: '%app.admin_api_token_rate_limit%'
+            interval: '1 minute'
+        # E15 PR-6: спроби створити пакет змін на токен (REST POST /changesets, MCP propose_changes) — ApiWriteLimiter
+        admin_api_write:
+            policy: sliding_window
+            limit: '%app.admin_api_write_rate_limit%'
+            interval: '1 minute'
+        # приймач зовнішньої контент-панелі /api/studio/* (StudioApiGuard), ключ — IP; рахуються й запити з невірним токеном
+        studio_api:
+            policy: sliding_window
+            limit: '%app.studio_api_rate_limit%'
+            interval: '1 minute'
+        # кабінет покупця (E12, консиліум 07.10 П5): реєстрації з IP; листи з посиланнями — з IP і на адресу
+        customer_register_ip:
+            policy: sliding_window
+            limit: 5
+            interval: '1 hour'
+        auth_mail_ip:
+            policy: sliding_window
+            limit: 10
+            interval: '15 minutes'
+        auth_mail_email:
+            policy: sliding_window
+            limit: 3
+            interval: '15 minutes'
+        # добова межа на адресу (рев'ю безпеки #45, п. 8): 3/15 хв при ротації IP давали до 288 листів на скриньку за добу
+        auth_mail_email_daily:
+            policy: sliding_window
+            limit: 10
+            interval: '1 day'
+        # заявки оптовиків (E13.1) з IP: одна активна заявка на покупця тримається в БД, ліміт проти спаму з багатьох акаунтів
+        wholesale_apply_ip:
+            policy: sliding_window
+            limit: 5
+            interval: '1 hour'
+        # вхід через Google (13.10.2026): старт і callback з IP; невдалі callback (підроблений state, чужий code) теж рахуються
+        google_sign_in_ip:
+            policy: sliding_window
+            limit: '%app.google.rate_limit_ip%'
+            interval: '15 minutes'
+        # повторна автентифікація паролем у кабінеті (рев'ю #60 v2, M2): як login_throttling, на id покупця
+        # відгуки на товари: подання/редагування з IP (добовий ліміт на покупця — в БД, ProductReviews)
+        review_submit_ip:
+            policy: sliding_window
+            limit: '%app.reviews.rate_limit_ip%'
+            interval: '%app.reviews.rate_limit_interval%'
+        customer_reauth:
+            policy: sliding_window
+            limit: 5
+            interval: '15 minutes'
+        # замовлення списком у кабінеті (E13 PR-7): розбір списку/CSV з IP
+        bulk_order_ip:
+            policy: sliding_window
+            limit: 30
+            interval: '10 minutes'
+        # прайс-лист групи (E13 PR-8) на покупця: файл на весь каталог, кілька на годину вистачає і Excel, і 1С
+        price_list_customer:
+            policy: sliding_window
+            limit: 10
+            interval: '1 hour'
+        # вебхук CRM (консиліум безпеки 10.10, п. 8): перебір токена; KeyCRM шле один POST на зміну залишку
+        crm_webhook_ip:
+            policy: sliding_window
+            limit: 60
+            interval: '1 minute'
+    trusted_headers: ['x-forwarded-for', 'x-forwarded-proto', 'x-forwarded-host', 'x-forwarded-port', 'x-forwarded-prefix']
+
+    #esi: true
+    #fragments: true
+
+when@test:
+    framework:
+        test: true
+        session:
+            storage_factory_id: session.storage.factory.mock_file

@@ -1,0 +1,32 @@
+{# Контракт теми (docs/themes.md, template_contract 1). Змінні OrderController::thanks: order (Order — номер, позиції, доставка/оплата), noindex (true). Аналітика purchase — рушій. #}
+{% extends 'site/base.html.twig' %}
+{% set alternates = {} %}
+{% block title %}{{ 'site.thanks.title'|trans({number: order.number}) }} | {{ site_name }}{% endblock %}
+{% block schema %}
+    {# до будь-яких тегів аналітики: адреса без токена в history (GA4 і Pixel беруть page_location з location у момент виконання) #}
+    <script>(function(){var m=location.pathname.match(/^(.*\/order\/)[a-f0-9]{48}\/thanks$/);if(m&&history.replaceState){history.replaceState(null,'',m[1]+'thanks'+location.search+location.hash);}})();</script>
+{% endblock %}
+{% block body %}
+    <div class="status-page">
+        <div class="status-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></div>
+        <h1>{{ 'site.thanks.title'|trans({number: order.number}) }}</h1>
+        <p class="thanks-intro lead">{{ (order.source.value == 'quick' ? 'site.thanks.quick_intro' : 'site.thanks.intro')|trans({name: order.customerName, phone: order.phone}) }}</p>
+        <div class="order-box">
+            <table class="cart order-summary">
+                <tbody>
+                {% for item in order.items %}{% if item.parent is null %}
+                    <tr><td>{{ item.name }} <span class="meta">{{ item.sku }}</span></td><td>× {{ item.quantity|qty(item.variant ? item.variant.unit) }}</td><td class="price">{{ item.lineTotal|money }}</td></tr>
+                {% endif %}{% endfor %}
+                </tbody>
+                <tfoot><tr><th colspan="2">{{ 'email.order.grand_total'|trans }}</th><th class="price order-total">{{ order.total|money }}</th></tr></tfoot>
+            </table>
+            {% if order.source.value != 'quick' %}
+                <p>{{ 'site.checkout.shipping_title'|trans }}: {{ ('site.checkout.shipping.' ~ order.shippingMethod.value)|trans }}{% if order.shippingCity %}, {{ order.shippingCity }}{% endif %}{% if order.shippingAddress %}, {{ order.shippingAddress }}{% endif %}<br>
+                {{ 'site.checkout.payment_title'|trans }}: {{ ('site.checkout.payment.' ~ order.paymentMethod.value)|trans }}</p>
+            {% endif %}
+            <p class="meta shipping-note">{{ 'site.checkout.shipping_note'|trans }}</p>
+        </div>
+        <div class="hero-actions"><a class="btn btn-primary" href="{{ path('site_home') }}">{{ 'site.cart.continue'|trans }}</a></div>
+    </div>
+    {% if site_theme('support.enabled') %}{% include 'site/partials/_support.html.twig' with {support_shop_link: false} %}{% endif %}
+{% endblock %}

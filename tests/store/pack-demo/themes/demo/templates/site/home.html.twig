@@ -1,0 +1,10 @@
+{# Фікстура теми паку: головна успадковує @engine/site/home.html.twig і додає банер перед типовим вмістом (інші блоки = parent()). #}
+{% extends '@engine/site/home.html.twig' %}
+{% block title %}{{ parent() }}{% endblock %}
+{% block metaDescription %}{{ parent() }}{% endblock %}
+{% block ogImage %}{{ parent() }}{% endblock %}
+{% block schema %}{{ parent() }}{% endblock %}
+{% block body %}
+    <section class="demo-pack-banner" id="demo-pack">{{ site_name }}: тема паку demo</section>
+    {{ parent() }}
+{% endblock %}

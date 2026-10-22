@@ -1,0 +1,15 @@
+{# Рядок платформи у футері, режим — налаштування «Рядок платформи у футері» (site.platform_credit, власник 19.10.2026):
+   full — «Платформа Symfony ecommerce LuxSite · відкритий код під ліцензією Apache 2.0, розробники платформи: LuxSite · Ліцензія»
+   (посилання site_license); short — «Ecommerce LuxSite» (однаково всіма мовами, власник 19.10.2026), без посилання на /license; none — нічого.
+   Змінні: powered_by (глобальна; вмикає посилання на luxsite.agency у назві платформи, в обох режимах). Функції: site_platform_credit(), path(), trans.
+   Стабільні класи: footer-powered (+ data-platform-credit), footer-license. Теми паків include-ять цей partial у своєму _footer,
+   щоб налаштування працювало і в них. #}
+{% set platform_credit = site_platform_credit() %}
+{% if platform_credit != 'none' %}
+    {% set platform_name %}{% if powered_by %}<a href="https://luxsite.agency/" rel="noopener">Symfony ecommerce LuxSite</a>{% else %}Symfony ecommerce LuxSite{% endif %}{% endset %}
+    {% if platform_credit == 'full' %}
+        <div class="footer-powered" data-platform-credit="full">{{ 'site.footer.platform'|trans }} {{ platform_name }} {{ 'site.footer.platform_license'|trans }} <a class="footer-license" href="{{ path('site_license') }}">{{ 'site.footer.license_terms'|trans }}</a></div>
+    {% else %}
+        <div class="footer-powered" data-platform-credit="short">{% if powered_by %}<a href="https://luxsite.agency/" rel="noopener">Ecommerce LuxSite</a>{% else %}Ecommerce LuxSite{% endif %}</div>
+    {% endif %}
+{% endif %}

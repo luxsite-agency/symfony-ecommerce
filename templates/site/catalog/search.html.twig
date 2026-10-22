@@ -1,0 +1,102 @@
+{# Контракт теми (docs/themes.md, template_contract 1). Змінні SearchController: q (string, '' — без запиту), result (CatalogResult: hits, total, pageCount()),
+   cards (list рядків картки), analytics_products, analytics_prices, facets (блоки FacetBlockBuilder; [] без q), params (ListingParams), reset_url,
+   sorts (list {value, selected, url}), pages (list {number, url, current}|null), prev_url, next_url, noindex (завжди true), alternates (мова → URL). #}
+{% extends 'site/base.html.twig' %}
+{% trans_default_domain 'site_catalog' %}
+{% set locale = app.request.locale %}
+{% set base = {_locale: locale}|merge(q ? {q: q} : {}) %}
+{% block title %}{% if q %}{{ 'catalog.search.title_for'|trans({q: q}) }}{% else %}{{ 'catalog.search.title'|trans }}{% endif %}{% if params.page > 1 %}, {{ 'catalog.page_suffix'|trans({page: params.page}) }}{% endif %} | {{ site_name }}{% endblock %}
+{% block metaDescription %}{% endblock %}
+{% block head %}
+    {% if prev_url %}<link rel="prev" href="{{ prev_url }}">{% endif %}
+    {% if next_url %}<link rel="next" href="{{ next_url }}">{% endif %}
+{% endblock %}
+{% block body %}
+    <ol class="crumbs">
+        <li><a href="{{ path('site_home') }}">{{ site_name }}</a></li>
+        <li>{{ 'catalog.search.title'|trans }}</li>
+    </ol>
+    <h1>{% if q %}{{ 'catalog.search.title_for'|trans({q: q}) }}{% else %}{{ 'catalog.search.title'|trans }}{% endif %}</h1>
+
+    <form class="search-form" method="get" action="{{ path('site_search', {_locale: locale}) }}" role="search">
+        <label class="visually-hidden" for="search-q">{{ 'catalog.search.label'|trans }}</label>
+        <input id="search-q" type="search" name="q" value="{{ q }}" placeholder="{{ 'catalog.search.placeholder'|trans }}" minlength="2" maxlength="100" required autocomplete="off">
+        <button type="submit" class="btn btn-primary">{{ 'catalog.search.button'|trans }}</button>
+    </form>
+
+    {% if not q %}
+        <p class="empty muted">{{ 'catalog.search.hint'|trans }}</p>
+    {% else %}
+    <div class="listing">
+        <div class="filters">
+        {% if facets or params.hasFilters() %}
+        <input type="checkbox" id="filters-toggle" class="filters-check visually-hidden" aria-controls="facets"{{ params.hasFilters() ? ' checked' }}>
+        <label class="filters-toggle" for="filters-toggle">{{ 'catalog.filters'|trans }}</label>
+        {% endif %}
+        <aside class="facets" id="facets" aria-label="{{ 'catalog.filters'|trans }}">
+            {% if params.hasFilters() %}<p><a class="reset" href="{{ reset_url }}">{{ 'catalog.reset'|trans }}</a></p>{% endif %}
+            {% for block in facets %}
+                <fieldset class="facet facet-{{ block.kind }}" data-facet="{{ block.code }}">
+                    <legend>{{ block.label }}{% if block.unit %}, {{ block.unit }}{% endif %}</legend>
+                    {% if block.range is not null %}
+                        <form method="get" action="{{ path('site_search', {_locale: locale}) }}" class="range">
+                            <input type="hidden" name="q" value="{{ q }}">
+                            {% for name, value in block.hidden %}<input type="hidden" name="{{ name }}" value="{{ value }}">{% endfor %}
+                            {% set field = block.kind == 'price' ? 'price' : 'f[' ~ block.code ~ ']' %}
+                            <input type="text" inputmode="decimal" name="{{ field }}[min]" value="{{ block.range.from }}" placeholder="{{ block.range.min is null ? 'catalog.from'|trans : ('.' in block.range.min ? block.range.min|trim('0', 'right')|trim('.', 'right') : block.range.min) }}" aria-label="{{ 'catalog.from'|trans }}">
+                            <span>–</span>
+                            <input type="text" inputmode="decimal" name="{{ field }}[max]" value="{{ block.range.to }}" placeholder="{{ block.range.max is null ? 'catalog.to'|trans : ('.' in block.range.max ? block.range.max|trim('0', 'right')|trim('.', 'right') : block.range.max) }}" aria-label="{{ 'catalog.to'|trans }}">
+                            <button type="submit">{{ 'catalog.apply'|trans }}</button>
+                        </form>
+                    {% endif %}
+                    {% if block.items %}
+                        <ul>
+                            {% for item in block.items %}
+                                <li><a href="{{ path('site_search', base|merge(item.query)) }}" rel="nofollow"{% if item.selected %} class="selected" aria-current="true"{% endif %}>{{ item.label }}</a>{% if item.count is not null %} <span class="count">({{ item.count }})</span>{% endif %}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                    {% if block.selected %}<a class="clear" href="{{ path('site_search', base|merge(block['clear'])) }}" rel="nofollow">{{ 'catalog.facet.clear'|trans }}</a>{% endif %}
+                </fieldset>
+            {% endfor %}
+        </aside>
+        </div>
+
+        <section>
+            <div class="toolbar">
+                <p class="found muted" data-total="{{ result.total }}">{{ 'catalog.search.found'|trans({count: result.total, q: q}) }}</p>
+                <nav class="sorts" aria-label="{{ 'catalog.sort.label'|trans }}">
+                    {% for sort in sorts %}
+                        {% if sort.selected %}<span class="current">{{ ('catalog.sort.' ~ sort.value)|trans }}</span>{% else %}<a href="{{ sort.url }}" rel="nofollow">{{ ('catalog.sort.' ~ sort.value)|trans }}</a>{% endif %}
+                    {% endfor %}
+                </nav>
+            </div>
+
+            {% if cards %}
+                {% set list_name = 'catalog.search.title'|trans %}
+                {% set analytics_items = cards|map(c => analytics_products[c.id] ?? null)|filter(p => p is not null) %}
+                {% if analytics_items is not empty %}{% do analytics_push(analytics_view_item_list(analytics_items, list_name, analytics_prices ?? [])) %}{% endif %}
+                <ul class="cards product-grid">
+                    {% for card in cards %}{% include 'site/partials/_product_card.html.twig' with {card: card, list_name: list_name, index: loop.index0, eager: loop.index <= 4} %}{% endfor %}
+                </ul>
+            {% else %}
+                <p class="empty muted">{{ (params.hasFilters() ? 'catalog.empty_filtered' : 'catalog.search.empty')|trans({q: q}) }}</p>
+            {% endif %}
+
+            {% if pages %}
+                <nav aria-label="{{ 'catalog.pager.label'|trans }}">
+                    <ul class="pager">
+                        {% if prev_url %}<li><a href="{{ pages|filter(p => p and p.number == params.page - 1)|first.url }}" rel="prev">{{ 'catalog.pager.prev'|trans }}</a></li>{% endif %}
+                        {% for p in pages %}
+                            {% if p is null %}<li><span>…</span></li>
+                            {% elseif p.current %}<li><span class="current" aria-current="page">{{ p.number }}</span></li>
+                            {% else %}<li><a href="{{ p.url }}">{{ p.number }}</a></li>{% endif %}
+                        {% endfor %}
+                        {% if next_url %}<li><a href="{{ pages|filter(p => p and p.number == params.page + 1)|first.url }}" rel="next">{{ 'catalog.pager.next'|trans }}</a></li>{% endif %}
+                    </ul>
+                </nav>
+            {% endif %}
+        </section>
+    </div>
+    {% endif %}
+{% endblock %}

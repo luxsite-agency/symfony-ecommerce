@@ -1,0 +1,15 @@
+twig:
+    file_name_pattern: '*.twig'
+    globals:
+        # назва магазину мовою запиту: app.site_name — рядок або мапа за локаллю (App\Core\Shared\Site\SiteName)
+        site_name: '@App\Core\Shared\Site\SiteName'
+        powered_by: '%app.powered_by%'
+    # @engine — базові шаблони рушія для тем паків (docs/themes.md): шаблон паку робить {% extends '@engine/site/home.html.twig' %}
+    # і перевизначає лише потрібні блоки. Самі шаблони паку (templates/store/, кладе bin/store deploy) стають першими в головному
+    # namespace через App\Site\Theme\Templates\StoreTemplatesPass — лише коли тека існує (addPath на неіснуючу теку кидає LoaderError).
+    paths:
+        '%kernel.project_dir%/templates': engine
+
+when@test:
+    twig:
+        strict_variables: true

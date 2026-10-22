@@ -1,0 +1,4 @@
+{# Порожнє значення в списках і картках адмінки: тире замість бейджа «Null» з @EasyAdmin/label/null.html.twig (аудит UX A4). #}
+{% if not (ea().crud.areNullValuesHidden ?? false) %}
+    <span class="text-muted" title="{{ 'label.null'|trans(domain: 'EasyAdminBundle') }}">—</span>
+{% endif %}

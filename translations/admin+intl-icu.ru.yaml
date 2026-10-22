@@ -1,0 +1,1724 @@
+dashboard:
+  menu: Дашборд
+  title: Дашборд
+  period:
+    label: Период
+    today: Сегодня
+    yesterday: Вчера
+    '7': 7 дней
+    '30': 30 дней
+    '90': 90 дней
+    month: Этот месяц
+    last_month: Прошлый месяц
+  range:
+    from: с
+    to: по
+    show: Показать
+    span: с {from} по {to}
+    fallback: Показаны типовые 30 дней.
+    error:
+      invalid: 'Даты не распознаны: нужен формат ГГГГ-ММ-ДД.'
+      order: Дата «с» позже даты «по».
+      future: Дата «по» позже сегодняшней.
+      too_long: 'Диапазон слишком большой: не более {max} дней.'
+      preset: Неизвестный период.
+  generated_at: Данные на {time}, обновляются раз в несколько минут
+  orders:
+    title: Заказы
+    new: Новые
+    today: Сегодня
+    last7: За 7 дней
+    last30: За 30 дней
+    period_total: Сумма за период
+    period_count: Заказов за период
+    average_check: Средний чек
+    by_status: По состояниям
+    excluding_cancelled: без отменённых
+    in_list: В списке заказов
+  sales:
+    title_day: Продажи по дням
+    title_week: Продажи по неделям
+    title_month: Продажи по месяцам
+    empty: За период продаж не было
+    tip_day: '{date}: {total}, {count, plural, one {# заказ} few {# заказа} many {# заказов} other {# заказа}}'
+    tip_week: 'неделя с {date}: {total}, {count, plural, one {# заказ} few {# заказа} many {# заказов} other {# заказа}}'
+    tip_month: '{date}: {total}, {count, plural, one {# заказ} few {# заказа} many {# заказов} other {# заказа}}'
+  top:
+    title: Топ товаров
+    by_total: По сумме
+    by_quantity: По количеству
+    empty: Проданных товаров за период пока нет
+  recent:
+    title: Последние заказы
+    empty: Заказов пока нет
+    all: Все заказы
+  quick:
+    title: Новые быстрые заявки
+    empty: Новых быстрых заявок нет
+  reviews:
+    title: Новые отзывы на модерации
+    empty: Новых отзывов нет
+    all: Все отзывы
+  stock:
+    title: Остатки
+    out: Нет на складе
+    low: Мало (≤ {threshold})
+    empty: Все активные товары с учётом остатка в наличии
+  integrations:
+    title: Интеграции
+    crm: CRM-коннектор
+    crm_push: Передача заказов
+    last_order_push: Последний заказ передан
+    last_catalog_sync: Последняя синхронизация каталога
+    without_ref: Заказов периода не в CRM
+    failed: Неудачных сообщений (failed)
+    pending: В очереди async
+    oldest_pending: Самое старое в очереди
+    never: ещё не было
+    ok: всё в порядке
+  analytics:
+    title: Аналитика
+    gtm: GTM
+    ga4: GA4
+    pixel: Meta Pixel
+    enabled: Теги выводятся
+    disabled: Теги не выводятся (dev-переключатель выключен)
+    none: Ни один тег не задан
+    settings: Настройки сайта
+  'yes': да
+  'no': нет
+  columns:
+    number: Номер
+    status: Состояние
+    customer: Покупатель
+    phone: Телефон
+    total: Сумма
+    placed_at: Создан
+    sku: Артикул
+    name: Название
+    quantity: Кол-во
+    stock: Остаток
+menu:
+  solutions: 'Решения'
+  solution_groups: 'Группы решений'
+  toggle: Открыть меню
+  catalog: Каталог
+  products: Товары
+  categories: Категории
+  brands: Бренды
+  attributes: Характеристики
+  media: Медиатека
+  sales: Продажи
+  orders: Заказы
+  promotions: Акции
+  reviews: Отзывы
+  wholesale: Оптовики
+  wholesale_applications: Заявки оптовиков
+  companies: Компании
+  content: Контент
+  pages: Страницы
+  blog: Блог
+  blog_categories: Рубрики блога
+  seo: SEO
+  redirects: Редиректы
+  not_found: Журнал 404
+  log: Журнал
+  audit: Журнал изменений
+  changesets: Пакеты изменений
+  api: API
+  api_tokens: API-токены
+  ai: AI
+  ai_usage: Использование AI
+  ai_key: Ключ и модель AI
+  settings: Настройки
+  customer_groups: Группы клиентов
+  users: Пользователи
+  site_settings: Настройки сайта
+  license: Лицензия
+  logout: Выйти
+login:
+  email: Электронная почта
+  password: Пароль
+  sign_in: Войти
+license_footer:
+  link: Лицензия
+  open_source: "открытый код, Apache 2.0"
+  developers: "разработчики платформы:"
+error:
+  order:
+    transition_unavailable: Для заказа {number} это изменение статуса сейчас недоступно
+  api_token:
+    days_range: Срок действия — от 1 до {max} дней
+    name_length: Название токена — от 1 до 100 символов
+    scope_denied: Скоуп {scope} недоступен для роли пользователя
+    scopes_required: Выберите хотя бы один скоуп
+  attribute:
+    axis_requires_select: Осью вариантов может быть только атрибут типа select, "{code}" имеет тип {type}
+    axis_select_only: Осью вариантов может быть только select
+    no_values: Атрибут "{code}" типа {type} не имеет вариантов значений
+    type_locked: Тип характеристики нельзя изменить после создания
+    value_exists: Значение "{value}" уже есть в атрибуте "{attribute}"
+  brand:
+    name_length: Название бренда должно быть непустым и не длиннее 255 символов
+  catalog_slug:
+    page_has_slug: 'Такой слаг уже у страницы на этом языке (страницы в корне сайта).'
+    product_has_slug: Такой слаг есть у товара на этом языке (адреса товаров и категорий общие)
+    product_taken: Товар с таким слагом уже есть на этом языке
+    reserved: «{slug}» — служебный адрес сайта
+    root_category_has_slug: Такой слаг есть у корневой категории на этом языке (адреса товаров и категорий общие)
+    root_category_taken: Корневая категория с таким слагом уже есть на этом языке
+    subcategory_taken: У родительской категории уже есть подкатегория с таким слагом
+  category:
+    filter_not_filterable: Характеристика "{attribute}" не отмечена как filterable — в индексе фильтров её нет
+    own_ancestor: Категория не может быть собственным предком
+  company:
+    contact_length: 'Контактное лицо: от 1 до {max} символов'
+    name_length: Название компании должно быть непустым и не длиннее {max} символов
+    phone_too_long: Телефон слишком длинный
+    tax_id_format: ЕГРПОУ имеет 8 цифр, РНОКПП 10 цифр
+  customer_group:
+    min_order_positive: Минимальная сумма заказа должна быть больше нуля
+    name_length: Название группы должно быть непустым и не длиннее 255 символов
+  machine_code:
+    invalid: 'Не машинный код (snake_case, до 64): "{value}"'
+  media:
+    invalid_dimensions: Размеры изображения задаются парой неотрицательных чисел
+    invalid_mime: 'Не MIME-тип: "{mime}"'
+    invalid_path: 'Недопустимый путь медиа: "{path}"'
+    negative_size: Размер файла не может быть отрицательным
+  money:
+    invalid: 'Не денежная строка: "{value}"'
+    invalid_currency: 'Не ISO-код валюты: "{value}"'
+    overflow: Сумма выходит за пределы int
+  number:
+    invalid_decimal: 'Не число DECIMAL(16,4): "{value}"'
+  option_group:
+    component_currency: Компонент {sku} в валюте {component_currency}, а товар — в {currency}
+    component_price_currency: Цена компонента должна быть в валюте товара {currency}
+    component_price_negative: Цена компонента не может быть отрицательной
+    component_price_on_request: 'Компонент {sku} — цена по запросу: укажите цену за весь выбор'
+    component_same_product: Компонентом не может быть вариант того же товара
+    discount_too_big: Скидка опцией не может достигать 100 %
+    exists: Группа опций "{code}" уже есть в товаре
+    foreign_value: Значение не из этой группы
+    modifier_currency: Наценка должна быть в валюте товара {currency}
+    number_has_values: Числовая группа не может иметь значений — сначала уберите их
+    number_min_gt_max: Минимум числовой опции больше максимума
+    number_no_values: Числовая группа не имеет значений
+    number_single_only: Числовая группа — только одиночный выбор
+    number_step_positive: Шаг числовой опции должен быть больше нуля
+    rate_currency: Ставка должна быть в валюте товара {currency}
+    rate_negative: Ставка числовой опции не может быть отрицательной
+    single_many_defaults: Одиночный выбор не может иметь несколько значений по умолчанию
+    threshold_required: Для правила «сверх порога» нужен порог
+    value_exists: Значение "{value}" уже есть в группе "{group}"
+  price_tier:
+    currency: Валюта порога {expected}, а не {actual}
+    negative_price: Цена порога не может быть отрицательной
+  product:
+    attribute_no_values: Атрибут "{attribute}" не имеет вариантов значений
+    attribute_type: Атрибут "{attribute}" имеет тип {type}, а не {expected}
+    last_variant: Товар не может остаться без единого варианта
+    main_category_not_assigned: Главная категория должна быть среди категорий товара
+    media_already_attached: Этот файл уже привязан к товару
+    no_variants: Товар без вариантов
+  product_media:
+    foreign_variant: Фото можно привязать только к варианту этого же товара
+  promotion:
+    amount_format: Сумма скидки — число больше нуля, напр. 150.00
+    amount_positive: Сумма скидки должна быть больше нуля
+    percent_format: Процент скидки — число от 0,01 до 100, до двух знаков после запятой
+    percent_range: Процент скидки должен быть от 0,01 до 100
+  quantity:
+    invalid: 'Не количество DECIMAL(12,3): "{value}"'
+    invalid_plain: 'Не количество: "{value}"'
+    negative: 'Количество не может быть отрицательным: "{value}"'
+    not_positive: 'Количество должно быть больше нуля: "{value}"'
+  redirect:
+    chain_too_long: Слишком длинная цепочка редиректов от {source}
+    external_denied: Цель на другом сайте может задать только администратор; менеджеру — путь от корня (/…)
+    invalid_source: 'Невалидный адрес-источник «{source}»: нужен путь от корня сайта'
+    invalid_target: 'Невалидная цель «{target}»: путь от корня (/…) или полный URL https://…'
+    loop: 'Цикл редиректов: {source} → {target} ведёт обратно на {path}'
+    self: Редирект на тот же адрес
+    source_live: Адрес {source} сейчас открывается на сайте — правило срабатывает только на 404. Сначала снимите страницу с публикации или измените её адрес (тогда 301 запишется сам).
+    target_required: 'Для 301/302 укажите цель: путь от корня (/…) или полный URL https://…'
+  review:
+    rating_range: Оценка — от {min} до {max}
+    reply_too_long: Ответ длиннее {max} символов
+    text_blank: Текст отзыва пустой
+    text_too_long: Текст отзыва длиннее {max} символов
+  slug:
+    invalid: 'Не слаг: "{value}"'
+  translation:
+    field_too_long: Поле "{field}" не может быть длиннее {max} символов
+    invalid_locale: 'Не код локали: "{value}"'
+  variant:
+    axes_duplicate: 'Вариант с таким набором осей уже есть: {sku}'
+    axis_value_foreign: Значение "{value}" не принадлежит оси "{attribute}"
+    currency: Валюта варианта {expected}, а не {actual}
+    external_id_length: externalId должен быть непустым и не длиннее 128 байт
+    lead_time_range: Срок изготовления — от 0 до 32767 дней
+    not_axis: Атрибут "{attribute}" не является осью вариантов
+    old_price_not_greater: Старая цена должна быть больше текущей
+    price_negative: Цена не может быть отрицательной
+    service_stock_policy: 'У услуги нет остатка: только not_tracked'
+    sku_exists: SKU "{sku}" уже есть в этом товаре
+    sku_length: SKU должен быть непустым и не длиннее 64 символов
+    tier_exists: Порог от {min_quantity} для этой группы уже есть
+  wholesale_application:
+    already_decided: Заявка уже рассмотрена
+    already_member: Покупатель уже состоит в компании
+    comment_too_long: Комментарий не длиннее {max} символов
+    company_has_owner: Компания с кодом {tax_id} уже есть и имеет владельца
+    company_race: Компания с таким кодом только что создана другой заявкой, обновите страницу
+    locked: Заявку сейчас обрабатывает другой менеджер, попробуйте через минуту
+    reason_required: Укажите причину отклонения
+product:
+  label:
+    singular: Товар
+    plural: Товары
+  title:
+    new: Новый товар
+    edit: '{name}'
+  help:
+    main_category: Хлебные крошки и canonical; должна быть среди категорий товара. Пустая — первая из выбранных.
+    featured: Показывать в витрине главной первым; остальные места заполнят новинки
+    variants: 'Единица покупки: собственные SKU, цена, остаток, оси (цвет, размер) и пороги цены по количеству'
+    attributes: Характеристики карточки; оси вариантов — во вкладке «Варианты»
+    options: 'Группы опций: наценки суммой или процентом либо компоненты-SKU с количеством'
+    gallery: Файлы из медиатеки; загрузка новых — в разделе «Медиатека»
+  action:
+    add: Добавить товар
+    activate: Активировать
+    deactivate: Деактивировать
+    feature: Показать на главной
+    unfeature: Убрать с главной
+    add_variant: 'Добавить вариант'
+  flash:
+    activated: 'Активировано товаров: {count}'
+    deactivated: 'Деактивировано товаров: {count}'
+    featured: 'Показано на главной товаров: {count}'
+    unfeatured: 'Убрано с главной товаров: {count}'
+  filter:
+    category: Категория
+    brand: Бренд
+    active: Активный
+    featured: На главной
+  field:
+    sku: SKU
+    name: Название
+    price: Цена
+    variants_count: Вариантов
+    kind: Тип
+    price_mode: Режим цены
+    brand: Бренд
+    categories: Категории
+    main_category: Основная категория
+    active: Активный
+    featured: На главной
+    updated_at: Изменён
+    source_updated_at: Обновлён источником
+  tab:
+    main: Основное
+    texts: Названия и тексты
+    variants: Варианты
+    attributes: Характеристики
+    options: Опции
+    gallery: Галерея
+  kind:
+    goods: Товар
+    service: Услуга
+    bundle: Набор
+    quote: Под запрос
+  price_mode:
+    fixed: Точная цена
+    from: Цена «от»
+    on_request: Цену уточняет менеджер
+  variant:
+    new: 'Новый вариант'
+category:
+  label:
+    singular: Категория
+    plural: Категории
+  title:
+    new: Новая категория
+  action:
+    add: Добавить категорию
+  field:
+    category: Категория
+    path: Путь
+    parent: Родительская категория
+    position: Порядок
+    active: Активна
+    image: Изображение плитки
+  fieldset:
+    placement: Размещение
+    texts: Названия и тексты
+  placeholder:
+    root: — корень —
+  help:
+    image: Картинка плитки категории на главной; файл из «Медиатеки». Пусто — фото первого товара категории
+brand:
+  label:
+    singular: Бренд
+    plural: Бренды
+  title:
+    new: Новый бренд
+  action:
+    add: Добавить бренд
+  field:
+    name: Название
+    slug: Слаг
+    active: Активный
+  help:
+    slug: Латиница, цифры, дефисы
+attribute:
+  label:
+    singular: Характеристика
+    plural: Характеристики
+  title:
+    new: Новая характеристика
+  action:
+    add: Добавить характеристику
+  fieldset:
+    main: Характеристика
+    values: Значения
+  field:
+    code: Код
+    type: Тип
+    unit: Единица
+    filterable: В фильтрах
+    variant_axis: Ось вариантов
+    position: Порядок
+    values_count: Значений
+  help:
+    code: 'snake_case латиницей: color, height_mm'
+    type_locked: Тип не меняется после создания
+    unit: мм, кг — только для отображения
+    variant_axis: 'Размер, цвет: только для типа select'
+    values: Только для select/multiselect
+  type:
+    select: Один вариант (select)
+    multiselect: Несколько вариантов (multiselect)
+    number: Число
+    boolean: Да/нет
+media:
+  label:
+    singular: Файл
+    plural: Медиатека
+  title:
+    new: Новый файл
+  action:
+    add: Добавить файл
+  field:
+    image: Изображение
+    path: Путь
+    mime_type: Тип
+    size: Размер, байт
+    width: Ширина
+    height: Высота
+    created_at: Загружено
+    file: Файл
+    alt: Alt (подпись)
+  help:
+    file: JPG/PNG/WebP/PDF до 20 МБ; для фото товара рекомендуется от 1200×1200
+    alt: Краткое описание для доступности и Google Images
+action:
+  create: Создать
+  save_and_add_another: Сохранить и создать ещё
+  save: Сохранить
+  save_and_continue: Сохранить и продолжить редактирование
+  cancel: Выйти без сохранения
+  view_on_site: Посмотреть на сайте
+filter:
+  in_stock: В наличии
+catalog_form:
+  field:
+    code: Код
+    position: Порядок
+    value: Значение
+    values: Значения
+    label: Подпись
+    selection: Выбор
+    required: Обязательная
+    value_kind: Вид
+    modifier_type: Наценка
+    amount: Сумма (в валюте товара, может быть отрицательной)
+    percent: Процент
+    component_variant: Вариант-компонент
+    component_quantity: Количество компонента
+    selection_price: Цена за весь выбор
+    default: По умолчанию
+    tier_min_quantity: От количества
+    price: Цена
+    customer_group: Группа клиентов
+    media: Файл из медиатеки
+    media_variant: Только для варианта
+    sku: SKU
+    external_id: Ключ импорта (externalId)
+    barcode: Штрихкод
+    old_price: Зачёркнутая цена
+    stock: Остаток
+    stock_policy: Наличие
+    lead_time_days: Срок изготовления, дней
+    sales_unit: Единица продажи
+    min_quantity: Минимальное количество
+    quantity_step: Шаг количества
+    pack_quantity: В упаковке
+    active: Активный
+    price_tiers: Пороги цены
+  help:
+    attribute_value_code: snake_case латиницей; стабилен для импорта
+    option_group_code: 'snake_case латиницей: casing, lock'
+    percent: 15 = +15 %, −10 = скидка
+    selection_price: Пусто — цена компонента × количество
+  selection:
+    single: Один из списка
+    multiple: Несколько
+  value_kind:
+    modifier: Наценка
+    component: Компонент (SKU)
+  modifier_type:
+    absolute: Сумма
+    percent: Процент
+  placeholder:
+    all_customers: все покупатели
+    whole_product: вся карточка
+  stock_policy:
+    in_stock: Со склада (по остатку)
+    made_to_order: Под заказ
+    not_tracked: Без учёта остатка
+  unit:
+    pc: шт
+    m: м
+    m2: м²
+    kg: кг
+    set: комплект
+  boolean:
+    'yes': Да
+    'no': Нет
+  error:
+    component_variant_required: Выберите вариант-компонент
+    percent_not_number: Укажите процент числом
+    amount_required: Укажите сумму наценки
+    tier_price_required: Укажите цену порога
+    media_required: Выберите файл из медиатеки
+    price_required: Укажите цену
+    required_default_locale: Обязательное поле для языка по умолчанию
+    product_name_required: Укажите название товара
+    category_name_required: Укажите название категории
+    name_required: Укажите название
+    page_title_required: Укажите заголовок страницы
+    post_title_required: Укажите заголовок записи
+  translation:
+    name: Название
+    title: Заголовок
+    slug: Слаг (URL)
+    description: Описание
+    short_description: Краткое описание
+    h1: H1 страницы
+    excerpt: Анонс
+    body: Текст
+    meta_title: Meta title
+    meta_description: Meta description
+    help:
+      slug_from_name: Пустой — сформируется из названия
+      slug_from_title: Пустой — сформируется из заголовка
+      h1: Пустой — как название. Название остаётся в меню, крошках и плитках
+order:
+  label:
+    singular: Заказ
+    plural: Заказы
+  action:
+    confirm: Подтвердить
+    process: В обработку
+    ship: Отправлен
+    complete: Выполнен
+    cancel: 'Отменить заказ'
+  filter:
+    status: Статус
+    payment_status: Оплата
+    source: Источник
+    placed_at: Дата
+  field:
+    number: Номер
+    placed_at: Оформлен
+    status: Статус
+    payment_status: Оплата
+    source: Источник
+    customer_name: Покупатель
+    phone: Телефон
+    email: Email
+    company: Компания
+    total: Сумма
+    shipping_method: Доставка
+    shipping_city: Город
+    shipping_address: Отделение / адрес
+    shipping_point: Отделение из справочника (НП)
+    payment_method: Способ оплаты
+    comment: Комментарий покупателя
+    locale: Язык
+    ip: IP
+  flash:
+    transitioned: '{number} → {status}'
+    transition_failed: 'Переход недоступен: {error}'
+    transition_unavailable: Переход «{transition}» недоступен из статуса «{status}»
+  detail:
+    items: Позиции
+    sku: SKU
+    name: Название
+    price: Цена
+    quantity: Кол-во
+    line_total: Сумма
+    reserved: Резерв
+    promotion: 'Акция: {name}'
+    included: в составе
+    items_total: Товары
+    shipping: Доставка
+    grand_total: Итого
+    history: История
+    cancel_confirm: 'Отменить заказ {number}? Резерв товаров вернётся на склад.'
+  attachments:
+    title: Вложения покупателя
+    purged: удалено по сроку хранения
+order_history:
+  created:
+    checkout: Создан покупателем на сайте
+    quick: Быстрая заявка покупателя
+    price_request: Запрос цены от покупателя
+    admin: Создан в админке
+    lead: Заявка с сайта
+    default: Создан
+  actor:
+    customer: покупатель
+    system: система
+    demo_seed: демо-данные
+    admin: админка
+    manager: менеджер {email}
+promotion:
+  label:
+    singular: Акция
+    plural: Акции
+  title:
+    new: Новая акция
+  default_name: Новая акция
+  action:
+    add: Добавить акцию
+  fieldset:
+    discount: Что и сколько
+    when: Когда
+    targets: На что
+    audience: Для кого
+  help:
+    index: Действует одна лучшая акция (приоритет, затем бо́льшая скидка). Суммируются только акции с отметкой «суммируется», если победитель тоже такая. На весь каталог — только с отметкой «на весь каталог».
+    name: Показывается покупателю рядом со скидкой и в заказе
+    discount: Для «Процент» — 0,01–100; для «Сумма за единицу» — сумма в {currency}, напр. 150.00
+    priority: Больший — важнее при выборе одной акции
+    ends_at: Действует до этой минуты включительно; должно быть позже начала
+    targets: Либо «на весь каталог», либо цели. Категория охватывает подкатегории. Акция, у которой удалили все цели, не действует.
+    audience: Акция всегда действует на розницу (гости и покупатели без группы). На покупателей с группой (оптовики) — только для выбранных здесь групп; пусто = только розница, оптовые цены акция не затрагивает.
+  field:
+    name: Название
+    active: Активна
+    type: Тип
+    discount: Скидка
+    priority: Приоритет
+    stackable: Суммируется с другими
+    starts_at: Начало
+    ends_at: Окончание
+    whole_catalog: На весь каталог
+    categories: Категории
+    brands: Бренды
+    products: Товары
+    customer_groups: Группы покупателей
+  error:
+    type_required: Выберите тип скидки
+    discount_required: Укажите скидку для выбранного типа
+review:
+  label:
+    singular: Отзыв
+    plural: Отзывы
+  help:
+    index: 'Новые отзывы ждут одобрения (премодерация). Текст покупателя не редактируется: только одобрить, отклонить, ответить или удалить. Одобренные видны на карточке товара, звёзды — в листинге.'
+  action:
+    approve: Одобрить
+    reject: Отклонить
+  filter:
+    status: Статус
+    rating: Оценка
+    verified_purchase: Купил этот товар
+    demo: Демо-отзыв
+  field:
+    created_at: Создан
+    status: Статус
+    product: Товар
+    rating: Оценка
+    customer: Покупатель
+    email: Email
+    verified_purchase: Купил
+    demo: Демо
+    locale: Язык
+    text: Отзыв
+    reply_text: Ответ магазина
+    reply_by: Ответил
+    replied_at: Когда ответил
+    moderated_by: Модерировал
+    moderated_at: Когда
+    updated_at: Изменён
+  flash:
+    batch_approved: 'Одобрено отзывов: {count}'
+    batch_rejected: 'Отклонено отзывов: {count}'
+    approved: Отзыв одобрен и показан на сайте
+    rejected: Отзыв отклонён
+    reply_saved: Ответ магазина сохранён
+    reply_removed: Ответ удалён
+  error:
+    unknown_decision: Неизвестное решение
+  detail:
+    moderation: Модерация
+    moderation_help: 'Текст покупателя не правим: только одобрить (виден на сайте) или отклонить.'
+    reply_label: Текст ответа (виден под отзывом на сайте; пустой — убрать ответ)
+    reply_save: Сохранить ответ
+wholesale:
+  label:
+    singular: Заявка оптовика
+    plural: Заявки оптовиков
+  help:
+    index: 'Одобрение назначает покупателю группу цен и создаёт компанию из реквизитов заявки. Отклонение с причиной: она уходит покупателю письмом, и он может подать новую заявку.'
+  filter:
+    status: Статус
+  field:
+    created_at: Подана
+    status: Статус
+    company_name: Компания
+    tax_id: ЕГРПОУ / РНУКПН
+    vat_payer: НДС
+    contact_name: Контакт
+    contact_phone: Телефон
+    customer_email: Email покупателя
+    customer_name: Имя покупателя
+    note: Комментарий покупателя
+    assigned_group: Группа
+    company: Компания в базе
+    reviewed_by: Рассмотрел
+    reviewed_at: Когда
+    review_comment: Комментарий менеджера
+  error:
+    group_required: Выберите группу цен
+    reason_required: Укажите причину отклонения, она уйдёт покупателю
+    unknown_decision: Неизвестное решение
+  flash:
+    approved: Заявка №{id} одобрена, группа «{group}» назначена
+    rejected: Заявка №{id} отклонена
+  detail:
+    approve: Одобрить
+    group_label: Группа цен для покупателя
+    group_placeholder: Выберите группу
+    approve_comment: Комментарий (по желанию, уйдёт покупателю в письме)
+    approve_submit: Одобрить и назначить группу
+    reject: Отклонить
+    reject_reason: Причина (обязательно, уйдёт покупателю в письме)
+company:
+  label:
+    singular: Компания
+    plural: Компании
+  field:
+    name: Название
+    tax_id: ЕГРПОУ / РНУКПН
+    vat_payer: Плательщик НДС
+    contact_name: Контактное лицо
+    contact_phone: Телефон
+    members: Покупатель
+    created_at: Создана
+customer_group:
+  label:
+    singular: Группа клиентов
+    plural: Группы клиентов
+  title:
+    new: Новая группа клиентов
+  default_name: Новая группа
+  action:
+    price_list: Скачать прайс
+    add: Добавить группу
+  field:
+    code: Код
+    name: Название
+    position: Порядок
+    min_order_amount: Минимальная сумма заказа, {currency}
+    min_order_quantity: Минимальное количество единиц
+    exact_stock: Точные остатки и сроки
+  help:
+    code: 'snake_case латиницей: retail, dealer'
+    min_order_amount: Пусто — без минимума. Проверяется при оформлении и в быстром заказе.
+    min_order_quantity: Суммарно по заказу. Пусто — без минимума.
+    exact_stock: Покупатели группы видят остаток в штуках и срок поставки вместо «в наличии».
+price_list:
+  error:
+    too_many: Слишком много загрузок прайса, попробуйте через час
+email_order:
+  admin:
+    subject: '[{site}] Новый заказ {number} — {total}'
+    title: Новый заказ {number} ({source})
+    customer: Покупатель
+    shipping: Доставка
+    payment: Оплата
+    language: Язык
+    comment: Комментарий
+    company: Компания
+    attachments: Вложения
+    attachments_hint: открыть в админке, в карточке заказа
+  item: Товар
+  quantity: Кол-во
+  price: Цена
+  total: Сумма
+  included: В составе
+  grand_total: Итого
+  included_line: в составе
+enum:
+  order_status:
+    new: Новый
+    confirmed: Подтверждён
+    processing: В обработке
+    shipped: Отправлен
+    completed: Выполнен
+    cancelled: Отменён
+  payment_status:
+    pending: Не оплачено
+    partially_paid: Частично оплачено
+    paid: Оплачено
+    refunded: Возвращено
+  payment_method:
+    cod: Оплата при получении
+    bank_transfer: Безналичный расчёт
+    manager_contact: Согласует менеджер
+  shipping_method:
+    pickup: Самовывоз
+    courier: Курьер
+    nova_poshta: Новая почта
+    manager_contact: Согласует менеджер
+  order_source:
+    quick: Быстрая заявка
+    checkout: Сайт
+    admin: Админка
+    price_request: Запрос цены
+    lead: Заявка
+  review_status:
+    pending: На модерации
+    approved: Одобрен
+    rejected: Отклонён
+  application_status:
+    new: Новая
+    approved: Одобрена
+    rejected: Отклонена
+  promotion_type:
+    percent: Процент
+    amount: Сумма за единицу
+  redirect_code:
+    '301': 301 — навсегда
+    '302': 302 — временно
+    '404': 404 — не найдено
+    '410': 410 — удалено
+  redirect_kind:
+    manual: вручную
+    auto: авто
+  user_role:
+    admin: Администратор
+    manager: Менеджер
+  api_scope:
+    catalog:read: Чтение каталога и контента
+    content:write: Пакеты изменений контента (тексты, SEO, slug, категории, активность)
+    prices:write: Пакеты изменений цен (цены вариантов, пороги)
+    theme:write: 'Живой дизайн: шаблоны сайта и theme.css, сразу на сайте'
+  secret_state:
+    missing: не задано
+    no_key: нет ключа шифрования
+    unreadable: не расшифровать — введите заново
+    ready: задано
+    hint:
+      no_key: На сервере не задан SETTINGS_SECRET_KEY (.env.local) — секретные настройки отключены.
+      unreadable: 'Сохранённое значение не удалось расшифровать: SETTINGS_SECRET_KEY на сервере изменён или утерян (восстановление из бэкапа, новый сервер) либо данные повреждены. Введите значение заново. Если ключ шифрования меняли намеренно — bin/console app:secrets:rotate (docs/ai.md).'
+  ai_feature:
+    check: проверка ключа
+    describe: описание
+    translate: перевод
+    seo: SEO-мета
+  ai_usage_status:
+    queued: в очереди
+    ok: выполнено
+    error: ошибка
+    rejected: отклонено
+  audit_action:
+    create: Создано
+    update: Изменено
+    delete: Удалено
+    apply: Применено
+    reject: Отклонено
+  audit_source:
+    admin_ui: Админка
+    ai_api: AI (API)
+    import: Импорт
+    cli: Консоль
+  platform_credit:
+    full: "Полный"
+    short: "Кратко"
+    none: "Не показывать"
+  changeset_status:
+    proposed: Предложено
+    applied: Применено
+    rejected: Отклонено
+    expired: Просрочено
+page:
+  label:
+    singular: Страница
+    plural: Страницы
+  title:
+    new: Новая страница
+  action:
+    add: Добавить страницу
+  field:
+    title: Заголовок
+    slug: Слаг
+    published: Опубликовано
+    position: Порядок
+    show_in_header: В шапке
+    show_in_footer: В футере
+    updated_at: Изменено
+  section:
+    publishing: Публикация
+    content: Контент (по языкам)
+post:
+  label:
+    singular: Запись
+    plural: Блог
+  title:
+    new: Новая запись блога
+  action:
+    add: Добавить запись
+  field:
+    category: Рубрика
+    cover: Обложка
+    title: Заголовок
+    published_at: Дата публикации
+    author: Автор
+    tags: Теги
+    updated_at: Изменено
+  section:
+    publishing: Публикация
+    content: Контент (по языкам)
+  help:
+    published_at: Пустая или будущая — запись не публикуется
+    cover: Файл из «Медиатеки»; загрузить новый — там же
+    tags: Через запятую
+post_category:
+  label:
+    singular: Рубрика блога
+    plural: Рубрики блога
+  title:
+    new: Новая рубрика
+  action:
+    add: Добавить рубрику
+  field:
+    name: Название
+    code: Код
+    position: Порядок
+  help:
+    code: 'snake_case латиницей: news, tips'
+redirect:
+  label:
+    singular: Редирект
+    plural: Редиректы
+  title:
+    new: Новый редирект
+  help:
+    index: 'Правило срабатывает, только если адрес отдал бы 404: живые страницы не перекрываются. Изменение слага товара, страницы, статьи или пути категории записывает 301 автоматически (авто). Удалённый товар — 410 вручную, если нужно.'
+    source: 'Путь от корня сайта, с языковым префиксом для неосновных языков: /stara-adresa, /ru/kategoriya/. Можно вставить полный URL — домен и параметры отбросятся, регистр — к нижнему. Конечный слеш имеет значение: /kategoriya/ — категория, /tovar — товар.'
+    target: 'Для 301/302: путь от корня (/novyj-adres) или полный URL https://… Для 404/410 — пусто. Если новый адрес сам перенаправляется, сохранится конечный.'
+  action:
+    export: Экспорт CSV
+    import: Импорт CSV
+    add: Добавить редирект
+  field:
+    code: Код
+    kind: Откуда
+    source: Старый адрес
+    target: Новый адрес
+    hits: Срабатываний
+    last_hit_at: Последнее
+    created_at: Создано
+  flash:
+    file_unreadable: Не удалось прочитать файл
+  import:
+    title: Импорт редиректов из CSV
+    file: Файл CSV
+    file_help: 'Строки «старый;код;новый» с разделителем «;», кодировка UTF-8 (в Excel — «CSV UTF-8»): /stara;301;/nova, /udalena;410; (для 404/410 цель пустая). Заголовок source;code;target можно оставить — файл экспорта импортируется как есть. Существующие правила с тем же старым адресом заменяются. До {max} строк; большие файлы — командой seo:redirects:import на сервере.'
+    submit: Импортировать
+    back: К списку
+    report:
+      created: 'Создано:'
+      updated: 'заменено:'
+      errors: 'с ошибками:'
+      line: Строка
+      error: Ошибка
+    error:
+      too_many_rows: Более {max} строк — остаток файла пропущен (большие файлы — seo:redirects:import)
+      not_utf8: 'Строка не в UTF-8: сохраните файл как «CSV UTF-8»'
+      bad_code: 'Код «{code}»: допустимы 301, 302, 404, 410'
+not_found:
+  label:
+    singular: Адрес 404
+    plural: Журнал 404
+  help:
+    index: Адреса сайта, отдавшие 404, без IP и параметров. Хранится до {limit} адресов и {days} дней с последнего обращения; остальное удаляется автоматически.
+  action:
+    create_redirect: Создать редирект
+    clear: Очистить журнал
+  field:
+    path: Адрес
+    hits: Обращений
+    last_hit_at: Последнее
+    first_seen_at: Впервые
+    referer: Откуда (последнее)
+  flash:
+    csrf_invalid: Недействительный CSRF-токен, попробуйте ещё раз
+    cleared: 'Журнал 404 очищен: {count, plural, one {# адрес} few {# адреса} many {# адресов} other {# адреса}}'
+  clear:
+    title: Очистить журнал 404?
+    text: Все записанные адреса 404 будут удалены. Правила редиректов не изменятся.
+    submit: Очистить
+    cancel: Отмена
+user:
+  label:
+    singular: Пользователь
+    plural: Пользователи
+  title:
+    new: Новый пользователь
+  action:
+    add: Добавить пользователя
+  field:
+    email: Электронная почта
+    display_name: Имя
+    role: Роль
+    active: Активен
+    password: Пароль
+    new_password: Новый пароль
+    created_at: Создан
+  help:
+    password: Не короче 8 символов
+    new_password: Пусто — пароль не меняется
+  default_display_name: Новый пользователь
+api_token:
+  label:
+    singular: API-токен
+    plural: API-токены
+  help:
+    index: 'Персональные токены для Claude Code / REST (docs/admin-api.md): каждый создаёт себе, срок до {days} дней, значение показывается один раз. Администратор видит все токены и может отозвать любой.'
+    token: Первые 12 символов — чтобы узнать; полное значение не хранится
+    last_used_ip: Анонимизировано
+  action:
+    issue: Создать токен
+    revoke: Отозвать
+  filter:
+    scope: Разрешение
+  field:
+    name: Название
+    token: Токен
+    scopes: Разрешения
+    owner: Владелец
+    status: Состояние
+    created_at: Создан
+    expires_at: Действует до
+    last_used_at: Последний запрос
+    last_used_ip: С адреса
+  status:
+    active: Действует
+    expired: Просрочен
+    revoked: Отозван
+  flash:
+    issued: Токен «{name}» создан. Скопируйте значение сейчас — второй раз оно не покажется.
+    revoked: Токен «{name}» отозван
+    csrf_invalid: Недействительный CSRF-токен, попробуйте ещё раз
+  plain:
+    title: Новый токен.
+    text: 'Скопируйте сейчас: второй раз он не покажется, в базе только хеш.'
+    value: Значение токена
+    env_hint: значение — в переменную окружения, не в файл
+    check: 'Проверка:'
+  issue:
+    title: Создать API-токен
+    intro: Токен даёт Claude Code (MCP) или скрипту те же права, что у вас, в пределах выбранных разрешений. Значение покажем один раз. Применить пакет изменений через API нельзя — только в админке.
+    submit: Создать
+    cancel: Отмена
+  revoke:
+    title: Отозвать API-токен
+    token: Токен
+    owner: 'владелец:'
+    text: перестанет работать сразу. Вернуть его нельзя — только создать новый.
+    submit: Отозвать
+    cancel: Отмена
+  form:
+    name: Название
+    name_help: 'Для чего токен: «Claude Code на ноутбуке», «скрипт цен». Видно только вам и администратору.'
+    scopes: Разрешения
+    scope_choice: '{label} <code class="small text-muted ms-1">{scope}</code>'
+    days: Срок действия, дней
+    days_help: Не дольше {max} дней. Продление — новый токен, старый отозвать.
+setting:
+  key:
+    analytics:
+      gtm_container_id:
+        label: Идентификатор контейнера Google Tag Manager
+        help: GTM-XXXXXXX. Если задан, GA4 и Pixel лучше подключать внутри GTM.
+      ga4_measurement_id:
+        label: Идентификатор потока Google Analytics 4
+        help: G-XXXXXXXXXX. Выводится gtag.js, только когда GTM не задан.
+      fb_pixel_id:
+        label: Идентификатор пикселя Meta (Facebook)
+        help: Числовой id пикселя Meta. Движок отправляет PageView и ecommerce-события (ViewContent, AddToCart, InitiateCheckout, Purchase; content_ids = SKU варианта, как в фиде) только при согласии на cookie. Если пиксель настроен в GTM — оставьте пустым, иначе события задвоятся (docs/analytics.md).
+      tags_on_dev:
+        label: Включать теги на dev
+        help: На prod теги и HTML-коды выводятся всегда; на dev/test — только с этим переключателем (по умолчанию выключен, чтобы тестовые просмотры не попадали в аналитику).
+      consent_granted_locales:
+        label: 'Согласие на cookie: языки, где оно действует сразу'
+        help: Через запятую. Для этих языков consent = granted без баннера; для остальных — denied и баннер согласия (EU).
+    seo:
+      google_site_verification:
+        label: Google Search Console — код верификации
+        help: Значение meta google-site-verification (без тега).
+      bing_site_verification:
+        label: Bing Webmaster — код верификации
+        help: Значение meta msvalidate.01 (без тега).
+    html:
+      head:
+        label: Свой код в заголовке страницы
+        help: Произвольный HTML/JS, выводится как есть в <head> каждой страницы сайта. Только для администратора.
+      body_start:
+        label: Свой код в начале страницы
+        help: Выводится как есть сразу после <body>.
+      body_end:
+        label: Свой код в конце страницы
+        help: Выводится как есть перед </body>.
+    orders:
+      notify_email:
+        label: Почта для новых заказов
+        help: Куда отправлять письмо о каждом новом заказе; несколько адресов через запятую. Пусто — не отправлять.
+    prices:
+      notify_email:
+        label: Почта для применённых ценовых пакетов
+        help: Кому отправлять сводку, когда применён пакет изменений с ценами (AI, CLI). Несколько адресов через запятую. Пусто — всем активным пользователям с ролью менеджера (без администраторов).
+    catalog:
+      facet_counts_enabled:
+        label: Показывать счётчики в фильтрах
+        help: 'Количество товаров рядом со значениями фильтров категории. Выключено — значения показываются без цифр (ADR Rev 11). На больших каталогах счётчики дорогие: см. порог ниже.'
+      facet_counts_max_set:
+        label: Порог счётчиков фильтров, карточек
+        help: Если в отфильтрованном наборе больше карточек, счётчики не считаются и не выводятся (значения остаются, без цифры). Целое число; пусто — 20000.
+    feeds:
+      default_brand:
+        label: Бренд для товаров без бренда (фид Meta)
+        help: 'Meta отклоняет товар без бренда: для карточек без бренда в фид Meta идёт это значение, пусто — название магазина. Google-фид его не использует (там товар без бренда помечается identifier_exists = no).'
+    ai:
+      openrouter_key:
+        label: Ключ OpenRouter
+        help: Ключ API с openrouter.ai/keys (sk-or-v1-…). AI-функции админки работают на этом ключе и за счёт его кредитов. Хранится зашифрованным, показывается только маской; пустое поле при сохранении — оставить текущий ключ. Без ключа AI-кнопок в админке нет (docs/ai.md).
+      model:
+        label: Модель AI
+        help: Строка vendor/model с openrouter.ai/models, напр. deepseek/deepseek-v4-pro или anthropic/claude-sonnet-4.5. Пусто — модель движка по умолчанию.
+      monthly_budget_usd:
+        label: Месячный лимит расходов AI, $
+        help: Когда сумма расходов за календарный месяц (по данным OpenRouter) достигает лимита, AI-функции до конца месяца не вызываются. 0 или пусто — без лимита.
+    google:
+      sign_in_enabled:
+        label: "Включено"
+        help: "Кнопка «Продолжить с Google» на входе, регистрации и в окне отзыва. Работает только вместе с Client ID и Client Secret ниже; инструкция и адреса для Google Cloud Console — под списком настроек."
+      client_id:
+        label: "Client ID"
+        help: "Из Google Cloud Console → Credentials → OAuth client ID (Web application): строка вида 123456789012-abc…xyz.apps.googleusercontent.com."
+      client_secret:
+        label: "Client Secret"
+        help: "Оттуда же (GOCSPX-…). Хранится шифрованно, показывается только маской; пустое поле при сохранении — оставить текущий. Ротация: в Cloud Console создайте новый secret в том же клиенте, вставьте сюда, затем отключите старый."
+    site:
+      platform_credit:
+        label: "Строка платформы в футере"
+        help: "«Полный» — платформа, открытый код под лицензией Apache 2.0, разработчики LuxSite и ссылка «Лицензия»; «Кратко» — «Ecommerce LuxSite»; «Не показывать» — строки нет. По Apache 2.0 показ на сайте не обязателен: требование NOTICE касается только распространения кода. Страница /license остаётся доступной по адресу (закрыта от индексации)."
+  group:
+    analytics: Аналитика
+    seo: SEO
+    html: HTML-коды
+    orders: Заказы
+    prices: Цены
+    catalog: Каталог
+    feeds: Фиды товаров
+    ai: AI
+    google: "Вход через Google"
+    site: "Сайт"
+  label:
+    singular: Настройка
+    plural: Настройки сайта
+  help:
+    index: Теги и HTML-коды публикуются на сайте сразу после сохранения (на prod всегда, на dev — с переключателем «Включать теги на dev»).
+    clear_secret: Включите и сохраните, чтобы убрать ключ; AI-функции отключатся.
+    html_raw: '{help} Сохраняется как есть, без экранирования.'
+    secret_disabled: '{problem} — секретные настройки отключены. {help}'
+    secret_unreadable: <strong>{hint}</strong> {help}
+  action:
+    check_on_site: Проверить на сайте
+    edit: Изменить
+  field:
+    label: Настройка
+    code: Ключ
+    value: Значение
+    status: Состояние
+    updated_at: Изменено
+    clear_secret: Удалить сохранённый ключ
+  status:
+    not_set: не задано
+    default: "по умолчанию"
+    output: выводится
+    invalid: 'не выводится: неверный формат'
+    invalid_title: Ожидается id в формате, как в подсказке поля
+  placeholder:
+    not_set: не задано
+    secret: '{mask, select, none {не задано} other {{mask}}}'
+  feeds:
+    title: Товарные фиды
+    help: Обновляются каждые 6 часов и после импорта. Адрес вставить в Google Merchant Center (Источники данных → Добавить товары из файла → Плановая выборка) или Meta Commerce Manager (Каталог → Источники данных → Фид данных → Запланированный фид). Инструкция — docs/feeds.md.
+    channel: Канал
+    locale: Язык
+    url: Адрес
+    generated_at: Сгенерирован
+    url_aria: Адрес фида {channel} {locale}
+    not_generated: ещё не сгенерирован
+    copy: 'Скопировать'
+    copied: 'Скопировано'
+ai_key:
+  reason:
+    missing: Ключ OpenRouter не задан
+    no_key: SETTINGS_SECRET_KEY не задан на сервере — секретные настройки и AI отключены
+    unreadable: 'Ключ OpenRouter не расшифровать: SETTINGS_SECRET_KEY на сервере изменён или утерян — введите ключ OpenRouter заново'
+    ready: Ключ OpenRouter задан
+  key_problem:
+    invalid: 'SETTINGS_SECRET_KEY в .env.local некорректный: должно быть 32 байта base64 (44 символа, одна строка; bin/console app:secrets:keygen)'
+    missing: На сервере не задан SETTINGS_SECRET_KEY (.env.local)
+  flash:
+    csrf_invalid: Недействительный CSRF-токен, попробуйте ещё раз
+    check_ok: 'OpenRouter ответил: {summary}. Модель: {model}'
+    check_failed: 'OpenRouter отклонил запрос: {error}'
+  summary:
+    label: ключ «{label}»
+    no_label: ключ без подписи
+    spent: потрачено ${amount}
+    no_limit: без лимита на ключе
+    limit: лимит ${amount}
+    limit_remaining: лимит ${amount}, осталось ${remaining}
+    free_tier: бесплатный уровень
+  action:
+    enter: Ввести ключ OpenRouter
+    change: Изменить ключ
+    get: Получить ключ
+    check: Проверить соединение
+  section:
+    title: AI на ключе магазина (OpenRouter)
+    no_key_invalid: SETTINGS_SECRET_KEY в .env.local некорректный (должно быть 32 байта base64, 44 символа в одну строку)
+    no_key_missing: На сервере не задан SETTINGS_SECRET_KEY
+    no_key_disabled: секретные настройки и AI-функции отключены (docs/ai.md).
+    unreadable_title: Ключ OpenRouter нужно ввести заново.
+    unreadable_text: 'Сохранённый ключ не удалось расшифровать: SETTINGS_SECRET_KEY на сервере изменён или утерян (восстановление из бэкапа на новом сервере, перегенерированный ключ) либо данные повреждены. AI-функции отключены до повторного ввода. Если ключ шифрования изменили намеренно —'
+    missing: 'Ключ OpenRouter не задан: AI-кнопок в формах нет. Введите ключ кнопкой ниже.'
+    model: 'Модель:'
+    change: изменить
+    change_budget: изменить лимит
+    month: 'За этот месяц: {calls} вызовов, потрачено ${cost} (без лимита)'
+    month_budget: 'За этот месяц: {calls} вызовов, потрачено ${cost} из лимита ${budget}'
+    no_cost: '{count} успешных без стоимости от провайдера — в лимите не учтены'
+    change_model: 'Модель AI: изменить'
+    change_monthly_budget: 'Месячный лимит: изменить'
+ai_usage:
+  label:
+    singular: Вызов AI
+    plural: Использование AI
+  title:
+    detail: '{feature} #{id}'
+  help:
+    index: 'За этот месяц: {calls} вызовов, успешных {ok}, потрачено ${cost} (без лимита). Расходы — по данным OpenRouter на ключе магазина.'
+    index_budget: 'За этот месяц: {calls} вызовов, успешных {ok}, потрачено ${cost} из лимита ${budget}. Расходы — по данным OpenRouter на ключе магазина.'
+  field:
+    occurred_at: Когда
+    actor: Кто
+    feature: Функция
+    status: Состояние
+    model: Модель
+    user: Пользователь
+    entity_type: Сущность
+    entity_id: ID
+    prompt_tokens: Токены запроса
+    completion_tokens: Токены ответа
+    cost: Стоимость
+    duration_ms: мс
+    changeset_id: Пакет изменений
+    error: Ошибка
+  banner:
+    disabled: AI-функции отключены, поэтому журнал пуст.
+    ask_admin: Обратитесь к администратору, чтобы он ввёл ключ.
+    settings: Настройки AI
+license:
+  title: Лицензия
+  field:
+    platform: Платформа
+    code_license: "Лицензия кода"
+    developers: "Разработчики платформы"
+    licensee: Владелец сайта
+    site_host: Домен сайта
+    admin_host: Домен админки
+    engine: Версия движка
+    type: "Договор с LuxSite"
+    contract: "Номер договора"
+    since: Дата
+  open_source: "открытый код"
+  licensee_default: 'название магазина: app.license в паке не задан'
+  engine:
+    unknown: неизвестно
+    built: собрано
+    pack: пак
+  type:
+    subscription: Подписка
+    perpetual: "Бессрочный"
+    none: "Не указан"
+  components:
+    title: Сторонние компоненты
+    help: Runtime-пакеты composer.lock движка; каждый — на условиях своей лицензии. Список пишет
+    help_build: при сборке образа.
+    package: Пакет
+    version: Версия
+    license: Лицензия
+audit:
+  label:
+    singular: Запись журнала
+    plural: Журнал изменений
+  title:
+    detail: '{action} {type} #{id}'
+  help:
+    index: 'Изменения товаров, цен, категорий, страниц и акций из админки и через AI: строка на поле. Импорт из фидов сюда не пишет — у него собственный отчёт.'
+    index_retention: 'Изменения товаров, цен, категорий, страниц и акций из админки и через AI: строка на поле. Хранится {months} мес. Импорт из фидов сюда не пишет — у него собственный отчёт.'
+  field:
+    occurred_at: Когда
+    actor: Кто
+    source: Источник
+    action: Действие
+    entity_type: Что
+    entity_id: ID
+    entity_label: Название
+    locale: Язык
+    field: Поле
+    before: Было
+    after: Стало
+    user_id: ID пользователя
+    token: Токен
+    changeset: Пакет изменений
+    ip: IP (анонимизирован)
+    change: 'Изменение'
+  filter:
+    entity_id: ID сущности
+  value:
+    'yes': да
+    'no': нет
+  error:
+    admin_only: Строки настроек видит только администратор
+  subject:
+    labelled: '{type} «{label}» #{id}'
+    plain: '{type} #{id}'
+  summary:
+    created: 'создано'
+    deleted: 'удалено'
+  field_name:
+    name: 'Название'
+    title: 'Заголовок'
+    slug: 'Адрес (slug)'
+    description: 'Описание'
+    shortDescription: 'Краткое описание'
+    body: 'Текст'
+    content: 'Текст'
+    metaTitle: 'SEO-заголовок'
+    metaDescription: 'SEO-описание'
+    h1: 'Заголовок H1'
+    price: 'Цена'
+    priceMinor: 'Цена'
+    oldPriceMinor: 'Старая цена'
+    stock: 'Остаток'
+    sku: 'Артикул'
+    active: 'Активный'
+    featured: 'На главной'
+    position: 'Порядок'
+    parent: 'Родительская категория'
+    brand: 'Бренд'
+    categories: 'Категории'
+    value: 'Значение'
+    label: 'Подпись'
+    discount: 'Скидка'
+    startsAt: 'Начало'
+    endsAt: 'Конец'
+    unit: 'Единица'
+    stockPolicy: 'Наличие'
+entity_type:
+  product: Товар
+  product_variant: Вариант
+  price_tier: Порог цены
+  category: Категория
+  page: Страница
+  post: Запись блога
+  promotion: Акция
+  option_value: Опция товара
+  setting: Настройка
+  api_token: API-токен
+  changeset: Пакет изменений
+changeset:
+  label:
+    singular: Пакет изменений
+    plural: Пакеты изменений
+  help:
+    index: Пакеты предлагает AI через Claude Code (REST/MCP) или AI-помощник в формах. Ничего не меняется, пока человек не нажмёт «Применить» на странице пакета. Предложенный пакет действует {ttl}.
+  action:
+    apply: Применить
+    reject: Отклонить
+    revert: Откатить
+  column:
+    id: №
+    title: Название
+    status: Состояние
+    source: Источник
+    author: Автор
+    operations: Оп.
+    risks: Риски
+    created_at: Создано
+    when: Действует до / когда
+  badge:
+    prices: цены
+    prices_title: есть ценовые операции
+  when:
+    until: до {date}
+  flash:
+    confirm_risk: Поставьте отметку подтверждения рискованного изменения
+    conflict: Данные изменились после создания пакета — применить его нельзя
+    applied: Применено {count, plural, one {# операция} few {# операции} many {# операций} other {# операции}}. <a href="{url}">Записи — в Журнале изменений</a>{mail, select, yes {. Письмо отправлено ответственным за цены} other {}}
+    rejected: Пакет отклонён. Вернуть его нельзя — при необходимости создайте новый.
+    revert_failed: Откат невозможен
+    revert_created: 'Создан пакет отката #{id} — проверьте и примените'
+    already_applied: 'Пакет уже применён: {name}, {date}'
+    already_rejected: 'Пакет уже отклонён: {name}, {date}'
+    expired: Пакет просрочен — применить нельзя, создайте его заново в Claude Code
+    not_applicable: 'Пакет #{id} в состоянии «{status}»'
+  detail:
+    valid_until: действует до {date}
+    less_than_hour: меньше часа
+    hours_left: ещё {hours} ч
+    expired_at: просрочен {date} — применить нельзя, создайте пакет заново в Claude Code
+    applied_by: применил(а) {name}, {date}
+    risk_confirmed_by: 'подтвердил(а) риски: {name}, {date}'
+    rejected_by: отклонил(а) {name}, {date}
+    author: 'Автор: {name}'
+    via_token: '(через API-токен #{id})'
+    created: 'Создан: {date}'
+    source: 'Источник: {source}'
+    operations: 'Операций: {count}'
+    price_operations: ', из них ценовых: {count}'
+    revert_of: 'Откат пакета #{id} →'
+    reverted_by: 'Откачен пакетом #{id} →'
+    audit_link: 'Журнал: записи этого пакета →'
+    op: оп. {n}
+  conflicts:
+    title: Данные изменились после создания пакета
+    text: 'Применить этот пакет уже не получится: текущие значения не совпадают с теми, на которые он рассчитан. Создайте пакет заново.'
+    col_op: Оп.
+    col_target: Цель
+    col_field: Поле
+    col_expected: Ожидалось
+    col_current: Сейчас
+    col_who: Кто / когда
+    outside_log: 'вне журнала: импорт или изменение до включения журнала'
+  risks:
+    title: Рискованное изменение
+    title_proposed: Рискованное изменение — нужно ваше подтверждение
+    title_confirmed: 'Рискованное изменение — подтверждено: {name}, {date}'
+    more: и ещё {count}
+    note: Правила — параметры магазина; это предупреждение, а не запрет. Применяете вы и отвечаете вы.
+  warnings:
+    title: Предупреждения ({count})
+  diff:
+    title: Изменения ({count})
+    col_before: Было
+    col_after: Станет
+    no_changes: без изменений
+    open_form: Открыть форму
+    none: (нет)
+    redirect: будет создан 301 со старого адреса
+    category_paths: адреса подкатегорий и товаров изменятся
+  confirm:
+    label: 'Подтверждаю рискованное изменение: {summary}'
+    invalid: Поставьте отметку, чтобы применить рискованный пакет
+    apply_n: Применить {count, plural, one {# операцию} few {# операции} many {# операций} other {# операции}}
+    reject_note: Отклонённый пакет не возвращается — при необходимости создаётся новый.
+    revert_note: Создаст новый пакет с обратными изменениями; ничего не изменится, пока вы его не примените.
+  target:
+    product_variant: Вариант
+    product: Товар
+    category: Категория
+    page: Страница
+    post: Запись
+    price_tier: Порог
+  field:
+    price: Цена
+    old_price: Старая цена
+    name: Название
+    title: Заголовок
+    short_description: Краткое описание
+    description: Описание
+    body: Текст
+    meta_title: Meta title
+    meta_description: Meta description
+    slug: Slug
+    h1: H1
+    excerpt: Анонс
+    active: Активен
+    featured: На главной
+    categories: Категории
+    main: Главная категория
+  warning:
+    html_sanitized: HTML очищен санитайзером
+    typography_dash: Типографика
+    double_space: Типографика
+    straight_quotes: Типографика
+    tier_above_base: Порог дороже базовой цены
+    noop: Без фактических изменений
+    slug_generated: Slug создан из названия
+  risk:
+    price_jump: Скачок цены более {pct} %
+    cumulative: Суммарное изменение за {days} дн. более {pct} %
+    zero_price: Цена 0
+    mass_price: Более {count} ценовых операций в пакете
+    summary_ops: '{label} ({count} оп.)'
+  value:
+    'yes': да
+    'no': нет
+    deleted_category: '#{id} (удалена)'
+  issue:
+    zero_price: '{sku}: цена 0'
+    price_jump: '{sku}: изменение цены более {pct} % ({before} → {after})'
+    cumulative: '{sku}: суммарное изменение за {days} дн. более {pct} % ({before} → {after})'
+    tier_above_base: '{sku}: порог от {qty} ({price}) дороже базовой цены ({base})'
+    mass_price: 'Ценовых операций в пакете: {count} (порог {max})'
+    invalid_slug: '{field}: слаг — латиница в нижнем регистре, цифры и дефисы между ними'
+    too_long_bytes: '{field}: длиннее {max} байт'
+    too_long_chars: '{field}: длиннее {max} символов'
+    html_sanitized: '{field}: HTML очищен по правилам магазина (удалены теги или атрибуты)'
+    typography_dash: '{field}: тире как связка между словами — в текстах магазина его не используют'
+    double_space: '{field}: двойные пробелы'
+    straight_quotes: '{field}: прямые кавычки вместо «ёлочек»'
+    noop: Операция ничего не меняет
+    variant_not_found: Вариант {ref} не найден
+    product_not_found: Товар {ref} не найден
+    category_not_found: 'Категория #{id} не найдена'
+    group_not_found: Группа покупателей «{code}» не найдена
+    entity_not_found: 'Не найдено: {type} #{id}'
+    tier_not_found: Порога от {qty} у {sku} нет
+    tier_not_found_group: Порога от {qty} для группы {group} у {sku} нет
+    locale: Языка «{locale}» в магазине нет ({locales})
+    field_not_allowed: 'Поле «{field}» для {entity} недоступно; разрешено: {allowed}'
+    string_or_null: '{field}: строка или null'
+    translation_missing: 'Перевода «{locale}» ещё нет: в fields нужно поле {field}'
+    required: '{field}: пустое значение не допускается'
+    slug_required: 'slug: адрес нельзя убрать, только изменить'
+    slug_generated: slug не задан — адрес «{slug}» создан из названия
+    slug_taken: 'slug: {message}'
+    slug_taken_locale: Слаг «{slug}» уже занят на этом языке
+    flags_missing: Задайте active и/или featured
+    main_not_in_categories: Главная категория должна быть среди categories
+    expect_missing: 'expect.{key}: укажите текущее значение'
+    conflict: expect.{key} не совпадает с текущим значением
+    duplicate_target: Эту же цель уже меняет операция {op}
+    blame: '{message} (изменил {who} {when})'
+    retry: Параллельное изменение тех же данных — попробуйте ещё раз
+    risk_changed: 'С момента создания пакета появились новые риски: {flags}. Создайте пакет заново'
+    revert_unsupported: Перевод «{locale}» для {target} создан этим пакетом — откат его не убирает; удалить перевод можно только в админке
+    nothing_to_revert: Пакет ничего не изменил — откатывать нечего
+email_changeset:
+  price_applied:
+    subject: '[{site}] Применён ценовой пакет #{id}: {title}'
+    heading: 'Применён ценовой пакет #{id}: {title}'
+    created_by: 'Создал(а):'
+    applied_by: 'Применил(а):'
+    operations: 'Операций:'
+    operations_value: '{count}, из них ценовых: {price}'
+    risk_flags: 'Рисковые флаги:'
+    risk_flags_value: '{flags} — подтвердил(а) {name}'
+    col_target: Цель
+    col_field: Поле
+    col_before: Было
+    col_after: Станет
+    more: и ещё {count}
+    link_changeset: Страница пакета
+    link_audit: Журнал изменений
+    text_changeset: 'Пакет:'
+    text_audit: 'Журнал изменений:'
+field:
+  id: ID
+locale_switch:
+  label: Язык админки
+settings:
+  google:
+    title: Вход через Google
+    csrf_invalid: Недействительный CSRF-токен, попробуйте ещё раз
+    state:
+      settings: 'Включено: покупатели видят кнопку «Продолжить с Google», ключи — из настроек магазина.'
+      env: 'Переключатель выключен; работают ключи из переменных сервера (стенд агентства). Для магазина клиента введите ключи здесь и включите.'
+      disabled: 'Выключено: кнопки «Продолжить с Google» на сайте нет.'
+      client_id_missing: 'Включено, но Client ID не задан — кнопки на сайте нет.'
+      client_id_invalid: 'Включено, но Client ID не похож на …apps.googleusercontent.com — кнопки на сайте нет.'
+      secret_missing: 'Включено, но Client Secret не задан — кнопки на сайте нет.'
+      secret_no_key: 'Включено, но на сервере нет ключа шифрования SETTINGS_SECRET_KEY — секрет сохранить нельзя, кнопки на сайте нет.'
+      secret_unreadable: 'Включено, но сохранённый Client Secret не расшифровать (ключ шифрования на сервере изменён) — введите его снова.'
+    origin: Authorized JavaScript origin
+    redirect_uri: Authorized redirect URI
+    copy: Копировать
+    copied: Скопировано
+    steps:
+      title: Как получить Client ID и Client Secret (один раз, 10–15 минут)
+      console: 'Откройте Google Cloud Console (console.cloud.google.com), выберите проект магазина или создайте новый.'
+      consent: 'APIs & Services → OAuth consent screen: тип External, название магазина, email поддержки, домен сайта; статус In production (в Testing входят только тестовые адреса). Доступы (scopes) — только openid, email, profile.'
+      client: 'APIs & Services → Credentials → Create credentials → OAuth client ID, тип Web application, название — домен магазина.'
+      uris: 'В Authorized JavaScript origins вставьте origin выше, в Authorized redirect URIs — redirect URI выше (точное совпадение, без слеша в конце). Если сайт открывается и с www, добавьте оба адреса ещё раз с www.'
+      keys: 'Скопируйте Client ID и Client Secret в настройки «Client ID» и «Client Secret» в списке выше (секрет хранится шифрованно и показывается маской).'
+      enable: 'Включите переключатель «Включено» в группе «Вход через Google» и сохраните.'
+      verify: 'Нажмите «Проверить настройки», затем «Попробовать на сайте»: на странице входа есть кнопка «Продолжить с Google» — войдите своим аккаунтом Google.'
+    console: Открыть Google Cloud Console
+    check: Проверить настройки
+    try: Попробовать на сайте
+    check_result:
+      client_id_ok: 'Client ID задан, формат правильный.'
+      client_id_missing: 'Client ID не задан.'
+      client_id_invalid: 'Client ID не похож на …apps.googleusercontent.com — проверьте, не вставлен ли secret или API-ключ.'
+      secret_ready: 'Client Secret задан.'
+      secret_missing: 'Client Secret не задан.'
+      secret_no_key: 'На сервере нет ключа шифрования SETTINGS_SECRET_KEY — Client Secret сохранить нельзя. Обратитесь к разработчику.'
+      secret_unreadable: 'Сохранённый Client Secret не расшифровать: ключ шифрования на сервере изменён — введите секрет снова.'
+      enabled_settings: 'Включено, работают ключи из настроек магазина.'
+      enabled_env: 'Переключатель выключен: работают ключи из переменных сервера (стенд). Включите, чтобы действовали ключи из настроек.'
+      enabled_incomplete: 'Переключатель включён, но ключи неполные — кнопки на сайте нет.'
+      enabled_off: 'Переключатель выключен — кнопки на сайте нет.'
+      google_ok: 'Google отвечает: issuer {issuer}, ключей подписи {keys}.'
+      google_endpoints_changed: 'Google объявляет другие адреса конечных точек, чем использует движок, — сообщите разработчику.'
+      google_failed: 'Google недоступен с сервера ({reason}). Проверьте доступ сервера в интернет и попробуйте позже.'
+empty_state:
+  product_review:
+    text: 'Отзывов пока нет. Они появляются, когда покупатели оценивают купленные товары в личном кабинете; новые будут ждать здесь модерации.'
+  changeset:
+    text: 'Пакетов изменений пока нет. Их создаёт AI-агент или интеграция через API админки: изменения цен и товаров приходят сюда на проверку перед применением.'
+    action: 'API-токены для агента'
+  admin_api_token:
+    text: 'Токенов пока нет. Токен даёт AI-агенту или интеграции доступ к API админки с выбранными разрешениями.'
+    action: 'Создать токен'
+  ai_usage:
+    text: 'Вызовов AI ещё не было. Здесь появятся генерации описаний и переводов из админки: модель, токены и стоимость.'
+  wholesale_application:
+    text: 'Заявок оптовиков пока нет. Покупатель подаёт заявку в личном кабинете на сайте, она появится здесь.'
+  not_found_entry:
+    text: 'Адресов 404 пока не зафиксировано. Сюда попадают страницы сайта, которые кто-то открывал, а их нет: из них удобно делать редиректы.'
+  admin_audit_entry:
+    text: 'Изменений ещё не было. Здесь появляются изменения товаров, цен, категорий, страниц и акций из админки и через AI.'
+  order:
+    text: 'Заказов пока нет. Они появляются, когда покупатели оформляют корзину или быструю заявку на сайте.'
+  default:
+    text: 'Записей пока нет.'
+  search:
+    text: 'По этому поиску или фильтру ничего не найдено.'
+    reset: 'Сбросить поиск и фильтры'
+solution:
+  lookup_inactive: 'неактивный'
+  label:
+    singular: 'Решение'
+    plural: 'Решения'
+  title:
+    new: 'Новое решение'
+  action:
+    add: 'Добавить решение'
+  field:
+    id: 'ID'
+    title: 'Название'
+    published: 'Опубликовано'
+    position: 'Порядок'
+    group: 'Группа'
+    cover: 'Обложка'
+    related: 'Другие решения'
+    updated_at: 'Изменено'
+  section:
+    publishing: 'Публикация'
+    options: 'Варианты решения'
+    content: 'Контент (по языкам)'
+  help:
+    cover: 'Файл из «Медиатеки»; загрузить новый — там же'
+    related: 'Пусто — сайт покажет решения из той же группы'
+    options: 'Товары каталога как варианты. Цену и «Запросить цену» показывает товар (тип цены), здесь она не задаётся.'
+solution_group:
+  label:
+    singular: 'Группа решений'
+    plural: 'Группы решений'
+  title:
+    new: 'Новая группа решений'
+  action:
+    add: 'Добавить группу'
+  field:
+    title: 'Название'
+solution_form:
+  error:
+    title_required: 'Укажите название решения'
+    group_title_required: 'Укажите название группы'
+  title: 'Название'
+  slug: 'Слаг (URL)'
+  intro: 'Вступление (под заголовком)'
+  task: 'Задача'
+  loads: 'Грузы'
+  industries: 'Отрасли'
+  body: 'Дополнительный текст'
+  faq: 'Частые вопросы'
+  meta_title: 'Meta title'
+  meta_description: 'Meta description'
+  group_title: 'Название группы'
+  product: 'Товар'
+  position: 'Порядок'
+  pros: 'Преимущества'
+  note: 'Описание варианта'
+  help:
+    slug: 'Пустой — сформируется из названия'
+    lines: 'Один пункт на строку'
+    body: 'Необязательно: выводится после вариантов'
+    faq: 'Блоки через пустую строку: первая строка — вопрос, далее — ответ'
+
+search:
+  found: 'Найдено: {count}'
+  did_you_mean: Возможно, вы имели в виду «{suggestion}»? Показаны результаты по нему вместо «{query}».
+  exact_opened: Открыто точное совпадение для «{query}». <a href="{url}">Показать все результаты</a>
+  hint:
+    default: Поиск
+    product: Название, SKU, штрихкод или бренд
+    order: Номер, телефон, email, имя или компания
+    category: Название или URL
+    brand: Название или URL
+    attribute: Название или код
+    media: Файл или alt-текст
+    promotion: Название акции
+    product_review: Текст, покупатель или товар
+    wholesale_application: Компания, налоговый номер, контакт или email
+    company: Название, налоговый номер, контакт или email
+    customer_group: Название или код
+    page: Заголовок или URL
+    post: Заголовок, URL, автор или тег
+    post_category: Название или код
+    redirect: Откуда или куда
+    not_found_entry: Адрес или откуда перешли
+    admin_audit_entry: Объект, поле или кто изменил
+    changeset: Название пакета или автор
+    admin_api_token: Название или префикс токена
+    ai_usage: Кто, модель или ошибка
+    user: Email или имя
+    setting: Ключ или значение
+    solution: 'Название, вступление, группа или товар'
+    solution_group: 'Название группы'

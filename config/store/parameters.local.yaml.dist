@@ -1,0 +1,32 @@
+# Параметри конкретного розгортання. Скопіюйте в config/store/parameters.local.yaml (файл поза git):
+# Kernel імпортує його після services.yaml, тож значення тут перекривають дефолти dev. У тестах не вантажиться.
+# Env у маршрутах Symfony заборонений, тому хости — параметри, а не %env()%.
+parameters:
+    admin_host: 'shop-admin.example.com'
+    site_host: 'shop.example.com'
+    # Назва магазину: рядок для всіх мов або мапа за локаллю (фолбек — мова за замовчуванням)
+    app.site_name: 'Shop'
+    # app.site_name: { uk: 'Магазин', en: 'Store' }
+    # Лише для публічного демо: пароль демо-покупців (app:demo:seed створює їх, на сторінці входу блок «Демо-доступ»)
+    # app.demo.customer_password: 'Demo-2026'
+    # Тема публічного сайту: задаються лише відмінні від дефолту ключі (повний перелік і дефолти —
+    # App\Site\Theme\SiteTheme::DEFAULTS). Тексти — рядок або {uk: …, en: …}; шляхи — відносно public/.
+    # Шрифти — лише @font-face зі swap, preload шрифтів рушій не ставить (PSI: +2 с LCP).
+    # app.theme:
+    #     key: 'brand'                       # клас body.theme-brand для CSS теми
+    #     color_scheme: 'dark'
+    #     colors: { bg: '#0b0f13', ink: '#ffffff', accent_bg: 'linear-gradient(90deg,#4a0211,#b62f2f)', link: '#e0b25c' }
+    #     radius: '8px'
+    #     font: { family: 'MyFont', faces: { 400: 'themes/brand/fonts/MyFont-Regular.woff2', 700: 'themes/brand/fonts/MyFont-Bold.woff2' } }
+    #     brand: { tagline: { uk: 'Підзаголовок', en: 'Tagline' } }
+    #     logo: { src: 'themes/brand/logo.webp', width: 44, height: 52 }
+    #     favicon: 'themes/brand/favicon-32.png'
+    #     placeholder: 'themes/brand/logo-240.webp'   # заглушка карток без фото
+    #     stylesheet: 'themes/brand/theme.css'         # додатковий CSS теми
+    #     hero: { title: {…}, text: {…}, image: 'themes/brand/hero-1280.webp', image_mobile: '…', image_srcset: { 1280: '…', 1920: '…' }, image_width: 1280, image_height: 629 }
+    #     support: { enabled: true, title: {…}, text: {…}, points: [{…}], button_label: {…}, button_url: 'https://…' }
+    #     product_perks: [{ uk: 'Доставка Новою поштою', en: 'Nova Poshta delivery' }]
+    #     footer: { about: {…}, phone: '+380…', email: '…', address: {…}, legal: { uk: 'ФОП …, ІПН …, IBAN …' }, socials: [{ name: 'Instagram', url: 'https://…' }] }
+    # SEO каталогу: бренд schema Product і шаблони мети товару ({name}, {price}; рядок або мапа за мовою), див. legacyshop.yaml.dist
+    # app.seo: { brand: 'Бренд', title_max: 60, product: { title: '{name}: {price} грн', title_on_request: '{name}', title_from: '{name}: від {price} грн', description: '…', description_on_request: '…', description_from: '…' } }
+    # Приклад повної теми (магазин Сокіл 77): config/store/themes/legacyshop.yaml.dist

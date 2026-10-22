@@ -1,0 +1,19 @@
+{# Поля форми відгуку (кабінет і inline на картці): form (FormView ReviewType), existing (?ProductReview — редагування свого),
+   submit_label (рядок). Stateless CSRF форми (token_id submit). Стабільні класи: .review-form, .rating-input, .form-error. #}
+<input type="hidden" name="{{ field_name(form._token) }}" value="{{ field_value(form._token) }}">
+<input type="hidden" name="{{ field_name(form.product) }}" value="{{ field_value(form.product) }}">
+{% for error in form.vars.errors %}<p class="form-error" role="alert">{{ error.message|trans({}, 'messages') }}</p>{% endfor %}
+{% if existing and existing.status.value != 'approved' %}<p class="muted review-status">{{ ('site.account.reviews.status.' ~ existing.status.value)|trans({}, 'messages') }}</p>{% endif %}
+<fieldset class="rating-input"{% if field_errors(form.rating)|length %} aria-invalid="true"{% endif %}>
+    <legend>{{ 'site.account.reviews.rating'|trans({}, 'messages') }}</legend>
+    {% for child in form.rating %}
+        <label class="rating-option"><input type="radio" name="{{ field_name(form.rating) }}" value="{{ child.vars.value }}"{% if child.vars.checked %} checked{% endif %} required> <span class="star-label">{{ child.vars.value }} ★</span></label>
+    {% endfor %}
+    {% for error in field_errors(form.rating) %}<span class="form-error">{{ error|trans({}, 'messages') }}</span>{% endfor %}
+</fieldset>
+<label>{{ 'site.account.reviews.text'|trans({}, 'messages') }}
+    <textarea name="{{ field_name(form.text) }}" rows="5" maxlength="2000" required{% if field_errors(form.text)|length %} aria-invalid="true"{% endif %}>{{ field_value(form.text) }}</textarea>
+    {% for error in field_errors(form.text) %}<span class="form-error">{{ error|trans({}, 'messages') }}</span>{% endfor %}
+</label>
+<p class="muted review-hint">{{ 'site.account.reviews.hint'|trans({}, 'messages') }}</p>
+<button type="submit" class="btn btn-primary">{{ submit_label }}</button>

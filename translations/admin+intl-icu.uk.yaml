@@ -1,0 +1,1724 @@
+dashboard:
+  menu: Дашборд
+  title: Дашборд
+  period:
+    label: Період
+    today: Сьогодні
+    yesterday: Вчора
+    '7': 7 днів
+    '30': 30 днів
+    '90': 90 днів
+    month: Цей місяць
+    last_month: Минулий місяць
+  range:
+    from: з
+    to: по
+    show: Показати
+    span: з {from} по {to}
+    fallback: Показано типові 30 днів.
+    error:
+      invalid: 'Дати не розпізнано: потрібен формат РРРР-ММ-ДД.'
+      order: Дата «з» пізніша за дату «по».
+      future: Дата «по» пізніша за сьогодні.
+      too_long: 'Діапазон завеликий: не більше {max} днів.'
+      preset: Невідомий період.
+  generated_at: Дані на {time}, оновлюються раз на кілька хвилин
+  orders:
+    title: Замовлення
+    new: Нові
+    today: Сьогодні
+    last7: За 7 днів
+    last30: За 30 днів
+    period_total: Сума за період
+    period_count: Замовлень за період
+    average_check: Середній чек
+    by_status: За станами
+    excluding_cancelled: без скасованих
+    in_list: У списку замовлень
+  sales:
+    title_day: Продажі по днях
+    title_week: Продажі по тижнях
+    title_month: Продажі по місяцях
+    empty: За період продажів не було
+    tip_day: '{date}: {total}, {count, plural, one {# замовлення} few {# замовлення} many {# замовлень} other {# замовлення}}'
+    tip_week: 'тиждень з {date}: {total}, {count, plural, one {# замовлення} few {# замовлення} many {# замовлень} other {# замовлення}}'
+    tip_month: '{date}: {total}, {count, plural, one {# замовлення} few {# замовлення} many {# замовлень} other {# замовлення}}'
+  top:
+    title: Топ товарів
+    by_total: За сумою
+    by_quantity: За кількістю
+    empty: Ще немає проданих товарів за період
+  recent:
+    title: Останні замовлення
+    empty: Замовлень ще немає
+    all: Усі замовлення
+  quick:
+    title: Нові швидкі заявки
+    empty: Нових швидких заявок немає
+  reviews:
+    title: Нові відгуки на модерації
+    empty: Нових відгуків немає
+    all: Усі відгуки
+  stock:
+    title: Залишки
+    out: Немає на складі
+    low: Мало (≤ {threshold})
+    empty: Усі активні товари з обліком залишку в наявності
+  integrations:
+    title: Інтеграції
+    crm: CRM-конектор
+    crm_push: Передача замовлень
+    last_order_push: Останнє замовлення передано
+    last_catalog_sync: Остання синхронізація каталогу
+    without_ref: Замовлень періоду не в CRM
+    failed: Невдалих повідомлень (failed)
+    pending: У черзі async
+    oldest_pending: Найстаріше в черзі
+    never: ще не було
+    ok: усе гаразд
+  analytics:
+    title: Аналітика
+    gtm: GTM
+    ga4: GA4
+    pixel: Meta Pixel
+    enabled: Теги виводяться
+    disabled: Теги не виводяться (dev-перемикач вимкнено)
+    none: Жодного тегу не задано
+    settings: Налаштування сайту
+  'yes': так
+  'no': ні
+  columns:
+    number: Номер
+    status: Стан
+    customer: Покупець
+    phone: Телефон
+    total: Сума
+    placed_at: Створено
+    sku: Артикул
+    name: Назва
+    quantity: К-сть
+    stock: Залишок
+menu:
+  solutions: 'Рішення'
+  solution_groups: 'Групи рішень'
+  toggle: Відкрити меню
+  catalog: Каталог
+  products: Товари
+  categories: Категорії
+  brands: Бренди
+  attributes: Характеристики
+  media: Медіатека
+  sales: Продажі
+  orders: Замовлення
+  promotions: Акції
+  reviews: Відгуки
+  wholesale: Оптовики
+  wholesale_applications: Заявки оптовиків
+  companies: Компанії
+  content: Контент
+  pages: Сторінки
+  blog: Блог
+  blog_categories: Рубрики блогу
+  seo: SEO
+  redirects: Редиректи
+  not_found: Журнал 404
+  log: Журнал
+  audit: Журнал змін
+  changesets: Пакети змін
+  api: API
+  api_tokens: API-токени
+  ai: AI
+  ai_usage: Використання AI
+  ai_key: Ключ і модель AI
+  settings: Налаштування
+  customer_groups: Групи клієнтів
+  users: Користувачі
+  site_settings: Налаштування сайту
+  license: Ліцензія
+  logout: Вийти
+login:
+  email: Електронна пошта
+  password: Пароль
+  sign_in: Увійти
+license_footer:
+  link: Ліцензія
+  open_source: "відкритий код, Apache 2.0"
+  developers: "розробники платформи:"
+error:
+  order:
+    transition_unavailable: Для замовлення {number} ця зміна стану зараз недоступна
+  api_token:
+    days_range: Строк дії — від 1 до {max} днів
+    name_length: Назва токена — від 1 до 100 символів
+    scope_denied: Скоуп {scope} недоступний для ролі користувача
+    scopes_required: Виберіть хоча б один скоуп
+  attribute:
+    axis_requires_select: Віссю варіантів може бути лише атрибут типу select, "{code}" має тип {type}
+    axis_select_only: Віссю варіантів може бути лише select
+    no_values: Атрибут "{code}" типу {type} не має варіантів значень
+    type_locked: Тип характеристики не можна змінити після створення
+    value_exists: Значення "{value}" вже є в атрибуті "{attribute}"
+  brand:
+    name_length: Назва бренду має бути непорожньою і не довшою за 255 символів
+  catalog_slug:
+    page_has_slug: 'Такий слаг має сторінка цією мовою (сторінки в корені сайту).'
+    product_has_slug: Такий слаг має товар цією мовою (адреси товарів і категорій спільні)
+    product_taken: Товар з таким слагом уже є цією мовою
+    reserved: «{slug}» — службова адреса сайту
+    root_category_has_slug: Такий слаг має коренева категорія цією мовою (адреси товарів і категорій спільні)
+    root_category_taken: Коренева категорія з таким слагом уже є цією мовою
+    subcategory_taken: У батьківської категорії вже є підкатегорія з таким слагом
+  category:
+    filter_not_filterable: Характеристика "{attribute}" не позначена як filterable — в індексі фільтрів її нема
+    own_ancestor: Категорія не може бути власним предком
+  company:
+    contact_length: 'Контактна особа: від 1 до {max} символів'
+    name_length: Назва компанії має бути непорожньою і не довшою за {max} символів
+    phone_too_long: Телефон задовгий
+    tax_id_format: ЄДРПОУ має 8 цифр, РНОКПП 10 цифр
+  customer_group:
+    min_order_positive: Мінімальна сума замовлення має бути більшою за нуль
+    name_length: Назва групи має бути непорожньою і не довшою за 255 символів
+  machine_code:
+    invalid: 'Не машинний код (snake_case, до 64): "{value}"'
+  media:
+    invalid_dimensions: Розміри зображення задаються парою невід'ємних чисел
+    invalid_mime: 'Не MIME-тип: "{mime}"'
+    invalid_path: 'Недопустимий шлях медіа: "{path}"'
+    negative_size: Розмір файлу не може бути від'ємним
+  money:
+    invalid: 'Не грошовий рядок: "{value}"'
+    invalid_currency: 'Не ISO-код валюти: "{value}"'
+    overflow: Сума виходить за межі int
+  number:
+    invalid_decimal: 'Не число DECIMAL(16,4): "{value}"'
+  option_group:
+    component_currency: Компонент {sku} у валюті {component_currency}, а товар — у {currency}
+    component_price_currency: Ціна компонента має бути у валюті товару {currency}
+    component_price_negative: Ціна компонента не може бути від'ємною
+    component_price_on_request: 'Компонент {sku} — ціна за запитом: вкажіть ціну за весь вибір'
+    component_same_product: Компонентом не може бути варіант того самого товару
+    discount_too_big: Знижка опцією не може сягати 100 %
+    exists: Група опцій "{code}" вже є в товарі
+    foreign_value: Значення не з цієї групи
+    modifier_currency: Націнка має бути у валюті товару {currency}
+    number_has_values: Числова група не може мати значень — спершу приберіть їх
+    number_min_gt_max: Мінімум числової опції більший за максимум
+    number_no_values: Числова група не має значень
+    number_single_only: Числова група — лише одиночний вибір
+    number_step_positive: Крок числової опції має бути більшим за нуль
+    rate_currency: Ставка має бути у валюті товару {currency}
+    rate_negative: Ставка числової опції не може бути від'ємною
+    single_many_defaults: Одиночний вибір не може мати кілька значень за замовчуванням
+    threshold_required: Для правила «понад поріг» потрібен поріг
+    value_exists: Значення "{value}" вже є в групі "{group}"
+  price_tier:
+    currency: Валюта порога {expected}, а не {actual}
+    negative_price: Ціна порога не може бути від'ємною
+  product:
+    attribute_no_values: Атрибут "{attribute}" не має варіантів значень
+    attribute_type: Атрибут "{attribute}" має тип {type}, а не {expected}
+    last_variant: Товар не може лишитися без жодного варіанта
+    main_category_not_assigned: Головна категорія має бути серед категорій товару
+    media_already_attached: Цей файл уже прив'язано до товару
+    no_variants: Товар без варіантів
+  product_media:
+    foreign_variant: Фото можна прив'язати лише до варіанта цього ж товару
+  promotion:
+    amount_format: Сума знижки — число більше за нуль, напр. 150.00
+    amount_positive: Сума знижки має бути більшою за нуль
+    percent_format: Відсоток знижки — число від 0,01 до 100, до двох знаків після коми
+    percent_range: Відсоток знижки має бути від 0,01 до 100
+  quantity:
+    invalid: 'Не кількість DECIMAL(12,3): "{value}"'
+    invalid_plain: 'Не кількість: "{value}"'
+    negative: 'Кількість не може бути від''ємною: "{value}"'
+    not_positive: 'Кількість має бути більшою за нуль: "{value}"'
+  redirect:
+    chain_too_long: Задовгий ланцюг редиректів від {source}
+    external_denied: Ціль на іншому сайті може задати лише адміністратор; менеджеру — шлях від кореня (/…)
+    invalid_source: 'Невалідна адреса-джерело «{source}»: потрібен шлях від кореня сайту'
+    invalid_target: 'Невалідна ціль «{target}»: шлях від кореня (/…) або повний URL https://…'
+    loop: 'Цикл редиректів: {source} → {target} веде назад на {path}'
+    self: Редирект на ту саму адресу
+    source_live: Адреса {source} зараз відкривається на сайті — правило спрацьовує лише на 404. Спершу зніміть сторінку з публікації або змініть її адресу (тоді 301 запишеться сам).
+    target_required: 'Для 301/302 вкажіть ціль: шлях від кореня (/…) або повний URL https://…'
+  review:
+    rating_range: Оцінка — від {min} до {max}
+    reply_too_long: Відповідь довша за {max} символів
+    text_blank: Текст відгуку порожній
+    text_too_long: Текст відгуку довший за {max} символів
+  slug:
+    invalid: 'Не слаг: "{value}"'
+  translation:
+    field_too_long: Поле "{field}" не може бути довшим за {max} символів
+    invalid_locale: 'Не код локалі: "{value}"'
+  variant:
+    axes_duplicate: 'Варіант з таким набором осей уже є: {sku}'
+    axis_value_foreign: Значення "{value}" не належить осі "{attribute}"
+    currency: Валюта варіанта {expected}, а не {actual}
+    external_id_length: externalId має бути непорожнім і не довшим за 128 байтів
+    lead_time_range: Термін виготовлення — від 0 до 32767 днів
+    not_axis: Атрибут "{attribute}" не є віссю варіантів
+    old_price_not_greater: Стара ціна має бути більшою за поточну
+    price_negative: Ціна не може бути від'ємною
+    service_stock_policy: 'Послуга не має залишку: лише not_tracked'
+    sku_exists: SKU "{sku}" вже є в цьому товарі
+    sku_length: SKU має бути непорожнім і не довшим за 64 символи
+    tier_exists: Поріг від {min_quantity} для цієї групи вже є
+  wholesale_application:
+    already_decided: Заявку вже розглянуто
+    already_member: Покупець уже належить до компанії
+    comment_too_long: Коментар не довший за {max} символів
+    company_has_owner: Компанія з кодом {tax_id} уже є і має власника
+    company_race: Компанію з таким кодом щойно створено іншою заявкою, оновіть сторінку
+    locked: Заявку зараз обробляє інший менеджер, спробуйте за хвилину
+    reason_required: Вкажіть причину відхилення
+product:
+  label:
+    singular: Товар
+    plural: Товари
+  title:
+    new: Новий товар
+    edit: '{name}'
+  help:
+    main_category: Хлібні крихти й canonical; має бути серед категорій товару. Порожня — перша з обраних.
+    featured: Показувати у вітрині головної першим; решту місць заповнять новинки
+    variants: 'Одиниця купівлі: власні SKU, ціна, залишок, осі (колір, розмір) і пороги ціни за кількістю'
+    attributes: Характеристики картки; осі варіантів — у вкладці «Варіанти»
+    options: 'Групи опцій: націнки сумою чи відсотком або компоненти-SKU з кількістю'
+    gallery: Файли з медіатеки; завантаження нових — у розділі «Медіатека»
+  action:
+    add: Додати товар
+    activate: Активувати
+    deactivate: Деактивувати
+    feature: Показати на головній
+    unfeature: Прибрати з головної
+    add_variant: 'Додати варіант'
+  flash:
+    activated: 'Активовано товарів: {count}'
+    deactivated: 'Деактивовано товарів: {count}'
+    featured: 'Показано на головній товарів: {count}'
+    unfeatured: 'Прибрано з головної товарів: {count}'
+  filter:
+    category: Категорія
+    brand: Бренд
+    active: Активний
+    featured: На головній
+  field:
+    sku: SKU
+    name: Назва
+    price: Ціна
+    variants_count: Варіантів
+    kind: Тип
+    price_mode: Режим ціни
+    brand: Бренд
+    categories: Категорії
+    main_category: Головна категорія
+    active: Активний
+    featured: На головній
+    updated_at: Змінено
+    source_updated_at: Оновлено джерелом
+  tab:
+    main: Основне
+    texts: Назви й тексти
+    variants: Варіанти
+    attributes: Характеристики
+    options: Опції
+    gallery: Галерея
+  kind:
+    goods: Товар
+    service: Послуга
+    bundle: Набір
+    quote: Під запит
+  price_mode:
+    fixed: Точна ціна
+    from: Ціна «від»
+    on_request: Ціну уточнює менеджер
+  variant:
+    new: 'Новий варіант'
+category:
+  label:
+    singular: Категорія
+    plural: Категорії
+  title:
+    new: Нова категорія
+  action:
+    add: Додати категорію
+  field:
+    category: Категорія
+    path: Шлях
+    parent: Батьківська категорія
+    position: Порядок
+    active: Активна
+    image: Зображення плитки
+  fieldset:
+    placement: Розміщення
+    texts: Назви й тексти
+  placeholder:
+    root: — корінь —
+  help:
+    image: Картинка плитки категорії на головній; файл із «Медіатеки». Порожньо — фото першого товару категорії
+brand:
+  label:
+    singular: Бренд
+    plural: Бренди
+  title:
+    new: Новий бренд
+  action:
+    add: Додати бренд
+  field:
+    name: Назва
+    slug: Слаг
+    active: Активний
+  help:
+    slug: Латиниця, цифри, дефіси
+attribute:
+  label:
+    singular: Характеристика
+    plural: Характеристики
+  title:
+    new: Нова характеристика
+  action:
+    add: Додати характеристику
+  fieldset:
+    main: Характеристика
+    values: Значення
+  field:
+    code: Код
+    type: Тип
+    unit: Одиниця
+    filterable: У фільтрах
+    variant_axis: Вісь варіантів
+    position: Порядок
+    values_count: Значень
+  help:
+    code: 'snake_case латиницею: color, height_mm'
+    type_locked: Тип не змінюється після створення
+    unit: мм, кг — лише для відображення
+    variant_axis: 'Розмір, колір: лише для типу select'
+    values: Лише для select/multiselect
+  type:
+    select: Один варіант (select)
+    multiselect: Кілька варіантів (multiselect)
+    number: Число
+    boolean: Так/ні
+media:
+  label:
+    singular: Файл
+    plural: Медіатека
+  title:
+    new: Новий файл
+  action:
+    add: Додати файл
+  field:
+    image: Зображення
+    path: Шлях
+    mime_type: Тип
+    size: Розмір, байт
+    width: Ширина
+    height: Висота
+    created_at: Завантажено
+    file: Файл
+    alt: Alt (підпис)
+  help:
+    file: JPG/PNG/WebP/PDF до 20 МБ; для фото товару рекомендовано від 1200×1200
+    alt: Короткий опис для доступності й Google Images
+action:
+  create: Створити
+  save_and_add_another: Зберегти і створити ще
+  save: Зберегти
+  save_and_continue: Зберегти і продовжити редагування
+  cancel: Вийти без збереження
+  view_on_site: Переглянути на сайті
+filter:
+  in_stock: У наявності
+catalog_form:
+  field:
+    code: Код
+    position: Порядок
+    value: Значення
+    values: Значення
+    label: Підпис
+    selection: Вибір
+    required: Обов'язкова
+    value_kind: Вид
+    modifier_type: Націнка
+    amount: Сума (у валюті товару, може бути від'ємною)
+    percent: Відсоток
+    component_variant: Варіант-компонент
+    component_quantity: Кількість компонента
+    selection_price: Ціна за весь вибір
+    default: За замовчуванням
+    tier_min_quantity: Від кількості
+    price: Ціна
+    customer_group: Група клієнтів
+    media: Файл з медіатеки
+    media_variant: Лише для варіанта
+    sku: SKU
+    external_id: Ключ імпорту (externalId)
+    barcode: Штрихкод
+    old_price: Перекреслена ціна
+    stock: Залишок
+    stock_policy: Наявність
+    lead_time_days: Термін виготовлення, днів
+    sales_unit: Одиниця продажу
+    min_quantity: Мінімальна кількість
+    quantity_step: Крок кількості
+    pack_quantity: В упаковці
+    active: Активний
+    price_tiers: Пороги ціни
+  help:
+    attribute_value_code: snake_case латиницею; стабільний для імпорту
+    option_group_code: 'snake_case латиницею: casing, lock'
+    percent: 15 = +15 %, −10 = знижка
+    selection_price: Порожньо — ціна компонента × кількість
+  selection:
+    single: Один зі списку
+    multiple: Кілька
+  value_kind:
+    modifier: Націнка
+    component: Компонент (SKU)
+  modifier_type:
+    absolute: Сума
+    percent: Відсоток
+  placeholder:
+    all_customers: усі покупці
+    whole_product: уся картка
+  stock_policy:
+    in_stock: Зі складу (за залишком)
+    made_to_order: Під замовлення
+    not_tracked: Без обліку залишку
+  unit:
+    pc: шт
+    m: м
+    m2: м²
+    kg: кг
+    set: комплект
+  boolean:
+    'yes': Так
+    'no': Ні
+  error:
+    component_variant_required: Оберіть варіант-компонент
+    percent_not_number: Вкажіть відсоток числом
+    amount_required: Вкажіть суму націнки
+    tier_price_required: Вкажіть ціну порога
+    media_required: Оберіть файл з медіатеки
+    price_required: Вкажіть ціну
+    required_default_locale: Обов'язкове поле для мови за замовчуванням
+    product_name_required: Вкажіть назву товару
+    category_name_required: Вкажіть назву категорії
+    name_required: Вкажіть назву
+    page_title_required: Вкажіть заголовок сторінки
+    post_title_required: Вкажіть заголовок запису
+  translation:
+    name: Назва
+    title: Заголовок
+    slug: Слаг (URL)
+    description: Опис
+    short_description: Короткий опис
+    h1: H1 сторінки
+    excerpt: Анонс
+    body: Текст
+    meta_title: Meta title
+    meta_description: Meta description
+    help:
+      slug_from_name: Порожній — сформується з назви
+      slug_from_title: Порожній — сформується із заголовка
+      h1: Порожній — як назва. Назва лишається в меню, крихтах і плитках
+order:
+  label:
+    singular: Замовлення
+    plural: Замовлення
+  action:
+    confirm: Підтвердити
+    process: В обробку
+    ship: Відправлено
+    complete: Виконано
+    cancel: 'Скасувати замовлення'
+  filter:
+    status: Стан
+    payment_status: Оплата
+    source: Джерело
+    placed_at: Дата
+  field:
+    number: Номер
+    placed_at: Оформлено
+    status: Стан
+    payment_status: Оплата
+    source: Джерело
+    customer_name: Покупець
+    phone: Телефон
+    email: Email
+    company: Компанія
+    total: Сума
+    shipping_method: Доставка
+    shipping_city: Місто
+    shipping_address: Відділення / адреса
+    shipping_point: Відділення з довідника (НП)
+    payment_method: Спосіб оплати
+    comment: Коментар покупця
+    locale: Мова
+    ip: IP
+  flash:
+    transitioned: '{number} → {status}'
+    transition_failed: 'Перехід недоступний: {error}'
+    transition_unavailable: Перехід «{transition}» недоступний зі стану «{status}»
+  detail:
+    items: Позиції
+    sku: SKU
+    name: Назва
+    price: Ціна
+    quantity: К-сть
+    line_total: Сума
+    reserved: Резерв
+    promotion: 'Акція: {name}'
+    included: у складі
+    items_total: Товари
+    shipping: Доставка
+    grand_total: Разом
+    history: Історія
+    cancel_confirm: 'Скасувати замовлення {number}? Резерв товарів повернеться на склад.'
+  attachments:
+    title: Вкладення покупця
+    purged: стерто за строком зберігання
+order_history:
+  created:
+    checkout: Створено покупцем на сайті
+    quick: Швидка заявка покупця
+    price_request: Запит ціни від покупця
+    admin: Створено в адмінці
+    lead: Заявка з сайту
+    default: Створено
+  actor:
+    customer: покупець
+    system: система
+    demo_seed: демо-дані
+    admin: адмінка
+    manager: менеджер {email}
+promotion:
+  label:
+    singular: Акція
+    plural: Акції
+  title:
+    new: Нова акція
+  default_name: Нова акція
+  action:
+    add: Додати акцію
+  fieldset:
+    discount: Що і скільки
+    when: Коли
+    targets: На що
+    audience: Для кого
+  help:
+    index: Діє одна найкраща акція (пріоритет, далі більша знижка). Сумуються лише акції з позначкою «складається», якщо переможець теж така. На весь каталог — лише з позначкою «на весь каталог».
+    name: Показується покупцю поряд зі знижкою і в замовленні
+    discount: Для «Відсоток» — 0,01–100; для «Сума за одиницю» — сума в {currency}, напр. 150.00
+    priority: Більший — важливіший при виборі однієї акції
+    ends_at: Діє до цієї хвилини включно; має бути пізніше за початок
+    targets: Або «на весь каталог», або цілі. Категорія охоплює підкатегорії. Акція, у якої видалили всі цілі, не діє.
+    audience: Акція завжди діє на роздріб (гості й покупці без групи). На покупців з групою (оптовики) — лише для обраних тут груп; порожньо = лише роздріб, оптові ціни акція не чіпає.
+  field:
+    name: Назва
+    active: Активна
+    type: Тип
+    discount: Знижка
+    priority: Пріоритет
+    stackable: Складається з іншими
+    starts_at: Початок
+    ends_at: Кінець
+    whole_catalog: На весь каталог
+    categories: Категорії
+    brands: Бренди
+    products: Товари
+    customer_groups: Групи покупців
+  error:
+    type_required: Оберіть тип знижки
+    discount_required: Вкажіть знижку для обраного типу
+review:
+  label:
+    singular: Відгук
+    plural: Відгуки
+  help:
+    index: 'Нові відгуки чекають схвалення (премодерація). Текст покупця не редагується: лише схвалити, відхилити, відповісти або видалити. Схвалені видно на картці товару, зірки — у лістингу.'
+  action:
+    approve: Схвалити
+    reject: Відхилити
+  filter:
+    status: Стан
+    rating: Оцінка
+    verified_purchase: Купив цей товар
+    demo: Демо-відгук
+  field:
+    created_at: Створено
+    status: Стан
+    product: Товар
+    rating: Оцінка
+    customer: Покупець
+    email: Email
+    verified_purchase: Купив
+    demo: Демо
+    locale: Мова
+    text: Відгук
+    reply_text: Відповідь магазину
+    reply_by: Відповів
+    replied_at: Коли відповів
+    moderated_by: Модерував
+    moderated_at: Коли
+    updated_at: Змінено
+  flash:
+    batch_approved: 'Схвалено відгуків: {count}'
+    batch_rejected: 'Відхилено відгуків: {count}'
+    approved: Відгук схвалено й показано на сайті
+    rejected: Відгук відхилено
+    reply_saved: Відповідь магазину збережено
+    reply_removed: Відповідь прибрано
+  error:
+    unknown_decision: Невідоме рішення
+  detail:
+    moderation: Модерація
+    moderation_help: 'Текст покупця не правимо: лише схвалити (видно на сайті) або відхилити.'
+    reply_label: Текст відповіді (видно під відгуком на сайті; порожній — прибрати відповідь)
+    reply_save: Зберегти відповідь
+wholesale:
+  label:
+    singular: Заявка оптовика
+    plural: Заявки оптовиків
+  help:
+    index: 'Схвалення призначає покупцю групу цін і створює компанію з реквізитів заявки. Відхилення з причиною: вона йде покупцю листом, і він може подати нову заявку.'
+  filter:
+    status: Стан
+  field:
+    created_at: Подано
+    status: Стан
+    company_name: Компанія
+    tax_id: ЄДРПОУ / РНОКПП
+    vat_payer: ПДВ
+    contact_name: Контакт
+    contact_phone: Телефон
+    customer_email: Email покупця
+    customer_name: Імʼя покупця
+    note: Коментар покупця
+    assigned_group: Група
+    company: Компанія в базі
+    reviewed_by: Розглянув
+    reviewed_at: Коли
+    review_comment: Коментар менеджера
+  error:
+    group_required: Оберіть групу цін
+    reason_required: Вкажіть причину відхилення, вона піде покупцю
+    unknown_decision: Невідоме рішення
+  flash:
+    approved: Заявку №{id} схвалено, групу «{group}» призначено
+    rejected: Заявку №{id} відхилено
+  detail:
+    approve: Схвалити
+    group_label: Група цін для покупця
+    group_placeholder: Оберіть групу
+    approve_comment: Коментар (за бажанням, піде покупцю в листі)
+    approve_submit: Схвалити й призначити групу
+    reject: Відхилити
+    reject_reason: Причина (обовʼязково, піде покупцю в листі)
+company:
+  label:
+    singular: Компанія
+    plural: Компанії
+  field:
+    name: Назва
+    tax_id: ЄДРПОУ / РНОКПП
+    vat_payer: Платник ПДВ
+    contact_name: Контактна особа
+    contact_phone: Телефон
+    members: Покупець
+    created_at: Створено
+customer_group:
+  label:
+    singular: Група клієнтів
+    plural: Групи клієнтів
+  title:
+    new: Нова група клієнтів
+  default_name: Нова група
+  action:
+    price_list: Завантажити прайс
+    add: Додати групу
+  field:
+    code: Код
+    name: Назва
+    position: Порядок
+    min_order_amount: Мінімальна сума замовлення, {currency}
+    min_order_quantity: Мінімальна кількість одиниць
+    exact_stock: Точні залишки й терміни
+  help:
+    code: 'snake_case латиницею: retail, dealer'
+    min_order_amount: Порожньо — без мінімуму. Перевіряється при оформленні й у швидкому замовленні.
+    min_order_quantity: Сумарно по замовленню. Порожньо — без мінімуму.
+    exact_stock: Покупці групи бачать залишок у штуках і термін постачання замість «в наявності».
+price_list:
+  error:
+    too_many: Забагато завантажень прайса, спробуйте за годину
+email_order:
+  admin:
+    subject: '[{site}] Нове замовлення {number} — {total}'
+    title: Нове замовлення {number} ({source})
+    customer: Покупець
+    shipping: Доставка
+    payment: Оплата
+    language: Мова
+    comment: Коментар
+    company: Компанія
+    attachments: Вкладення
+    attachments_hint: відкрити в адмінці, у картці замовлення
+  item: Товар
+  quantity: К-сть
+  price: Ціна
+  total: Сума
+  included: У складі
+  grand_total: Разом
+  included_line: у складі
+enum:
+  order_status:
+    new: Нове
+    confirmed: Підтверджене
+    processing: В обробці
+    shipped: Відправлене
+    completed: Виконане
+    cancelled: Скасоване
+  payment_status:
+    pending: Не оплачено
+    partially_paid: Частково оплачено
+    paid: Оплачено
+    refunded: Повернено
+  payment_method:
+    cod: Оплата при отриманні
+    bank_transfer: Безготівковий розрахунок
+    manager_contact: Узгодить менеджер
+  shipping_method:
+    pickup: Самовивіз
+    courier: Кур'єр
+    nova_poshta: Нова пошта
+    manager_contact: Узгодить менеджер
+  order_source:
+    quick: Швидка заявка
+    checkout: Сайт
+    admin: Адмінка
+    price_request: Запит ціни
+    lead: Заявка
+  review_status:
+    pending: На модерації
+    approved: Схвалений
+    rejected: Відхилений
+  application_status:
+    new: Нова
+    approved: Схвалена
+    rejected: Відхилена
+  promotion_type:
+    percent: Відсоток
+    amount: Сума за одиницю
+  redirect_code:
+    '301': 301 — назавжди
+    '302': 302 — тимчасово
+    '404': 404 — не знайдено
+    '410': 410 — видалено
+  redirect_kind:
+    manual: вручну
+    auto: авто
+  user_role:
+    admin: Адміністратор
+    manager: Менеджер
+  api_scope:
+    catalog:read: Читання каталогу й контенту
+    content:write: Пакети змін контенту (тексти, SEO, slug, категорії, активність)
+    prices:write: Пакети змін цін (ціни варіантів, пороги)
+    theme:write: 'Живий дизайн: шаблони сайту й theme.css, одразу на сайті'
+  secret_state:
+    missing: не задано
+    no_key: ключа шифрування нема
+    unreadable: не розшифрувати — введіть знову
+    ready: задано
+    hint:
+      no_key: На сервері не задано SETTINGS_SECRET_KEY (.env.local) — секретні налаштування вимкнені.
+      unreadable: 'Збережене значення не вдалося розшифрувати: SETTINGS_SECRET_KEY на сервері змінено або втрачено (відновлення з бекапу, новий сервер) чи дані пошкоджені. Введіть значення знову. Якщо ключ шифрування міняли навмисно — bin/console app:secrets:rotate (docs/ai.md).'
+  ai_feature:
+    check: перевірка ключа
+    describe: опис
+    translate: переклад
+    seo: SEO-мета
+  ai_usage_status:
+    queued: у черзі
+    ok: виконано
+    error: помилка
+    rejected: відхилено
+  audit_action:
+    create: Створено
+    update: Змінено
+    delete: Видалено
+    apply: Застосовано
+    reject: Відхилено
+  audit_source:
+    admin_ui: Адмінка
+    ai_api: AI (API)
+    import: Імпорт
+    cli: Консоль
+  platform_credit:
+    full: "Повний"
+    short: "Коротко"
+    none: "Не показувати"
+  changeset_status:
+    proposed: Запропоновано
+    applied: Застосовано
+    rejected: Відхилено
+    expired: Прострочено
+page:
+  label:
+    singular: Сторінка
+    plural: Сторінки
+  title:
+    new: Нова сторінка
+  action:
+    add: Додати сторінку
+  field:
+    title: Заголовок
+    slug: Слаг
+    published: Опубліковано
+    position: Порядок
+    show_in_header: У шапці
+    show_in_footer: У футері
+    updated_at: Змінено
+  section:
+    publishing: Публікація
+    content: Контент (по мовах)
+post:
+  label:
+    singular: Запис
+    plural: Блог
+  title:
+    new: Новий запис блогу
+  action:
+    add: Додати запис
+  field:
+    category: Рубрика
+    cover: Обкладинка
+    title: Заголовок
+    published_at: Дата публікації
+    author: Автор
+    tags: Теги
+    updated_at: Змінено
+  section:
+    publishing: Публікація
+    content: Контент (по мовах)
+  help:
+    published_at: Порожня або майбутня — запис не публічний
+    cover: Файл із «Медіатеки»; завантажити новий — там же
+    tags: Через кому
+post_category:
+  label:
+    singular: Рубрика блогу
+    plural: Рубрики блогу
+  title:
+    new: Нова рубрика
+  action:
+    add: Додати рубрику
+  field:
+    name: Назва
+    code: Код
+    position: Порядок
+  help:
+    code: 'snake_case латиницею: news, tips'
+redirect:
+  label:
+    singular: Редирект
+    plural: Редиректи
+  title:
+    new: Новий редирект
+  help:
+    index: 'Правило спрацьовує лише тоді, коли адреса віддала б 404: живі сторінки не перекриваються. Зміна слага товару, сторінки, статті чи шляху категорії записує 301 сама (авто). Видалений товар — 410 вручну, якщо треба.'
+    source: 'Шлях від кореня сайту, з мовним префіксом для не основних мов: /stara-adresa, /ru/kategoriya/. Можна вставити повний URL — домен і параметри відкинуться, регістр — до нижнього. Кінцевий слеш має значення: /kategoriya/ — категорія, /tovar — товар.'
+    target: 'Для 301/302: шлях від кореня (/nova-adresa) або повний URL https://… Для 404/410 — порожньо. Якщо нова адреса сама переадресовується, збережеться кінцева.'
+  action:
+    export: Експорт CSV
+    import: Імпорт CSV
+    add: Додати редирект
+  field:
+    code: Код
+    kind: Звідки
+    source: Стара адреса
+    target: Нова адреса
+    hits: Спрацювань
+    last_hit_at: Останнє
+    created_at: Створено
+  flash:
+    file_unreadable: Не вдалося прочитати файл
+  import:
+    title: Імпорт редиректів з CSV
+    file: Файл CSV
+    file_help: 'Рядки «стара;код;нова» з роздільником «;», кодування UTF-8 (у Excel — «CSV UTF-8»): /stara;301;/nova, /vydalena;410; (для 404/410 ціль порожня). Заголовок source;code;target можна лишити — файл експорту імпортується як є. Наявні правила з тією ж старою адресою замінюються. До {max} рядків; більші файли — командою seo:redirects:import на сервері.'
+    submit: Імпортувати
+    back: До списку
+    report:
+      created: 'Створено:'
+      updated: 'замінено:'
+      errors: 'з помилками:'
+      line: Рядок
+      error: Помилка
+    error:
+      too_many_rows: Понад {max} рядків — решту файлу пропущено (більші файли — seo:redirects:import)
+      not_utf8: 'Рядок не в UTF-8: збережіть файл як «CSV UTF-8»'
+      bad_code: 'Код «{code}»: дозволено 301, 302, 404, 410'
+not_found:
+  label:
+    singular: Адреса 404
+    plural: Журнал 404
+  help:
+    index: Адреси сайту, що віддали 404, без IP і параметрів. Зберігається до {limit} адрес і {days} днів з останнього звернення; решта прибирається сама.
+  action:
+    create_redirect: Створити редирект
+    clear: Очистити журнал
+  field:
+    path: Адреса
+    hits: Звернень
+    last_hit_at: Останнє
+    first_seen_at: Вперше
+    referer: Звідки (останнє)
+  flash:
+    csrf_invalid: Недійсний CSRF-токен, спробуйте ще раз
+    cleared: 'Журнал 404 очищено: {count} адрес'
+  clear:
+    title: Очистити журнал 404?
+    text: Усі записані адреси 404 буде видалено. Правила редиректів не зміняться.
+    submit: Очистити
+    cancel: Скасувати
+user:
+  label:
+    singular: Користувач
+    plural: Користувачі
+  title:
+    new: Новий користувач
+  action:
+    add: Додати користувача
+  field:
+    email: Електронна пошта
+    display_name: Ім'я
+    role: Роль
+    active: Активний
+    password: Пароль
+    new_password: Новий пароль
+    created_at: Створено
+  help:
+    password: Не коротший за 8 символів
+    new_password: Порожній — пароль не змінюється
+  default_display_name: Новий користувач
+api_token:
+  label:
+    singular: API-токен
+    plural: API-токени
+  help:
+    index: 'Персональні токени для Claude Code / REST (docs/admin-api.md): кожен створює собі, строк до {days} днів, значення показується один раз. Адміністратор бачить усі токени й може відкликати будь-який.'
+    token: Перші 12 символів — щоб упізнати; повне значення не зберігається
+    last_used_ip: Анонімізовано
+  action:
+    issue: Створити токен
+    revoke: Відкликати
+  filter:
+    scope: Дозвіл
+  field:
+    name: Назва
+    token: Токен
+    scopes: Дозволи
+    owner: Власник
+    status: Стан
+    created_at: Створено
+    expires_at: Діє до
+    last_used_at: Останній запит
+    last_used_ip: З адреси
+  status:
+    active: Чинний
+    expired: Прострочено
+    revoked: Відкликано
+  flash:
+    issued: Токен «{name}» створено. Скопіюйте значення зараз — удруге воно не покажеться.
+    revoked: Токен «{name}» відкликано
+    csrf_invalid: Недійсний CSRF-токен, спробуйте ще раз
+  plain:
+    title: Новий токен.
+    text: 'Скопіюйте зараз: удруге він не покажеться, у базі лише хеш.'
+    value: Значення токена
+    env_hint: значення — у змінну оточення, не в файл
+    check: 'Перевірка:'
+  issue:
+    title: Створити API-токен
+    intro: Токен дає Claude Code (MCP) або скрипту ті самі права, що у вас, у межах вибраних дозволів. Значення покажемо один раз. Застосувати пакет змін через API не можна — лише в адмінці.
+    submit: Створити
+    cancel: Скасувати
+  revoke:
+    title: Відкликати API-токен
+    token: Токен
+    owner: 'власник:'
+    text: перестане працювати одразу. Повернути його не можна — лише створити новий.
+    submit: Відкликати
+    cancel: Скасувати
+  form:
+    name: Назва
+    name_help: 'Для чого токен: «Claude Code на ноутбуці», «скрипт цін». Видно лише вам і адміністратору.'
+    scopes: Дозволи
+    scope_choice: '{label} <code class="small text-muted ms-1">{scope}</code>'
+    days: Строк дії, днів
+    days_help: Не довше за {max} днів. Продовження — новий токен, старий відкликати.
+setting:
+  key:
+    analytics:
+      gtm_container_id:
+        label: Ідентифікатор контейнера Google Tag Manager
+        help: GTM-XXXXXXX. Якщо задано, GA4 і Pixel краще підключати всередині GTM.
+      ga4_measurement_id:
+        label: Ідентифікатор потоку Google Analytics 4
+        help: G-XXXXXXXXXX. Виводиться gtag.js лише коли GTM не задано.
+      fb_pixel_id:
+        label: Ідентифікатор пікселя Meta (Facebook)
+        help: Числовий id пікселя Meta. Рушій шле PageView і ecommerce-події (ViewContent, AddToCart, InitiateCheckout, Purchase; content_ids = SKU варіанта, як у фіді) лише за згоди на cookie. Якщо піксель налаштовано в GTM — залиште порожнім, інакше події задвояться (docs/analytics.md).
+      tags_on_dev:
+        label: Вмикати теги на dev
+        help: На prod теги й HTML-коди виводяться завжди; на dev/test — лише з цим перемикачем (типово вимкнено, щоб тестові перегляди не потрапляли в аналітику).
+      consent_granted_locales:
+        label: 'Згода на cookie: мови, де вона діє одразу'
+        help: Через кому. Для цих мов consent = granted без банера; для решти — denied і банер згоди (EU).
+    seo:
+      google_site_verification:
+        label: Google Search Console — код верифікації
+        help: Значення meta google-site-verification (без тегу).
+      bing_site_verification:
+        label: Bing Webmaster — код верифікації
+        help: Значення meta msvalidate.01 (без тегу).
+    html:
+      head:
+        label: Свій код у заголовку сторінки
+        help: Довільний HTML/JS, виводиться сирим у <head> кожної сторінки сайту. Лише для адміністратора.
+      body_start:
+        label: Свій код на початку сторінки
+        help: Виводиться сирим одразу після <body>.
+      body_end:
+        label: Свій код у кінці сторінки
+        help: Виводиться сирим перед </body>.
+    orders:
+      notify_email:
+        label: Пошта для нових замовлень
+        help: Куди надсилати лист про кожне нове замовлення; кілька адрес через кому. Порожньо — не надсилати.
+    prices:
+      notify_email:
+        label: Пошта для застосованих цінових пакетів
+        help: Кому надсилати зведення, коли застосовано пакет змін із цінами (AI, CLI). Кілька адрес через кому. Порожньо — усім активним користувачам з роллю менеджера (без адміністраторів).
+    catalog:
+      facet_counts_enabled:
+        label: Показувати лічильники у фільтрах
+        help: 'Кількість товарів біля значень фільтрів категорії. Вимкнено — значення показуються без цифр (ADR Rev 11). На великих каталогах лічильники дорогі: див. поріг нижче.'
+      facet_counts_max_set:
+        label: Поріг лічильників фільтрів, карток
+        help: Якщо у відфільтрованому наборі більше карток, лічильники не рахуються і не виводяться (значення лишаються, без цифри). Ціле число; порожньо — 20000.
+    feeds:
+      default_brand:
+        label: Бренд для товарів без бренду (фід Meta)
+        help: 'Meta відхиляє товар без бренду: для карток без бренду у фід Meta йде це значення, порожньо — назва магазину. Google-фід його не бере (там товар без бренду позначається identifier_exists = no).'
+    ai:
+      openrouter_key:
+        label: Ключ OpenRouter
+        help: Ключ API з openrouter.ai/keys (sk-or-v1-…). AI-функції адмінки працюють на цьому ключі й за рахунок його кредитів. Зберігається шифровано, показується лише маскою; порожнє поле при збереженні — лишити чинний ключ. Без ключа AI-кнопок в адмінці нема (docs/ai.md).
+      model:
+        label: Модель AI
+        help: Рядок vendor/model з openrouter.ai/models, напр. deepseek/deepseek-v4-pro або anthropic/claude-sonnet-4.5. Порожньо — модель за замовчуванням рушія.
+      monthly_budget_usd:
+        label: Місячний ліміт витрат AI, $
+        help: Коли сума витрат за календарний місяць (за даними OpenRouter) досягає ліміту, AI-функції до кінця місяця не викликаються. 0 або порожньо — без ліміту.
+    google:
+      sign_in_enabled:
+        label: "Увімкнено"
+        help: "Кнопка «Продовжити з Google» на вході, реєстрації та у вікні відгуку. Працює лише разом із Client ID і Client Secret нижче; інструкція й адреси для Google Cloud Console — під списком налаштувань."
+      client_id:
+        label: "Client ID"
+        help: "З Google Cloud Console → Credentials → OAuth client ID (Web application): рядок виду 123456789012-abc…xyz.apps.googleusercontent.com."
+      client_secret:
+        label: "Client Secret"
+        help: "Звідти ж (GOCSPX-…). Зберігається шифровано, показується лише маскою; порожнє поле при збереженні — лишити чинний. Ротація: у Cloud Console створіть новий secret у тому ж клієнті, вставте сюди, потім вимкніть старий."
+    site:
+      platform_credit:
+        label: "Рядок платформи у футері"
+        help: "«Повний» — платформа, відкритий код під ліцензією Apache 2.0, розробники LuxSite і посилання «Ліцензія»; «Коротко» — «Ecommerce LuxSite»; «Не показувати» — рядка нема. Під Apache 2.0 показ на сайті не обов'язковий: вимога NOTICE стосується лише поширення коду. Сторінка /license лишається доступною за адресою (закрита від індексації)."
+  group:
+    analytics: Аналітика
+    seo: SEO
+    html: HTML-коди
+    orders: Замовлення
+    prices: Ціни
+    catalog: Каталог
+    feeds: Фіди товарів
+    ai: AI
+    google: "Вхід через Google"
+    site: "Сайт"
+  label:
+    singular: Налаштування
+    plural: Налаштування сайту
+  help:
+    index: Теги й HTML-коди публікуються на сайті одразу після збереження (на prod завжди, на dev — з перемикачем «Вмикати теги на dev»).
+    clear_secret: Увімкніть і збережіть, щоб прибрати ключ; AI-функції вимкнуться.
+    html_raw: '{help} Зберігається як є, без екранування.'
+    secret_disabled: '{problem} — секретні налаштування вимкнені. {help}'
+    secret_unreadable: <strong>{hint}</strong> {help}
+  action:
+    check_on_site: Перевірити на сайті
+    edit: Змінити
+  field:
+    label: Налаштування
+    code: Ключ
+    value: Значення
+    status: Стан
+    updated_at: Змінено
+    clear_secret: Видалити збережений ключ
+  status:
+    not_set: не задано
+    default: "типове"
+    output: виводиться
+    invalid: 'не виводиться: невірний формат'
+    invalid_title: Очікується id у форматі, як у підказці поля
+  placeholder:
+    not_set: не задано
+    secret: '{mask, select, none {не задано} other {{mask}}}'
+  feeds:
+    title: Товарні фіди
+    help: Оновлюються кожні 6 годин і після імпорту. Адресу вставити в Google Merchant Center (Джерела даних → Додати товари з файлу → Запланована вибірка) або Meta Commerce Manager (Каталог → Джерела даних → Фід даних → Запланований фід). Інструкція — docs/feeds.md.
+    channel: Канал
+    locale: Мова
+    url: Адреса
+    generated_at: Згенеровано
+    url_aria: Адреса фіду {channel} {locale}
+    not_generated: ще не згенеровано
+    copy: 'Скопіювати'
+    copied: 'Скопійовано'
+ai_key:
+  reason:
+    missing: Ключ OpenRouter не задано
+    no_key: SETTINGS_SECRET_KEY не задано на сервері — секретні налаштування й AI вимкнені
+    unreadable: 'Ключ OpenRouter не розшифрувати: SETTINGS_SECRET_KEY на сервері змінено або втрачено — введіть ключ OpenRouter знову'
+    ready: Ключ OpenRouter задано
+  key_problem:
+    invalid: 'SETTINGS_SECRET_KEY у .env.local некоректний: має бути 32 байти base64 (44 символи, один рядок; bin/console app:secrets:keygen)'
+    missing: На сервері не задано SETTINGS_SECRET_KEY (.env.local)
+  flash:
+    csrf_invalid: Недійсний CSRF-токен, спробуйте ще раз
+    check_ok: 'OpenRouter відповів: {summary}. Модель: {model}'
+    check_failed: 'OpenRouter відхилив запит: {error}'
+  summary:
+    label: ключ «{label}»
+    no_label: ключ без підпису
+    spent: витрачено ${amount}
+    no_limit: без ліміту на ключі
+    limit: ліміт ${amount}
+    limit_remaining: ліміт ${amount}, лишилось ${remaining}
+    free_tier: безкоштовний рівень
+  action:
+    enter: Ввести ключ OpenRouter
+    change: Змінити ключ
+    get: Отримати ключ
+    check: Перевірити з'єднання
+  section:
+    title: AI на ключі магазину (OpenRouter)
+    no_key_invalid: SETTINGS_SECRET_KEY у .env.local некоректний (має бути 32 байти base64, 44 символи в один рядок)
+    no_key_missing: На сервері не задано SETTINGS_SECRET_KEY
+    no_key_disabled: секретні налаштування й AI-функції вимкнені (docs/ai.md).
+    unreadable_title: Ключ OpenRouter треба ввести знову.
+    unreadable_text: 'Збережений ключ не вдалося розшифрувати: SETTINGS_SECRET_KEY на сервері змінено або втрачено (відновлення з бекапу на новому сервері, перегенерований ключ) чи дані пошкоджені. AI-функції вимкнені до повторного введення. Якщо ключ шифрування змінили навмисно —'
+    missing: 'Ключ OpenRouter не задано: AI-кнопок у формах нема. Введіть ключ кнопкою нижче.'
+    model: 'Модель:'
+    change: змінити
+    change_budget: змінити ліміт
+    month: 'За цей місяць: {calls} викликів, витрачено ${cost} (без ліміту)'
+    month_budget: 'За цей місяць: {calls} викликів, витрачено ${cost} із ліміту ${budget}'
+    no_cost: '{count} успішних без вартості від провайдера — у ліміті не враховані'
+    change_model: 'Модель AI: змінити'
+    change_monthly_budget: 'Місячний ліміт: змінити'
+ai_usage:
+  label:
+    singular: Виклик AI
+    plural: Використання AI
+  title:
+    detail: '{feature} #{id}'
+  help:
+    index: 'За цей місяць: {calls} викликів, успішних {ok}, витрачено ${cost} (без ліміту). Витрати — за даними OpenRouter на ключі магазину.'
+    index_budget: 'За цей місяць: {calls} викликів, успішних {ok}, витрачено ${cost} із ліміту ${budget}. Витрати — за даними OpenRouter на ключі магазину.'
+  field:
+    occurred_at: Коли
+    actor: Хто
+    feature: Функція
+    status: Стан
+    model: Модель
+    user: Користувач
+    entity_type: Сутність
+    entity_id: ID
+    prompt_tokens: Токени запиту
+    completion_tokens: Токени відповіді
+    cost: Вартість
+    duration_ms: мс
+    changeset_id: Пакет змін
+    error: Помилка
+  banner:
+    disabled: AI-функції вимкнені, тому журнал порожній.
+    ask_admin: Зверніться до адміністратора, щоб він ввів ключ.
+    settings: Налаштування AI
+license:
+  title: Ліцензія
+  field:
+    platform: Платформа
+    code_license: "Ліцензія коду"
+    developers: "Розробники платформи"
+    licensee: Власник сайту
+    site_host: Домен сайту
+    admin_host: Домен адмінки
+    engine: Версія рушія
+    type: "Договір з LuxSite"
+    contract: "Номер договору"
+    since: Дата
+  open_source: "відкритий код"
+  licensee_default: 'назва магазину: app.license у паку не задано'
+  engine:
+    unknown: невідомо
+    built: зібрано
+    pack: пак
+  type:
+    subscription: Підписка
+    perpetual: "Безстроковий"
+    none: "Не вказано"
+  components:
+    title: Сторонні компоненти
+    help: Runtime-пакети composer.lock рушія; кожен — на умовах своєї ліцензії. Перелік пише
+    help_build: у збірці образу.
+    package: Пакет
+    version: Версія
+    license: Ліцензія
+audit:
+  label:
+    singular: Запис журналу
+    plural: Журнал змін
+  title:
+    detail: '{action} {type} #{id}'
+  help:
+    index: 'Зміни товарів, цін, категорій, сторінок і акцій з адмінки й через AI: рядок на поле. Імпорт із фідів сюди не пише — у нього власний звіт.'
+    index_retention: 'Зміни товарів, цін, категорій, сторінок і акцій з адмінки й через AI: рядок на поле. Зберігається {months} міс. Імпорт із фідів сюди не пише — у нього власний звіт.'
+  field:
+    occurred_at: Коли
+    actor: Хто
+    source: Джерело
+    action: Дія
+    entity_type: Що
+    entity_id: ID
+    entity_label: Назва
+    locale: Мова
+    field: Поле
+    before: Було
+    after: Стало
+    user_id: ID користувача
+    token: Токен
+    changeset: Пакет змін
+    ip: IP (анонімізований)
+    change: 'Зміна'
+  filter:
+    entity_id: ID сутності
+  value:
+    'yes': так
+    'no': ні
+  error:
+    admin_only: Рядки налаштувань бачить лише адміністратор
+  subject:
+    labelled: '{type} «{label}» #{id}'
+    plain: '{type} #{id}'
+  summary:
+    created: 'створено'
+    deleted: 'видалено'
+  field_name:
+    name: 'Назва'
+    title: 'Заголовок'
+    slug: 'Адреса (slug)'
+    description: 'Опис'
+    shortDescription: 'Короткий опис'
+    body: 'Текст'
+    content: 'Текст'
+    metaTitle: 'SEO-заголовок'
+    metaDescription: 'SEO-опис'
+    h1: 'Заголовок H1'
+    price: 'Ціна'
+    priceMinor: 'Ціна'
+    oldPriceMinor: 'Стара ціна'
+    stock: 'Залишок'
+    sku: 'Артикул'
+    active: 'Активний'
+    featured: 'На головній'
+    position: 'Порядок'
+    parent: 'Батьківська категорія'
+    brand: 'Бренд'
+    categories: 'Категорії'
+    value: 'Значення'
+    label: 'Підпис'
+    discount: 'Знижка'
+    startsAt: 'Початок'
+    endsAt: 'Кінець'
+    unit: 'Одиниця'
+    stockPolicy: 'Наявність'
+entity_type:
+  product: Товар
+  product_variant: Варіант
+  price_tier: Поріг ціни
+  category: Категорія
+  page: Сторінка
+  post: Запис блогу
+  promotion: Акція
+  option_value: Опція товару
+  setting: Налаштування
+  api_token: API-токен
+  changeset: Пакет змін
+changeset:
+  label:
+    singular: Пакет змін
+    plural: Пакети змін
+  help:
+    index: Пакети пропонує AI через Claude Code (REST/MCP) або AI-помічник у формах. Нічого не змінюється, поки людина не натисне «Застосувати» на сторінці пакета. Запропонований пакет діє {ttl}.
+  action:
+    apply: Застосувати
+    reject: Відхилити
+    revert: Відкотити
+  column:
+    id: №
+    title: Назва
+    status: Стан
+    source: Джерело
+    author: Автор
+    operations: Оп.
+    risks: Ризики
+    created_at: Створено
+    when: Діє до / коли
+  badge:
+    prices: ціни
+    prices_title: є цінові операції
+  when:
+    until: до {date}
+  flash:
+    confirm_risk: Поставте позначку підтвердження ризикової зміни
+    conflict: Дані змінились після створення пакета — застосувати його не можна
+    applied: Застосовано {count, plural, one {# операцію} few {# операції} many {# операцій} other {# операції}}. <a href="{url}">Записи — у Журналі змін</a>{mail, select, yes {. Лист надіслано відповідальним за ціни} other {}}
+    rejected: Пакет відхилено. Повернути його не можна — за потреби створіть новий.
+    revert_failed: Відкат неможливий
+    revert_created: 'Створено пакет відкату #{id} — перевірте й застосуйте'
+    already_applied: 'Пакет уже застосовано: {name}, {date}'
+    already_rejected: 'Пакет уже відхилено: {name}, {date}'
+    expired: Пакет прострочено — застосувати не можна, створіть його заново в Claude Code
+    not_applicable: 'Пакет #{id} у стані «{status}»'
+  detail:
+    valid_until: діє до {date}
+    less_than_hour: менше години
+    hours_left: ще {hours} год
+    expired_at: прострочено {date} — застосувати не можна, створіть пакет заново в Claude Code
+    applied_by: застосував(ла) {name}, {date}
+    risk_confirmed_by: 'підтвердив(ла) ризики: {name}, {date}'
+    rejected_by: відхилив(ла) {name}, {date}
+    author: 'Автор: {name}'
+    via_token: '(через API-токен #{id})'
+    created: 'Створено: {date}'
+    source: 'Джерело: {source}'
+    operations: 'Операцій: {count}'
+    price_operations: ', з них цінових: {count}'
+    revert_of: 'Відкат пакета #{id} →'
+    reverted_by: 'Відкочено пакетом #{id} →'
+    audit_link: 'Журнал: записи цього пакета →'
+    op: оп. {n}
+  conflicts:
+    title: Дані змінились після створення пакета
+    text: 'Застосувати цей пакет уже не вийде: поточні значення не збігаються з тими, на які він розрахований. Створіть пакет заново.'
+    col_op: Оп.
+    col_target: Ціль
+    col_field: Поле
+    col_expected: Очікувалось
+    col_current: Зараз
+    col_who: Хто / коли
+    outside_log: 'поза журналом: імпорт або зміна до увімкнення журналу'
+  risks:
+    title: Ризикова зміна
+    title_proposed: Ризикова зміна — потрібне ваше підтвердження
+    title_confirmed: 'Ризикова зміна — підтверджено: {name}, {date}'
+    more: та ще {count}
+    note: Правила — параметри магазину; це попередження, а не заборона. Застосовуєте ви й відповідаєте ви.
+  warnings:
+    title: Попередження ({count})
+  diff:
+    title: Зміни ({count})
+    col_before: Було
+    col_after: Стане
+    no_changes: без змін
+    open_form: Відкрити форму
+    none: (нема)
+    redirect: буде створено 301 зі старої адреси
+    category_paths: адреси підкатегорій і товарів зміняться
+  confirm:
+    label: 'Підтверджую ризикову зміну: {summary}'
+    invalid: Поставте позначку, щоб застосувати ризиковий пакет
+    apply_n: Застосувати {count, plural, one {# операцію} few {# операції} many {# операцій} other {# операції}}
+    reject_note: Відхилений пакет не повертається — за потреби створюється новий.
+    revert_note: Створить новий пакет зі зворотними змінами; нічого не зміниться, поки ви його не застосуєте.
+  target:
+    product_variant: Варіант
+    product: Товар
+    category: Категорія
+    page: Сторінка
+    post: Запис
+    price_tier: Поріг
+  field:
+    price: Ціна
+    old_price: Стара ціна
+    name: Назва
+    title: Заголовок
+    short_description: Короткий опис
+    description: Опис
+    body: Текст
+    meta_title: Meta title
+    meta_description: Meta description
+    slug: Slug
+    h1: H1
+    excerpt: Анонс
+    active: Активний
+    featured: На головній
+    categories: Категорії
+    main: Головна категорія
+  warning:
+    html_sanitized: HTML очищено санітайзером
+    typography_dash: Типографіка
+    double_space: Типографіка
+    straight_quotes: Типографіка
+    tier_above_base: Поріг дорожчий за базову
+    noop: Без фактичних змін
+    slug_generated: Slug утворено з назви
+  risk:
+    price_jump: Стрибок ціни понад {pct} %
+    cumulative: Сукупна зміна за {days} дн. понад {pct} %
+    zero_price: Ціна 0
+    mass_price: Понад {count} цінових операцій у пакеті
+    summary_ops: '{label} ({count} оп.)'
+  value:
+    'yes': так
+    'no': ні
+    deleted_category: '#{id} (видалено)'
+  issue:
+    zero_price: '{sku}: ціна 0'
+    price_jump: '{sku}: зміна ціни понад {pct} % ({before} → {after})'
+    cumulative: '{sku}: сукупна зміна за {days} дн. понад {pct} % ({before} → {after})'
+    tier_above_base: '{sku}: поріг від {qty} ({price}) дорожчий за базову ціну ({base})'
+    mass_price: 'Цінових операцій у пакеті: {count} (поріг {max})'
+    invalid_slug: '{field}: слаг — латиниця в нижньому регістрі, цифри й дефіси між ними'
+    too_long_bytes: '{field}: довше за {max} байтів'
+    too_long_chars: '{field}: довше за {max} символів'
+    html_sanitized: '{field}: HTML очищено за правилами магазину (зняті теги чи атрибути)'
+    typography_dash: '{field}: тире як сполучник між словами — у текстах магазину його не вживають'
+    double_space: '{field}: подвійні пробіли'
+    straight_quotes: '{field}: прямі лапки замість «ялинок»'
+    noop: Операція нічого не змінює
+    variant_not_found: Варіант {ref} не знайдено
+    product_not_found: Товар {ref} не знайдено
+    category_not_found: 'Категорію #{id} не знайдено'
+    group_not_found: Групу покупців «{code}» не знайдено
+    entity_not_found: '{type} #{id} не знайдено'
+    tier_not_found: Порога від {qty} у {sku} нема
+    tier_not_found_group: Порога від {qty} для групи {group} у {sku} нема
+    locale: Мови «{locale}» у магазині нема ({locales})
+    field_not_allowed: 'Поле «{field}» для {entity} недоступне; дозволено: {allowed}'
+    string_or_null: '{field}: рядок або null'
+    translation_missing: 'Перекладу «{locale}» ще нема: у fields потрібне поле {field}'
+    required: '{field}: порожнє значення не допускається'
+    slug_required: 'slug: адресу не можна зняти, лише змінити'
+    slug_generated: slug не задано — адресу «{slug}» утворено з назви
+    slug_taken: 'slug: {message}'
+    slug_taken_locale: Слаг «{slug}» уже зайнятий цією мовою
+    flags_missing: Задайте active і/або featured
+    main_not_in_categories: Головна категорія має бути серед categories
+    expect_missing: 'expect.{key}: вкажіть поточне значення'
+    conflict: expect.{key} не збігається з поточним значенням
+    duplicate_target: Ту саму ціль уже змінює операція {op}
+    blame: '{message} (змінив {who} {when})'
+    retry: Паралельна зміна тих самих даних — спробуйте ще раз
+    risk_changed: 'З моменту створення пакета з''явились нові ризики: {flags}. Створіть пакет заново'
+    revert_unsupported: Переклад «{locale}» для {target} створено цим пакетом — відкат його не знімає; видалити переклад можна лише в адмінці
+    nothing_to_revert: Пакет нічого не змінив — відкочувати нема чого
+email_changeset:
+  price_applied:
+    subject: '[{site}] Застосовано ціновий пакет #{id}: {title}'
+    heading: 'Застосовано ціновий пакет #{id}: {title}'
+    created_by: 'Створив(ла):'
+    applied_by: 'Застосував(ла):'
+    operations: 'Операцій:'
+    operations_value: '{count}, з них цінових: {price}'
+    risk_flags: 'Ризикові прапорці:'
+    risk_flags_value: '{flags} — підтвердив(ла) {name}'
+    col_target: Ціль
+    col_field: Поле
+    col_before: Було
+    col_after: Стане
+    more: та ще {count}
+    link_changeset: Сторінка пакета
+    link_audit: Журнал змін
+    text_changeset: 'Пакет:'
+    text_audit: 'Журнал змін:'
+field:
+  id: ID
+locale_switch:
+  label: Мова адмінки
+settings:
+  google:
+    title: Вхід через Google
+    csrf_invalid: "Недійсний CSRF-токен, спробуйте ще раз"
+    state:
+      settings: 'Увімкнено: покупці бачать кнопку «Продовжити з Google», ключі — з налаштувань магазину.'
+      env: 'Перемикач вимкнено; працюють ключі зі змінних сервера (стенд агенції). Для магазину клієнта введіть ключі тут і ввімкніть.'
+      disabled: 'Вимкнено: кнопки «Продовжити з Google» на сайті нема.'
+      client_id_missing: 'Увімкнено, але Client ID не задано — кнопки на сайті нема.'
+      client_id_invalid: 'Увімкнено, але Client ID не схожий на …apps.googleusercontent.com — кнопки на сайті нема.'
+      secret_missing: 'Увімкнено, але Client Secret не задано — кнопки на сайті нема.'
+      secret_no_key: 'Увімкнено, але на сервері нема ключа шифрування SETTINGS_SECRET_KEY — секрет зберегти не можна, кнопки на сайті нема.'
+      secret_unreadable: 'Увімкнено, але збережений Client Secret не розшифрувати (ключ шифрування на сервері змінено) — введіть його знову.'
+    origin: Authorized JavaScript origin
+    redirect_uri: Authorized redirect URI
+    copy: Копіювати
+    copied: Скопійовано
+    steps:
+      title: Як отримати Client ID і Client Secret (разово, 10–15 хвилин)
+      console: 'Відкрийте Google Cloud Console (console.cloud.google.com), оберіть проєкт магазину або створіть новий.'
+      consent: 'APIs & Services → OAuth consent screen: тип External, назва магазину, email підтримки, домен сайту; статус In production (у Testing входять лише тестові адреси). Доступи (scopes) — лише openid, email, profile.'
+      client: 'APIs & Services → Credentials → Create credentials → OAuth client ID, тип Web application, назва — домен магазину.'
+      uris: 'У Authorized JavaScript origins вставте origin вище, в Authorized redirect URIs — redirect URI вище (точний збіг, без слеша в кінці). Якщо сайт відкривається і з www, додайте обидві адреси ще раз із www.'
+      keys: 'Скопіюйте Client ID і Client Secret у налаштування «Client ID» і «Client Secret» у списку вище (секрет зберігається шифровано і показується маскою).'
+      enable: 'Увімкніть перемикач «Увімкнено» у групі «Вхід через Google» і збережіть.'
+      verify: 'Натисніть «Перевірити налаштування», потім «Спробувати на сайті»: на сторінці входу є кнопка «Продовжити з Google» — увійдіть своїм акаунтом Google.'
+    console: Відкрити Google Cloud Console
+    check: Перевірити налаштування
+    try: Спробувати на сайті
+    check_result:
+      client_id_ok: 'Client ID задано, формат правильний.'
+      client_id_missing: 'Client ID не задано.'
+      client_id_invalid: 'Client ID не схожий на …apps.googleusercontent.com — перевірте, чи не вставлено secret або API-ключ.'
+      secret_ready: 'Client Secret задано.'
+      secret_missing: 'Client Secret не задано.'
+      secret_no_key: 'На сервері нема ключа шифрування SETTINGS_SECRET_KEY — Client Secret зберегти не можна. Зверніться до розробника.'
+      secret_unreadable: 'Збережений Client Secret не розшифрувати: ключ шифрування на сервері змінено — введіть секрет знову.'
+      enabled_settings: 'Увімкнено, працюють ключі з налаштувань магазину.'
+      enabled_env: 'Перемикач вимкнено: працюють ключі зі змінних сервера (стенд). Увімкніть, щоб діяли ключі з налаштувань.'
+      enabled_incomplete: 'Перемикач увімкнено, але ключі неповні — кнопки на сайті нема.'
+      enabled_off: 'Перемикач вимкнено — кнопки на сайті нема.'
+      google_ok: 'Google відповідає: issuer {issuer}, ключів підпису {keys}.'
+      google_endpoints_changed: 'Google оголошує інші адреси кінцевих точок, ніж використовує рушій, — повідомте розробника.'
+      google_failed: 'Google недоступний з сервера ({reason}). Перевірте доступ сервера в інтернет і спробуйте пізніше.'
+empty_state:
+  product_review:
+    text: 'Відгуків ще немає. Вони з’являються, коли покупці оцінюють куплені товари в кабінеті; нові чекатимуть тут на модерацію.'
+  changeset:
+    text: 'Пакетів змін ще немає. Їх створює AI-агент або інтеграція через API адмінки: зміни цін і товарів приходять сюди на перевірку перед застосуванням.'
+    action: 'API-токени для агента'
+  admin_api_token:
+    text: 'Токенів ще немає. Токен дає AI-агенту чи інтеграції доступ до API адмінки з обраними дозволами.'
+    action: 'Створити токен'
+  ai_usage:
+    text: 'Викликів AI ще не було. Тут з’являться генерації описів і перекладів з адмінки: модель, токени й вартість.'
+  wholesale_application:
+    text: 'Заявок оптовиків ще немає. Покупець подає заявку в кабінеті на сайті, вона з’явиться тут.'
+  not_found_entry:
+    text: 'Адрес 404 ще не зафіксовано. Сюди потрапляють сторінки сайту, які хтось відкривав, а їх немає: з них зручно робити редиректи.'
+  admin_audit_entry:
+    text: 'Змін ще не було. Тут з’являються зміни товарів, цін, категорій, сторінок і акцій з адмінки й через AI.'
+  order:
+    text: 'Замовлень ще немає. Вони з’являються, коли покупці оформлюють кошик або швидку заявку на сайті.'
+  default:
+    text: 'Записів ще немає.'
+  search:
+    text: 'За цим пошуком чи фільтром нічого не знайдено.'
+    reset: 'Скинути пошук і фільтри'
+solution:
+  lookup_inactive: 'неактивний'
+  label:
+    singular: 'Рішення'
+    plural: 'Рішення'
+  title:
+    new: 'Нове рішення'
+  action:
+    add: 'Додати рішення'
+  field:
+    id: 'ID'
+    title: 'Назва'
+    published: 'Опубліковано'
+    position: 'Порядок'
+    group: 'Група'
+    cover: 'Обкладинка'
+    related: 'Інші рішення'
+    updated_at: 'Змінено'
+  section:
+    publishing: 'Публікація'
+    options: 'Варіанти рішення'
+    content: 'Контент (по мовах)'
+  help:
+    cover: 'Файл із «Медіатеки»; завантажити новий — там же'
+    related: 'Порожньо — сайт покаже рішення з тієї ж групи'
+    options: 'Товари каталогу як варіанти. Ціну й «Запитати ціну» показує товар (тип ціни), тут її не задають.'
+solution_group:
+  label:
+    singular: 'Група рішень'
+    plural: 'Групи рішень'
+  title:
+    new: 'Нова група рішень'
+  action:
+    add: 'Додати групу'
+  field:
+    title: 'Назва'
+solution_form:
+  error:
+    title_required: 'Вкажіть назву рішення'
+    group_title_required: 'Вкажіть назву групи'
+  title: 'Назва'
+  slug: 'Слаг (URL)'
+  intro: 'Вступ (під заголовком)'
+  task: 'Задача'
+  loads: 'Вантажі'
+  industries: 'Галузі'
+  body: 'Додатковий текст'
+  faq: 'Часті питання'
+  meta_title: 'Meta title'
+  meta_description: 'Meta description'
+  group_title: 'Назва групи'
+  product: 'Товар'
+  position: 'Порядок'
+  pros: 'Переваги'
+  note: 'Опис варіанта'
+  help:
+    slug: 'Порожній — сформується з назви'
+    lines: 'Один пункт на рядок'
+    body: 'Необов''язково: виводиться після варіантів'
+    faq: 'Блоки через порожній рядок: перший рядок — питання, далі — відповідь'
+
+search:
+  found: 'Знайдено: {count}'
+  did_you_mean: Можливо, ви мали на увазі «{suggestion}»? Показано результати за ним замість «{query}».
+  exact_opened: Відкрито точний збіг для «{query}». <a href="{url}">Показати всі результати</a>
+  hint:
+    default: Пошук
+    product: Назва, SKU, штрихкод або бренд
+    order: Номер, телефон, email, ім'я або компанія
+    category: Назва або URL
+    brand: Назва або URL
+    attribute: Назва або код
+    media: Файл або alt-текст
+    promotion: Назва акції
+    product_review: Текст, покупець або товар
+    wholesale_application: Компанія, податковий номер, контакт або email
+    company: Назва, податковий номер, контакт або email
+    customer_group: Назва або код
+    page: Заголовок або URL
+    post: Заголовок, URL, автор або тег
+    post_category: Назва або код
+    redirect: Звідки або куди
+    not_found_entry: Адреса або звідки перейшли
+    admin_audit_entry: Об'єкт, поле або хто змінив
+    changeset: Назва пакета або автор
+    admin_api_token: Назва або префікс токена
+    ai_usage: Хто, модель або помилка
+    user: Email або ім'я
+    setting: Ключ або значення
+    solution: 'Назва, вступ, група або товар'
+    solution_group: 'Назва групи'

@@ -1,0 +1,17 @@
+{# Блок «куди йдуть кошти» (тема: support.*). Кнопка — зовнішнє посилання на збір/сторінку підтримки з параметра. #}
+<section class="section support" id="support" aria-labelledby="support-title">
+    {% if site_theme('hero.emblem') %}<img class="support-emblem" src="{{ site_asset(site_theme('hero.emblem')) }}" alt="" loading="lazy" width="{{ site_theme('hero.emblem_width') }}" height="{{ site_theme('hero.emblem_height') }}">{% endif %}
+    <h2 id="support-title">{{ site_theme_text('support.title') ?: 'site.home.support_title'|trans }}</h2>
+    {% if site_theme_text('support.text') %}<p>{{ site_theme_text('support.text') }}</p>{% endif %}
+    {% set points = site_theme('support.points', []) %}
+    {% if points %}
+        <ul class="support-points">
+            {% for p in points %}{% set text = site_theme_text('support.points.' ~ loop.index0) %}{% if text %}<li>{{ text }}</li>{% endif %}{% endfor %}
+        </ul>
+    {% endif %}
+    <div class="hero-actions">
+        {% if site_theme('support.button_url') %}<a class="btn btn-primary" href="{{ site_theme('support.button_url') }}" rel="noopener" target="_blank">{{ site_theme_text('support.button_label') ?: 'site.home.support'|trans }}</a>{% endif %}
+        {% if support_shop_link ?? true %}<a class="btn btn-outline" href="{{ path('site_home') }}#catalog">{{ 'site.home.support_shop'|trans }}</a>{% endif %}
+    </div>
+    {% if site_theme_text('support.note') %}<p class="support-note">{{ site_theme_text('support.note') }}</p>{% endif %}
+</section>

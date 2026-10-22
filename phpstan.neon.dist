@@ -1,0 +1,23 @@
+parameters:
+    level: 6
+    paths:
+        - src
+        - tests
+    symfony:
+        containerXmlPath: var/cache/dev/App_KernelDevDebugContainer.xml
+    doctrine:
+        objectManagerLoader: tests/object-manager.php
+    ignoreErrors:
+        # Symfony 8.1 skeleton: MicroKernelTrait читає getAllowedEnvs() через рефлексію
+        -
+            identifier: method.unused
+            path: src/Kernel.php
+        # необов'язковий пакет luxsite/gmb-reviews-* (docs/addons.md): CI аналізує рушій без нього, локально він може стояти
+        -
+            message: '#Luxsite\\GmbReviews#'
+            paths:
+                - src/Kernel.php
+                - src/Site/Seo/OrganizationSchema.php
+                - tests/Functional/Site/GbpRatingTest.php
+                - tests/Functional/Site/GmbReviewsOptionalTest.php
+            reportUnmatched: false

@@ -1,0 +1,25 @@
+{% extends '@EasyAdmin/crud/index.html.twig' %}
+{% trans_default_domain 'admin' %}
+{# Журнал AI + стан ключа OpenRouter: без ключа журнал порожній — банер веде адміністратора на введення ключа.
+   Причина — за станом ключа (ai_key.reason.<стан>), мовою адмінки; ai.reason від AiGateway — українською для логів і винятків. #}
+{% block main %}
+    {% if ai is defined %}
+        {% set settings_url = ea_url().unsetAll().setController('App\\Admin\\Controller\\Crud\\SettingCrudController') %}
+        {% if not ai.configured %}
+            <div class="alert alert-warning" id="ai-key-banner" data-ai-state="{{ ai.keyState }}">
+                <strong>{{ ('ai_key.reason.' ~ ai.keyState)|trans }}</strong> — {{ 'ai_usage.banner.disabled'|trans }}
+                {% if is_granted('ROLE_ADMIN') %}
+                    {% if ai.keyState != 'no_key' %}
+                        <a href="{{ settings_url.setAction('aiKey') }}" class="btn btn-primary btn-sm ms-2" data-ai-edit="ai.openrouter_key">{{ 'ai_key.action.enter'|trans }}</a>
+                        <a href="https://openrouter.ai/keys" target="_blank" rel="noopener" class="ms-2">{{ 'ai_key.action.get'|trans }}</a>
+                    {% endif %}
+                {% else %}
+                    {{ 'ai_usage.banner.ask_admin'|trans }}
+                {% endif %}
+            </div>
+        {% elseif is_granted('ROLE_ADMIN') %}
+            <p class="small mb-2" id="ai-key-banner" data-ai-state="ready"><a href="{{ settings_url.setAction('index') }}#ai-provider">{{ 'ai_usage.banner.settings'|trans }}</a></p>
+        {% endif %}
+    {% endif %}
+    {{ parent() }}
+{% endblock %}

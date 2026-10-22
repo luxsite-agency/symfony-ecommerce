@@ -1,0 +1,180 @@
+{# Контракт теми (docs/themes.md, template_contract 1). Змінні ProductPageController: product (Product), tr (ProductTranslation), view (ProductPresenter: variant, price, priceFrom,
+   retailPrice, oldPrice, quote, availability, images, axes, attributes, categories, crumbs), options (форма опцій OptionsForm), seo ({title, description}), schema_brand (?string), schema_offers (масив Offer для JSON-LD),
+   schema_rating (?{aggregateRating, review}), reviews (?масив ProductReviewsBlock: summary, items, page, pages, access, form, mine, login_path, google_path; null — відгуки вимкнено),
+   solutions (list<Solution> — рішення, де товар є варіантом, видимі цією мовою; порожній — блоку нема). #}
+{% extends 'site/base.html.twig' %}
+{% trans_default_domain 'site_catalog' %}
+{% import 'site/partials/_schema.html.twig' as schema %}
+{% set locale = app.request.locale %}
+{% set variant = view.variant %}
+{% set alternates = site_alternates('site_product', {}, product) %}
+{# seo — поля перекладу, а якщо порожні — шаблони магазину app.seo.product (ProductSeo) #}
+{% block title %}{{ seo.title }} | {{ site_name }}{% endblock %}
+{% block metaDescription %}{{ seo.description }}{% endblock %}
+{% block ogType %}product{% endblock %}
+{% block head %}<script src="{{ asset('assets/site-product.js') }}" defer></script>{% endblock %}
+{% block ogImage %}{% if view.images %}{{ absolute_url(('media/' ~ view.images|first.path)|imagine_filter('product_large')) }}{% endif %}{% endblock %}
+{% block schema %}
+    {% set items = [{name: site_name, url: url('site_home')}] %}
+    {% for c in view.crumbs %}{% set t = c.translation(locale) %}{% if c.active and t and t.path %}{% set items = items|merge([{name: t.name, url: url('site_category', {path: t.path, _locale: locale})}]) %}{% endif %}{% endfor %}
+    {{ schema.crumbs(items|merge([{name: tr.name}])) }}
+    {{ schema.product(tr.name, seo.description, view.images|map(i => absolute_url(('media/' ~ i.path)|imagine_filter('product_large'))), variant ? variant.sku : null, schema_brand, schema_offers, alternates[locale] ?? null, schema_rating) }}
+{% endblock %}
+{% block body %}
+    {# view_item — та сама ціна, що на картці: з опціями й акцією (ціна за запитом — без quote) #}
+    {% do analytics_push(analytics_view_item(variant ?? product, view.quote is null ? null : (options.quote ?? view.quote))) %}
+    <ol class="crumbs">
+        <li><a href="{{ path('site_home') }}">{{ site_name }}</a></li>
+        {% for c in view.crumbs %}{% set t = c.translation(locale) %}
+            {% if c.active and t and t.path %}<li><a href="{{ path('site_category', {path: t.path, _locale: locale}) }}">{{ t.name }}</a></li>{% endif %}
+        {% endfor %}
+        <li>{{ tr.name }}</li>
+    </ol>
+
+    <article class="product" data-product-id="{{ product.id }}">
+        <div class="gallery">
+            {% for media in view.images %}
+                <img src="{{ ('media/' ~ media.path)|imagine_filter('product_large') }}" alt="{{ media.alt ?: tr.name }}"{% if media.width and media.height %} width="{{ media.width }}" height="{{ media.height }}"{% endif %}{% if not loop.first %} loading="lazy"{% else %} fetchpriority="high"{% endif %}>
+            {% else %}
+                <div class="thumb"><span class="thumb-ph{{ site_theme('placeholder') ? '' : ' no-image' }}" aria-hidden="true"></span></div>
+            {% endfor %}
+        </div>
+
+        <div class="product-info">
+            <h1>{{ tr.name }}</h1>
+            {% if reviews and reviews.summary %}<a class="rating-link" href="#reviews">{% include 'site/partials/_rating_stars.html.twig' with {average: reviews.summary.average, stars: reviews.summary.stars, count: reviews.summary.count} only %}</a>{% endif %}
+            {% if product.brand %}<p class="muted">{{ product.brand.name }}</p>{% endif %}
+            {% set main_cat = view.categories|first %}{% set main_t = main_cat ? main_cat.translation(locale) : null %}
+            {% if main_t and main_t.path %}<p class="product-category">{{ 'catalog.product.category'|trans }}: <a href="{{ path('site_category', {path: main_t.path, _locale: locale}) }}">{{ main_t.name }}</a></p>{% endif %}
+            {% if variant %}<p class="product-sku muted">{{ 'catalog.product.sku'|trans }}: <span class="sku">{{ variant.sku }}</span></p>{% endif %}
+
+            <div class="buy-box">
+                {% if variant %}
+                    <p class="price" data-variant-id="{{ variant.id }}">
+                        {% if view.price is null %}{{ 'catalog.price_on_request'|trans }}
+                        {% elseif view.priceFrom %}{{ 'catalog.price_from'|trans({price: view.price.format(locale)}) }}
+                        {% else %}{{ view.price.format(locale) }}{% endif %}
+                        {% if view.oldPrice %}<span class="old-price">{{ view.oldPrice.format(locale) }}</span>{% endif %}
+                        {% if view.retailPrice %}<span class="retail-price muted">{{ 'catalog.price_retail'|trans({price: view.retailPrice.format(locale)}) }}</span>{% endif %}
+                    </p>
+                    <p class="stock-{{ view.availability }}">
+                        {{ ('catalog.availability.' ~ view.availability)|trans }}
+                        {% if exact_stock and variant.stockPolicy.value == 'in_stock' %}<span class="stock-exact">{{ 'catalog.stock_exact'|trans({stock: variant.stock|qty(variant.unit)}) }}</span>{% endif %}
+                        {% if (view.availability == 'to_order' or exact_stock) and variant.leadTimeDays %}<span class="muted">({{ 'catalog.lead_time'|trans({days: variant.leadTimeDays}) }})</span>{% endif %}
+                    </p>
+                {% else %}
+                    <p class="stock-out_of_stock">{{ 'catalog.availability.out_of_stock'|trans }}</p>
+                {% endif %}
+
+                {% for axis in view.axes %}
+                    <div class="axis" data-axis="{{ axis.code }}">
+                        <div class="axis-label">{{ axis.label }}</div>
+                        <ul>
+                            {% for option in axis.options %}
+                                {% set classes = [option.selected ? 'selected', option.available ? '' : 'unavailable']|filter(c => c) %}
+                                <li>
+                                    {% if option.selected %}<span class="{{ classes|join(' ') }}" aria-current="true">{{ option.label }}</span>
+                                    {% else %}<a href="{{ path('site_product', {slug: tr.slug, _locale: locale}|merge(option.query)) }}" rel="nofollow" class="{{ classes|join(' ') }}"{% if not option.available %} title="{{ 'catalog.product.unavailable'|trans }}"{% endif %}>{{ option.label }}</a>{% endif %}
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endfor %}
+
+                {# флеші лише з наявної сесії: app.flashes() стартує її (PdoSessionHandler — рядок і блокування на кожен візит бота) #}
+                {% if app.request.hasPreviousSession %}
+                    {% for message in app.flashes('error') %}<p class="flash flash-error" role="alert">{{ message }}</p>{% endfor %}
+                    {% for message in app.flashes('success') %}<p class="flash flash-success" role="status">{{ message }}</p>{% endfor %}
+                {% endif %}
+                {% if product.priceMode.value == 'on_request' %}
+                    {# ціна за запитом: купити не можна — лише запит ціни (лід у CRM) #}
+                    {% include 'site/partials/_price_request.html.twig' with {product: product} only %}
+                {% else %}
+                    {% set keep = app.request.query.all|filter((v, k) => k not in ['options', 'calc', '_token', 'variant', 'quantity'] and v is not iterable) %}
+                    {% include 'site/partials/_add_to_cart.html.twig' with {product: product, options: options, calc_url: path('site_product', {slug: tr.slug, _locale: locale}), keep: keep, selected: view.axes ? variant : null} only %}
+                {% endif %}
+                {% include 'site/partials/_wishlist_button.html.twig' with {product_id: product.id, compact: false} only %}
+            </div>
+
+            {% if tr.shortDescription %}<div class="prose">{{ tr.shortDescription|raw }}</div>{% endif %}
+
+            {# швидке замовлення не має форми опцій — для товару з опціями лише через кошик #}
+            {% if options is null and product.priceMode.value != 'on_request' and product.variants|filter(v => v.active)|length > 0 %}
+                <details class="quick-order-box">
+                    <summary>{{ 'site.quick.title'|trans({}, 'messages') }}</summary>
+                    {% include 'site/partials/_quick_order.html.twig' with {product: product} only %}
+                </details>
+            {% endif %}
+
+            {% set perks = site_theme('product_perks', []) %}
+            {% if perks %}
+                <ul class="product-perks">
+                    {% for p in perks %}{% set text = site_theme_text('product_perks.' ~ loop.index0) %}{% if text %}
+                        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span>{{ text }}</span></li>
+                    {% endif %}{% endfor %}
+                </ul>
+            {% endif %}
+        </div>
+    </article>
+
+    {# липка панель «ціна + У кошик» на мобільному (UX-аудит S8): кнопка сабмітить ту саму форму через form=; site-product.js ховає панель, коли видно форму #}
+    {% if variant and view.price is not null and product.priceMode.value != 'on_request' and product.variants|filter(v => v.active)|length > 0 %}
+        <div class="buy-bar" data-buy-bar>
+            <span class="buy-bar-price" data-buy-bar-price>{{ (options.price ?? null) ? options.price.format(locale) : (view.priceFrom ? 'catalog.price_from'|trans({price: view.price.format(locale)}) : view.price.format(locale)) }}</span>
+            <button type="submit" form="add-to-cart-{{ product.id }}" class="btn btn-primary">{{ 'site.cart.add_to_cart'|trans({}, 'messages') }}</button>
+        </div>
+    {% endif %}
+
+    {% set cat_links = [] %}
+    {% for c in view.categories %}{% set t = c.translation(locale) %}{% if t and t.path %}{% set cat_links = cat_links|merge([{name: t.name, url: path('site_category', {path: t.path, _locale: locale}), trail: c.ancestors|map(a => a.translation(locale) ? a.translation(locale).name : '')|filter(n => n)|join(' / ')}]) %}{% endif %}{% endfor %}
+    {# «Категорії товару» — лише коли їх кілька: одна вже є в крихтах і рядку «Категорія» (UX-аудит S9) #}
+    {% set cat_links = cat_links|length > 1 ? cat_links : [] %}
+    {% if view.attributes or tr.description or cat_links %}
+    <div class="product-details">
+        {% if tr.description %}<section class="prose"><h2>{{ 'catalog.product.description'|trans }}</h2>{{ tr.description|raw }}</section>{% endif %}
+        {% if view.attributes %}
+            <section>
+                <h2>{{ 'catalog.product.attributes'|trans }}</h2>
+                <table class="specs">
+                    {% for attribute in view.attributes %}
+                        <tr><th scope="row">{{ attribute.label }}</th><td>{{ attribute.value }}</td></tr>
+                    {% endfor %}
+                </table>
+            </section>
+        {% endif %}
+        {% if cat_links %}
+            <section class="product-categories">
+                <h2>{{ 'catalog.product.categories'|trans }}</h2>
+                <ul>
+                    {% for link in cat_links %}
+                        <li>{% if link.trail %}<span class="muted">{{ link.trail }} / </span>{% endif %}<a href="{{ link.url }}">{{ link.name }}</a></li>
+                    {% endfor %}
+                </ul>
+            </section>
+        {% endif %}
+    </div>
+    {% endif %}
+
+    {# рішення з цим товаром (docs/solutions.md): лише коли є видимі цією мовою #}
+    {% if solutions|default([]) is not empty %}
+    <section class="product-solutions">
+        <h2>{{ 'site.solution.product_block'|trans({}, 'messages') }}</h2>
+        <ul class="solution-cards">
+            {% for item in solutions %}{% include 'site/solution/_card.html.twig' with {solution: item, locale: locale} only %}{% endfor %}
+        </ul>
+    </section>
+    {% endif %}
+
+    {# відгуки (рішення власника 13.10.2026): агрегат, схвалені сторінками, форма покупцю; null — вимкнено паком #}
+    {% if reviews %}{% include 'site/partials/_product_reviews.html.twig' with {product: product, tr: tr, reviews: reviews} only %}{% endif %}
+
+    {# переглянуті залогіненим (E12 PR-10): останні 20 у БД, поточна картка не показується #}
+    {% if viewed %}
+    <section class="viewed-products">
+        <h2>{{ 'catalog.viewed.title'|trans }}</h2>
+        <ul class="cards cards-4 product-grid">
+            {% for card in viewed %}{% include 'site/partials/_product_card.html.twig' with {card: card, list_name: 'catalog.viewed.title'|trans, index: loop.index0, eager: false} %}{% endfor %}
+        </ul>
+    </section>
+    {% endif %}
+{% endblock %}

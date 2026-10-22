@@ -1,0 +1,8 @@
+{% extends 'site/base.html.twig' %}
+{% set noindex = true %}
+{% block title %}{{ 'site.account.demo.blocked_title'|trans }} | {{ site_name }}{% endblock %}
+{% block body %}
+    <h1>{{ 'site.account.demo.blocked_title'|trans }}</h1>
+    <p class="flash flash-error demo-blocked" role="alert">{{ 'site.account.demo.blocked_text'|trans }}</p>
+    <ul class="account-links"><li><a href="{{ path('site_account') }}">{{ 'site.account.demo.back'|trans }}</a></li></ul>
+{% endblock %}

@@ -1,0 +1,14 @@
+{# Вкладення покупця (OrderAttachment) на картці замовлення: назва, тип, розмір, дата; скачати — admin_order_attachment
+   (security_audit). Після ретенції — позначка «стерто». order — Order. #}
+{% if order.attachments|length > 0 %}
+<h3 class="h5 mt-4">{{ 'order.attachments.title'|trans({}, 'admin') }}</h3>
+<ul class="list-unstyled small" data-attachments>
+    {% for a in order.attachments %}
+        <li class="mb-1">
+            {% if a.purgedAt %}<span class="text-muted">{{ a.originalName }}</span> · <span class="badge bg-secondary">{{ 'order.attachments.purged'|trans({}, 'admin') }}</span>
+            {% else %}<a href="{{ path('admin_order_attachment', {id: a.id}) }}" rel="noopener">{{ a.originalName }}</a>{% endif %}
+            <span class="text-muted">· {{ a.mime }} · {{ (a.size / 1024)|round }} KB · {{ a.uploadedAt|date_short(true) }}</span>
+        </li>
+    {% endfor %}
+</ul>
+{% endif %}

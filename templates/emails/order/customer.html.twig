@@ -1,0 +1,14 @@
+{% set l = order.locale %}
+<div style="font-family:system-ui,sans-serif;font-size:15px;color:#1a1f24;max-width:640px">
+    <h1 style="font-size:20px">{{ 'email.order.customer_title'|trans({number: order.number}, null, l) }}</h1>
+    <p>{{ 'email.order.customer_intro'|trans({name: order.customerName}, null, l) }}</p>
+    {% include 'emails/order/_items.html.twig' %}
+    <p>
+        <strong>{{ 'email.order.shipping'|trans({}, null, l) }}:</strong> {{ ('site.checkout.shipping.' ~ order.shippingMethod.value)|trans({}, null, l) }}{% if order.shippingCity %}, {{ order.shippingCity }}{% endif %}{% if order.shippingAddress %}, {{ order.shippingAddress }}{% endif %}<br>
+        <strong>{{ 'email.order.payment'|trans({}, null, l) }}:</strong> {{ ('site.checkout.payment.' ~ order.paymentMethod.value)|trans({}, null, l) }}
+    </p>
+    <p><em>{{ 'site.checkout.shipping_note'|trans({}, null, l) }}</em></p>
+    {% if order.comment %}<p><strong>{{ 'email.order.comment'|trans({}, null, l) }}:</strong> {{ order.comment }}</p>{% endif %}
+    <p>{{ 'email.order.customer_outro'|trans({}, null, l) }}</p>
+    <p style="color:#666"><a href="{{ siteUrl }}">{{ siteName }}</a></p>
+</div>

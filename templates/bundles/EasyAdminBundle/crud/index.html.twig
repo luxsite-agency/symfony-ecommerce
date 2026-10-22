@@ -1,0 +1,94 @@
+{# Порожній список (аудит UX A18): замість 14 сірих рядків-заглушок і «Нічого не знайдено.» — пояснення, звідки беруться дані,
+   і дія, якщо вона є. За активного пошуку чи фільтра — що нічого не знайдено і як скинути. Розділ — за коротким іменем сутності. #}
+{# Список розділу адмінки: рядок пошуку під заголовком на всю ширину контенту, фільтри поруч (рішення власника 20.10.2026), під ним —
+   «Знайдено N» і підказка про іншу розкладку (App\Admin\Search\SmartSearchRepository → AdminSearchState). Знайдені слова
+   підсвічує assets/admin-search.js за data-search-terms. Поле — блок search каркаса EasyAdmin (фільтри й параметри списку
+   в прихованих полях), з підказкою розділу замість «Пошук» (шукаємо placeholder, екранований як у каркасі — |e, не html_attr:
+   той кирилицю перетворює на &#x…; і uk/ru лишались з «Пошук»). Поле й «Фільтри» — один рядок по 44 px: .form-group форми EasyAdmin
+   має padding знизу 24 px, label — 8 px: обнулено, інакше кнопка стоїть нижче поля (баг 20.10.2026); на < 576 px фільтри під полем. #}
+{% extends '@!EasyAdmin/crud/index.html.twig' %}
+
+{% block table_body_empty %}
+    {# тексти — ключі empty_state.<розділ>.* домену admin (мова адмінки) #}
+    {% set entity = ea.crud.entityFqcn|split('\\')|last %}
+    {% set searching = app.request.query.get('query') is not empty or app.request.query.has('filters') %}
+    {% set states = {
+        ProductReview: {key: 'product_review'},
+        Changeset: {key: 'changeset', url: path('admin_admin_api_token_index')},
+        AdminApiToken: {key: 'admin_api_token', url: path('admin_admin_api_token_issue'), primary: true},
+        AiUsage: {key: 'ai_usage'},
+        WholesaleApplication: {key: 'wholesale_application'},
+        NotFoundEntry: {key: 'not_found_entry'},
+        AdminAuditEntry: {key: 'admin_audit_entry'},
+        Order: {key: 'order'},
+    } %}
+    {% set state = states[entity] ?? {key: 'default'} %}
+    <tr class="no-results">
+        <td colspan="100" class="py-5 text-center" data-empty-state="{{ searching ? 'search' : entity }}">
+            {% if searching %}
+                <p class="mb-2">{{ 'empty_state.search.text'|trans({}, 'admin') }}</p>
+                <a class="btn btn-secondary" href="{{ ea_url().unset('query').unset('filters').unset('page') }}">{{ 'empty_state.search.reset'|trans({}, 'admin') }}</a>
+            {% else %}
+                <p class="mb-2 mx-auto" style="max-width: 42rem">{{ ('empty_state.' ~ state.key ~ '.text')|trans({}, 'admin') }}</p>
+                {% if state.url is defined %}<a class="btn {{ state.primary ?? false ? 'btn-primary' : 'btn-secondary' }}" href="{{ state.url }}">{{ ('empty_state.' ~ state.key ~ '.action')|trans({}, 'admin') }}</a>{% endif %}
+            {% endif %}
+        </td>
+    </tr>
+{% endblock %}
+
+{# фільтри — у рядку пошуку, тут лишаються дії розділу #}
+{% block page_actions %}
+    {{ block('global_actions') }}
+    {{ block('batch_actions') }}
+{% endblock %}
+
+{% block main %}
+    {% set search_state = app.request.attributes.get('_admin_search') %}
+    {% if ea.crud.isSearchEnabled or filters|length > 0 %}
+        <div class="admin-search-bar" role="search">
+            {% if ea.crud.isSearchEnabled %}
+                {% set default_placeholder = t('action.search', ea.i18n.translationParameters, 'EasyAdminBundle')|trans %}
+                {% set hint = admin_search_hint(ea.crud.entityFqcn)|trans({}, 'admin') %}
+                <div class="content-search admin-search">
+                    {{ block('search')|replace({
+                        ('placeholder="' ~ default_placeholder|e ~ '"'): 'placeholder="' ~ hint|e('html_attr') ~ '" aria-label="' ~ hint|e('html_attr') ~ '"',
+                    })|raw }}
+                </div>
+            {% endif %}
+            {% if filters|length > 0 %}
+                <div class="datagrid-filters">{{ block('filters') }}</div>
+            {% endif %}
+        </div>
+        {% if search_state %}
+            <p class="admin-search-status" data-search-terms="{{ search_state.terms|json_encode(constant('JSON_UNESCAPED_UNICODE'))|e('html_attr') }}">
+                <span data-search-found>{{ 'search.found'|trans({count: paginator.numResults}, 'admin') }}</span>
+                {% if search_state.suggestion %}
+                    <span class="admin-search-suggestion" data-search-suggestion>{{ 'search.did_you_mean'|trans({suggestion: search_state.suggestion, query: search_state.query}, 'admin') }}</span>
+                {% endif %}
+            </p>
+        {% endif %}
+    {% endif %}
+    {{ parent() }}
+{% endblock %}
+
+{% block configured_stylesheets %}
+    {{ parent() }}
+    <style>
+        .admin-search-bar { display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; margin: 0 0 .75rem; }
+        .admin-search-bar .admin-search { flex: 1 1 20rem; min-width: 0; max-width: none; margin: 0; padding: 0; }
+        .admin-search-bar .admin-search .form-action-search, .admin-search-bar .admin-search .form-group { width: 100%; max-width: none; margin: 0; padding: 0; }
+        /* поле каркаса EasyAdmin розраховане на верхню панель: тут — звичайне поле на всю ширину з іконкою зліва й «×» справа */
+        .admin-search-bar .admin-search .form-widget { position: relative; display: block; width: 100%; }
+        .admin-search-bar .admin-search .content-search-label { display: block; width: 100%; margin: 0; padding: 0; }
+        .admin-search-bar .admin-search .content-search-label::after { display: none; }
+        .admin-search-bar .admin-search .content-search-icon { position: absolute; left: .75rem; top: 50%; transform: translateY(-50%); z-index: 1; pointer-events: none; }
+        .admin-search-bar .admin-search input[type="search"] { width: 100%; height: 44px; padding-left: 2.25rem; padding-right: 2.75rem; }
+        .admin-search-bar .admin-search .content-search-reset { position: absolute; right: 0; top: 50%; transform: translateY(-50%); min-width: 44px; min-height: 44px; display: inline-flex; align-items: center; justify-content: center; }
+        .admin-search-bar .datagrid-filters { flex: 0 0 auto; }
+        .admin-search-bar .datagrid-filters .btn { height: 44px; display: inline-flex; align-items: center; }
+        .admin-search-status { margin: -.25rem 0 .75rem; color: var(--text-muted, #6c757d); font-size: .875rem; }
+        .admin-search-suggestion { margin-left: .5rem; color: var(--text-color, #212529); }
+        mark.admin-search-hit { padding: 0 .1em; background: #fff3bf; color: inherit; border-radius: 2px; }
+        @media (max-width: 575.98px) { .admin-search-bar .admin-search, .admin-search-bar .datagrid-filters { flex-basis: 100%; } }
+    </style>
+{% endblock %}

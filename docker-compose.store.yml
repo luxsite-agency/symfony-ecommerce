@@ -1,0 +1,220 @@
+# Symfony ecommerce LuxSite — переносний стек ОДНОГО магазину (система магазинів, етап 1; docs/store-ops.md).
+# Один магазин = один compose-проєкт store-<key>: свій MySQL, worker, томи store-<key>_*, нічого спільного з іншими.
+# Руками не запускати: керує bin/store (deploy|backup|restore|archive|doctor); на сервері — <STORE_ROOT>/dc <команда compose>.
+#
+# Змінні (env-файли на сервері: <STORE_ROOT>/store.env — не секрети, <STORE_ROOT>/release.env — STORE_TAG):
+#   STORE_KEY, STORE_ROOT (/work/stores/<key>), STORE_TAG (тег образів store-<key>-{php,nginx}),
+#   STORE_SITE_HOST, STORE_ADMIN_HOST, STORE_X_ROBOTS_TAG ("noindex, nofollow" = закрито; порожньо = відкрито),
+#   COMPOSE_PROFILES: traefik (наш сервер, спільний traefik) | standalone (сервер клієнта: власний Caddy з Let's Encrypt),
+#   STORE_EDGE_NETWORK — зовнішня мережа проксі: мережа traefik або store-<key>-edge (bin/store створює для standalone),
+#   STORE_TRAEFIK_ENABLE (true лише для traefik), STORE_TRAEFIK_ENTRYPOINT, STORE_TRAEFIK_CERTRESOLVER (порожньо = TLS без резолвера),
+#   STORE_MYSQL_BUFFER_POOL (192M), STORE_MEM_{MYSQL,PHP,WORKER,FEED_WORKER,MAIL_WORKER,NGINX,CADDY}.
+# Секрети — лише на сервері: <STORE_ROOT>/.env.local (env Symfony, 600), <STORE_ROOT>/.secrets/*.txt (600).
+# Сервіси php-next/nginx-next (profile candidate) — кандидат нового релізу під час deploy: піднімаються поруч із робочими,
+# на них ідуть міграції й health-перевірка, і лише потім робочі контейнери перемикаються на новий тег.
+name: store-${STORE_KEY:?STORE_KEY}
+
+x-logging: &logging
+  driver: json-file
+  options:
+    max-size: "10m"
+    max-file: "3"
+
+x-php: &php
+  image: store-${STORE_KEY}-php:${STORE_TAG:?STORE_TAG}
+  pull_policy: never
+  labels: ["traefik.enable=false"]
+  restart: unless-stopped
+  env_file: ["${STORE_ROOT:?STORE_ROOT}/.env.local"]
+  volumes:
+    - media:/app/public/media
+    - feeds:/app/public/feeds
+    - share:/app/var/share
+    - log:/app/var/log
+  networks: [internal]
+  mem_limit: ${STORE_MEM_PHP:-384m}
+  logging: *logging
+  depends_on:
+    mysql:
+      condition: service_healthy
+
+x-nginx: &nginx
+  image: store-${STORE_KEY}-nginx:${STORE_TAG}
+  pull_policy: never
+  restart: unless-stopped
+  environment: &nginx-env
+    # Шаблон docker/nginx/store.conf (у образі /etc/nginx/store-templates); prod.conf (старий прод) лишається для старої схеми
+    NGINX_ENVSUBST_TEMPLATE_DIR: /etc/nginx/store-templates
+    STORE_PHP_UPSTREAM: php:9000
+    STORE_X_ROBOTS_TAG: "${STORE_X_ROBOTS_TAG-noindex, nofollow}"
+    # Заголовок з реальною IP клієнта для nginx (docker/nginx/store.conf): CF-Connecting-IP за Cloudflare, порожньо = X-Forwarded-For
+    STORE_REAL_IP_HEADER: "${STORE_REAL_IP_HEADER:-X-Forwarded-For}"
+    # хост адмінки для store.conf: /api/admin і /mcp на будь-якому іншому хості — 404 ще в nginx (E15 PR-6)
+    STORE_ADMIN_HOST: "${STORE_ADMIN_HOST:?STORE_ADMIN_HOST}"
+  volumes:
+    - media:/app/public/media:ro
+    - feeds:/app/public/feeds:ro
+  mem_limit: ${STORE_MEM_NGINX:-64m}
+  logging: *logging
+
+services:
+  php:
+    <<: *php
+
+  # Черга Messenger (doctrine-транспорт async + scheduler). Graceful stop: pcntl в образі → SIGTERM дочекається поточного
+  # повідомлення; --time-limit/--memory-limit — плановий вихід, restart піднімає знову.
+  worker:
+    <<: *php
+    command: ["php", "bin/console", "messenger:consume", "async", "scheduler_default", "--time-limit=3600", "--memory-limit=128M", "-q"]
+    stop_signal: SIGTERM
+    stop_grace_period: 60s
+    mem_limit: ${STORE_MEM_WORKER:-256m}
+    depends_on:
+      php:
+        condition: service_started
+
+  # Окрема черга feeds: Merchant feed на 500k карток пишеться хвилинами й не тримає async (CRM, листи замовлень).
+  # Пам'ять генератора стала (пакети id + потоковий XMLWriter).
+  feed-worker:
+    <<: *php
+    command: ["php", "bin/console", "messenger:consume", "feeds", "--time-limit=3600", "--memory-limit=128M", "-q"]
+    stop_signal: SIGTERM
+    stop_grace_period: 60s
+    mem_limit: ${STORE_MEM_FEED_WORKER:-192m}
+    depends_on:
+      php:
+        condition: service_started
+
+  # Листи входу/реєстрації покупців (E12, транспорт auth_mail): посилання з листа живе 15–60 хв — не чекати за
+  # імпортом у async.
+  mail-worker:
+    <<: *php
+    command: ["php", "bin/console", "messenger:consume", "auth_mail", "--time-limit=3600", "--memory-limit=96M", "-q"]
+    stop_signal: SIGTERM
+    stop_grace_period: 30s
+    mem_limit: ${STORE_MEM_MAIL_WORKER:-128m}
+    depends_on:
+      php:
+        condition: service_started
+
+  nginx:
+    <<: *nginx
+    networks: [internal, edge]
+    depends_on: [php]
+    labels:
+      - traefik.enable=${STORE_TRAEFIK_ENABLE:-false}
+      - traefik.docker.network=${STORE_EDGE_NETWORK:?STORE_EDGE_NETWORK}
+      - traefik.http.routers.store-${STORE_KEY}.rule=Host(`${STORE_SITE_HOST:?STORE_SITE_HOST}`) || Host(`${STORE_ADMIN_HOST:?STORE_ADMIN_HOST}`)
+      - traefik.http.routers.store-${STORE_KEY}.entrypoints=${STORE_TRAEFIK_ENTRYPOINT:-websecure}
+      - traefik.http.routers.store-${STORE_KEY}.tls=true
+      - traefik.http.routers.store-${STORE_KEY}.tls.certresolver=${STORE_TRAEFIK_CERTRESOLVER:-}
+      - traefik.http.services.store-${STORE_KEY}.loadbalancer.server.port=80
+
+  mysql:
+    # Точна версія: з неї bin/store deploy бере serverVersion для DATABASE_URL (Doctrine DBAL: «8.0» < «8.0.0» → deprecation
+    # «MySQL < 8»). Оновлення MySQL = змінити тег тут; наступний deploy підправить serverVersion у .env.local.
+    image: mysql:8.0.46
+    labels: ["traefik.enable=false"]
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: shop
+      MYSQL_USER: shop
+      MYSQL_ROOT_PASSWORD_FILE: /run/secrets/mysql_root
+      MYSQL_PASSWORD_FILE: /run/secrets/mysql_password
+    secrets: [mysql_root, mysql_password]
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_0900_ai_ci
+      - --innodb-buffer-pool-size=${STORE_MYSQL_BUFFER_POOL:-192M}
+      - --performance-schema=OFF
+      - --max-connections=40
+      - --skip-log-bin
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks: [internal]
+    mem_limit: ${STORE_MEM_MYSQL:-512m}
+    logging: *logging
+    # TCP, а не сокет: тимчасовий сервер ініціалізації слухає лише сокет, тож healthy = справжній сервер піднявся
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "--silent"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+      start_period: 120s
+
+  # Сервер клієнта без нашого traefik: Caddy сам отримує й поновлює сертифікати Let's Encrypt (HTTP-01/TLS-ALPN, порти 80/443;
+  # DNS обох доменів уже має вказувати на сервер)
+  caddy:
+    image: caddy:2-alpine
+    profiles: [standalone]
+    labels: ["traefik.enable=false"]
+    restart: unless-stopped
+    ports: ["80:80", "443:443", "443:443/udp"]
+    command: ["caddy", "run", "--config", "/etc/caddy/Caddyfile", "--adapter", "caddyfile"]
+    configs:
+      - source: caddyfile
+        target: /etc/caddy/Caddyfile
+    volumes:
+      - caddy-data:/data
+      - caddy-config:/config
+    networks: [edge]
+    mem_limit: ${STORE_MEM_CADDY:-128m}
+    logging: *logging
+    depends_on: [nginx]
+
+  # Кандидат релізу (bin/store deploy): той самий образ з новим тегом STORE_NEXT_TAG, без проксі
+  php-next:
+    <<: *php
+    image: store-${STORE_KEY}-php:${STORE_NEXT_TAG:-none}
+    profiles: [candidate]
+    restart: "no"
+
+  nginx-next:
+    <<: *nginx
+    image: store-${STORE_KEY}-nginx:${STORE_NEXT_TAG:-none}
+    profiles: [candidate]
+    restart: "no"
+    labels: ["traefik.enable=false"]
+    environment:
+      <<: *nginx-env
+      STORE_PHP_UPSTREAM: php-next:9000
+    networks: [internal]
+    depends_on: [php-next]
+
+configs:
+  caddyfile:
+    content: |
+      ${STORE_SITE_HOST}, ${STORE_ADMIN_HOST} {
+      	encode zstd gzip
+      	reverse_proxy nginx:80
+      }
+
+secrets:
+  mysql_root:
+    file: ${STORE_ROOT}/.secrets/mysql-root.txt
+  mysql_password:
+    file: ${STORE_ROOT}/.secrets/mysql-password.txt
+
+networks:
+  internal:
+  edge:
+    name: ${STORE_EDGE_NETWORK}
+    external: true
+
+# Фіксовані імена store-<key>_*: бекап/відновлення звертаються до томів напряму, незалежно від compose-проєкту
+volumes:
+  media:
+    name: store-${STORE_KEY}_media
+  # Merchant feed: генерується, у бекап не входить (після відновлення — feed:merchant:generate або наступний розклад)
+  feeds:
+    name: store-${STORE_KEY}_feeds
+  share:
+    name: store-${STORE_KEY}_share
+  log:
+    name: store-${STORE_KEY}_log
+  mysql-data:
+    name: store-${STORE_KEY}_mysql
+  caddy-data:
+    name: store-${STORE_KEY}_caddy-data
+  caddy-config:
+    name: store-${STORE_KEY}_caddy-config

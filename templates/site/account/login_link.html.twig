@@ -1,0 +1,13 @@
+{% extends 'site/base.html.twig' %}
+{% set noindex = true %}
+{% block title %}{{ 'site.account.login_link.title'|trans }} | {{ site_name }}{% endblock %}
+{% block body %}
+    <h1>{{ 'site.account.login_link.title'|trans }}</h1>
+    <p>{{ 'site.account.login_link.text'|trans }}</p>
+    <form method="post" action="{{ path('site_account_login_link') }}" class="account-form" novalidate>
+        <input type="hidden" name="{{ field_name(form._token) }}" value="{{ field_value(form._token) }}">
+        {% include 'site/account/_field.html.twig' with {field: form.email, label: 'site.account.email'|trans, type: 'email', autocomplete: 'email'} only %}
+        <button type="submit" class="btn btn-primary">{{ 'site.account.login_link.submit'|trans }}</button>
+    </form>
+    <ul class="account-links"><li><a href="{{ path('site_account_login') }}">{{ 'site.account.login.title'|trans }}</a></li></ul>
+{% endblock %}

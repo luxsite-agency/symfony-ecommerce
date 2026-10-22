@@ -1,0 +1,10 @@
+# Параметри магазину demo (без хостів і секретів: хости deploy бере з реєстру)
+parameters:
+    app.locales: ['uk', 'en']
+    app.site_name: { uk: 'Демо-магазин', en: 'Demo store' }
+    app.theme:
+        key: 'demo'
+        logo: { src: 'themes/demo/logo.svg' }
+        stylesheet: 'themes/demo/theme.css'
+    # публічне демо: один відомий пароль демо-покупців (DemoAccounts), блок «Демо-доступ» на сторінці входу
+    app.demo.customer_password: 'Demo-2026'

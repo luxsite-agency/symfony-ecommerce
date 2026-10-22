@@ -1,0 +1,23 @@
+# Enable stateless CSRF protection for forms and logins/logouts
+framework:
+    form:
+        csrf_protection:
+            token_id: submit
+
+    csrf_protection:
+        stateless_token_ids:
+            - submit
+            - authenticate
+            - logout
+            # форми картки товару (кошик, швидке замовлення, ціна за запитом): stateful-токен стартував сесію на КОЖНІЙ
+            # сторінці товару — Set-Cookie і рядок у сесійній таблиці кожному боту (консиліум 07.10 п. 8). Stateless:
+            # перевірка за Origin / Sec-Fetch-Site, працює без JS.
+            - cart
+            - quick_order
+            - price_request
+            # загальна заявка без товару /request (lead): так само з картки чи сторінки «Рішення», без сесії
+            - lead_request
+            # кабінет покупця: кнопки з листів (підтвердження email) — без сесії до входу
+            - account
+            # кнопка «в обране» на кешованій картці й у лістингу (E12 PR-10)
+            - wishlist

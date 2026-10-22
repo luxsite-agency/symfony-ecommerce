@@ -1,0 +1,28 @@
+{% extends 'site/base.html.twig' %}
+{% set noindex = true %}
+{% block title %}{{ 'site.account.reviews.title'|trans }} | {{ site_name }}{% endblock %}
+{% block body %}
+    <h1>{{ 'site.account.reviews.title'|trans }}</h1>
+    {% include 'site/account/_flashes.html.twig' %}
+    <p><a href="{{ path('site_account') }}">&larr; {{ 'site.account.title'|trans }}</a></p>
+    {% if reviews is empty %}
+        <p class="empty">{{ 'site.account.reviews.empty'|trans }}</p>
+    {% else %}
+        <ul class="reviews-list my-reviews">
+            {% for r in reviews %}
+                {% set tr = r.product.translation(app.request.locale) %}
+                <li class="review review-{{ r.status.value }}" data-review-id="{{ r.id }}">
+                    <div class="review-head">
+                        {% if tr and tr.slug and r.product.active %}<a href="{{ path('site_product', {slug: tr.slug, _locale: app.request.locale}) }}#reviews">{{ tr.name }}</a>{% else %}<span>{{ tr ? tr.name : r.product.defaultVariant.sku }}</span>{% endif %}
+                        <span class="rating-stars" aria-label="{{ r.rating }}/5">{% for i in 1..5 %}<span class="star{{ i <= r.rating ? ' star-on' : '' }}" aria-hidden="true">★</span>{% endfor %}</span>
+                        <span class="review-status review-status-{{ r.status.value }}">{{ ('site.account.reviews.status.' ~ r.status.value)|trans }}</span>
+                        <time class="muted" datetime="{{ r.updatedAt|date('Y-m-d') }}">{{ r.updatedAt|date_short }}</time>
+                    </div>
+                    <p class="review-text">{{ r.text|nl2br }}</p>
+                    {% if r.hasReply %}<div class="review-reply"><strong>{{ 'site.account.reviews.reply'|trans }}:</strong> <span class="review-text">{{ r.replyText|nl2br }}</span></div>{% endif %}
+                    <p><a class="btn btn-outline" href="{{ path('site_account_review_edit', {id: r.id}) }}">{{ 'site.account.reviews.edit'|trans }}</a></p>
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+{% endblock %}

@@ -1,0 +1,45 @@
+{# Контракт теми (docs/themes.md, template_contract 1). Змінні BlogController::show: post (Post), tr (PostTranslation мовою сторінки). #}
+{% extends 'site/base.html.twig' %}
+{% import 'site/partials/_schema.html.twig' as schema %}
+{% set alternates = site_alternates('site_post', {}, post) %}
+{% set coverUrl = post.cover ? absolute_url(('/media/' ~ post.cover.path)|imagine_filter('product_large')) : null %}
+{% block title %}{{ tr.metaTitle ?: tr.title }} | {{ site_name }}{% endblock %}
+{% block metaDescription %}{{ tr.metaDescription ?: tr.excerpt ?: tr.body|striptags|slice(0, 200) }}{% endblock %}
+{% block ogType %}article{% endblock %}
+{% block ogImage %}{% if coverUrl %}{{ coverUrl }}{% endif %}{% endblock %}
+{% block schema %}
+    {{ schema.crumbs([{name: site_name, url: url('site_home')}, {name: 'site.blog.title'|trans, url: url('site_blog')}, {name: tr.title}]) }}
+    {{ schema.article(post, tr, alternates[app.request.locale], coverUrl) }}
+    {% if tr.faq is not empty %}{{ schema.faq(tr.faq) }}{% endif %}
+{% endblock %}
+{% block body %}
+    <ol class="crumbs"><li><a href="{{ path('site_home') }}">{{ site_name }}</a></li><li><a href="{{ path('site_blog') }}">{{ 'site.blog.title'|trans }}</a></li><li>{{ tr.title }}</li></ol>
+    <article class="prose">
+        <header>
+            <p class="meta">
+                <time datetime="{{ post.publishedAt|date('Y-m-d') }}">{{ post.publishedAt|format_date('long', locale=app.request.locale) }}</time>
+                {% if post.authorName %} · {{ post.authorName }}{% endif %}
+                {% if post.category and tr(post.category) %} · {{ tr(post.category).name }}{% endif %}
+            </p>
+            <h1>{{ tr.title }}</h1>
+            {% if tr.excerpt %}<p class="lead">{{ tr.excerpt }}</p>{% endif %}
+        </header>
+        {# обкладинка від зовнішньої контент-панелі: alt — заголовок мовою сторінки (alt медіа один на всі мови), під фото — підпис з атрибуцією #}
+        {% set studioCover = post.studioCoverShown %}
+        {% if coverUrl %}<figure class="post-cover"><img src="{{ coverUrl }}" alt="{{ studioCover ? tr.title : (post.cover.alt ?: tr.title) }}" fetchpriority="high">{% if studioCover and tr.coverCaption %}<figcaption class="meta">{{ tr.coverCaption }}</figcaption>{% endif %}</figure>{% endif %}
+        {{ tr.body|raw }}
+        {% if tr.faq is not empty %}
+            <section class="post-faq">
+                <h2>{{ 'site.blog.faq'|trans }}</h2>
+                {% for item in tr.faq %}<h3>{{ item.q }}</h3><p>{{ item.a }}</p>{% endfor %}
+            </section>
+        {% endif %}
+        {% if tr.related is not empty %}
+            <nav class="post-related" aria-labelledby="post-related-title">
+                <h2 id="post-related-title">{{ 'site.blog.related'|trans }}</h2>
+                <ul>{% for item in tr.related %}<li><a href="{{ item.url }}">{{ item.title }}</a></li>{% endfor %}</ul>
+            </nav>
+        {% endif %}
+        {% if post.tagList %}<p class="meta">{{ post.tagList|join(' · ') }}</p>{% endif %}
+    </article>
+{% endblock %}

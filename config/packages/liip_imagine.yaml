@@ -1,0 +1,29 @@
+# Прев'ю медіа: джерело — public/media (Vich), кеш — public/media/cache/<filter>/ (у .gitignore).
+liip_imagine:
+    driver: "gd"
+    resolvers:
+        default:
+            web_path:
+                web_root: '%kernel.project_dir%/public'
+                cache_prefix: media/cache
+    loaders:
+        default:
+            filesystem:
+                data_root: '%kernel.project_dir%/public'
+    filter_sets:
+        cache: ~
+        # Мініатюра в списках і формах адмінки
+        admin_thumb:
+            quality: 80
+            filters:
+                thumbnail: { size: [120, 120], mode: outbound }
+        # Картка в лістингу категорії (Ф1): вписати у 400×400
+        product_card:
+            quality: 80
+            filters:
+                thumbnail: { size: [400, 400], mode: inset }
+        # Картка товару (Ф1): вписати у 800×800
+        product_large:
+            quality: 85
+            filters:
+                thumbnail: { size: [800, 800], mode: inset }

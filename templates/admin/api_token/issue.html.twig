@@ -1,0 +1,19 @@
+{% extends '@EasyAdmin/page/content.html.twig' %}
+{% trans_default_domain 'admin' %}
+{# Форма «Створити API-токен» (AdminApiTokenCrudController::issue). Змінні: form (NewApiTokenType), max_days, index_url. #}
+{% form_theme form 'bootstrap_5_layout.html.twig' %}
+{% block content_title %}{{ 'api_token.issue.title'|trans }}{% endblock %}
+{# кнопки — у шапці, як на інших формах EasyAdmin (того ж розміру); submit прив'язаний до форми атрибутом form #}
+{% block page_actions %}
+    <a href="{{ index_url }}" class="btn btn-secondary action-cancel">{{ 'api_token.issue.cancel'|trans }}</a>
+    <button type="submit" form="api-token-issue" class="btn btn-primary action-saveAndReturn">{{ 'api_token.issue.submit'|trans }}</button>
+{% endblock %}
+{% block main %}
+    <style>#api-token-issue .form-check-input { width: 1.25em; height: 1.25em; } #api-token-issue .form-check { margin-block-end: .5rem; }</style>
+    <p class="text-muted">{{ 'api_token.issue.intro'|trans }}</p>
+    {{ form_start(form, {attr: {id: 'api-token-issue', class: 'ea-new-form'}}) }}
+        {{ form_row(form.name) }}
+        {{ form_row(form.scopes) }}
+        {{ form_row(form.days) }}
+    {{ form_end(form) }}
+{% endblock %}

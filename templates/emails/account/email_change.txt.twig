@@ -1,0 +1,8 @@
+{{ 'email.account.hello'|trans({name: name}, null, l) }}
+
+{{ 'email.account.email_change.text'|trans({site: siteName, hours: ttl // 60}, null, l) }}
+
+{{ url }}
+
+{{ 'email.account.email_change.outro'|trans({hours: ttl // 60}, null, l) }}
+{{ siteName }}

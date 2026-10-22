@@ -1,0 +1,77 @@
+{# Контракт теми (docs/themes.md, template_contract 1). Змінні CheckoutController: totals (CartTotals: lines, itemsTotal, priceFingerprint), data (мапа полів форми після submit), errors (мапа поле → текст),
+   shippingMethods, paymentMethods (list enum-ів ShippingMethod/PaymentMethod::selectable()), np (null | {warehouses: …} — довідники Нової пошти увімкнено). #}
+{% extends 'site/base.html.twig' %}
+{% set alternates = site_alternates('site_checkout') %}
+{% block title %}{{ 'site.checkout.title'|trans }} | {{ site_name }}{% endblock %}
+{% block head %}{% if np %}<script src="{{ asset('assets/site-checkout-np.js') }}" defer></script>{% endif %}{% endblock %}
+{% block body %}
+    <ol class="crumbs"><li><a href="{{ path('site_home') }}">{{ site_name }}</a></li><li><a href="{{ path('site_cart') }}">{{ 'site.cart.title'|trans }}</a></li><li>{{ 'site.checkout.title'|trans }}</li></ol>
+    <h1>{{ 'site.checkout.title'|trans }}</h1>
+    {% if errors.price is defined %}<p class="flash flash-error" role="alert" data-price-changed>{{ errors.price }}</p>{% endif %}
+    {% if errors.lines is defined %}<p class="flash flash-error" role="alert">{{ errors.lines }}</p>{% endif %}
+    {% include 'site/partials/_order_minimum.html.twig' with {shortfall: shortfall} only %}
+    <div class="checkout-layout">
+        <form method="post" action="{{ path('site_checkout') }}" class="checkout" novalidate>
+            <input type="hidden" name="_token" value="{{ csrf_token('checkout') }}">
+            <input type="hidden" name="key" value="{{ data.key }}">
+            {# відбиток цін цієї сторінки — завжди свіжий, не з POST: після «ціна змінилась» submit підтверджує нову суму #}
+            <input type="hidden" name="price" value="{{ totals.priceFingerprint() }}">
+            <fieldset>
+                <legend>{{ 'site.checkout.contact'|trans }}</legend>
+                <label>{{ 'site.checkout.name'|trans }} <input type="text" name="name" value="{{ data.name }}" required autocomplete="name">{% if errors.customerName is defined %}<span class="form-error">{{ errors.customerName }}</span>{% endif %}</label>
+                <label>{{ 'site.checkout.phone'|trans }} <input type="tel" name="phone" value="{{ data.phone }}" required autocomplete="tel" placeholder="+380">{% if errors.phone is defined %}<span class="form-error">{{ errors.phone }}</span>{% endif %}</label>
+                <label>{{ 'site.checkout.email'|trans }} <input type="email" name="email" value="{{ data.email }}" autocomplete="email">{% if errors.email is defined %}<span class="form-error">{{ errors.email }}</span>{% endif %}</label>
+            </fieldset>
+            <fieldset>
+                <legend>{{ 'site.checkout.shipping_title'|trans }}</legend>
+                {% if addresses is not empty %}
+                    {# адреси з кабінету (E12 PR-6): вибір підставляє поля нижче; без JS — перехід з ?address= #}
+                    <ul class="checkout-addresses">
+                        {% for a in addresses %}<li><a href="{{ path('site_checkout', {address: a.id}) }}"{% if a.id == chosenAddress %} class="current" aria-current="true"{% endif %}>{{ a.summary }}</a>{% if a.default %} <span class="meta">{{ 'site.account.address.default'|trans }}</span>{% endif %}</li>{% endfor %}
+                    </ul>
+                {% endif %}
+                {% for method in shippingMethods %}
+                    <label class="radio"><input type="radio" name="shipping" value="{{ method.value }}" {{ data.shipping == method.value ? 'checked' }}> {{ ('site.checkout.shipping.' ~ method.value)|trans }}</label>
+                {% endfor %}
+                {% if np %}
+                    {# довідник НП: місто через datalist (JS наповнює з /np/cities.json), відділення — select (JS або фолбек сервера); текст лишається #}
+                    <div class="np-picker" data-np-cities="{{ path('site_np_cities') }}" data-np-warehouses="{{ path('site_np_warehouses') }}" data-np-method="{{ constant('App\\Core\\Order\\Enum\\ShippingMethod::NovaPoshta').value }}">
+                        <input type="hidden" name="np_city_ref" value="{{ data.np_city_ref }}" data-np-city-ref>
+                        <label>{{ 'site.checkout.city'|trans }} <input type="text" name="city" value="{{ data.city }}" autocomplete="off" list="np-cities" data-np-city placeholder="{{ 'site.checkout.np.city_hint'|trans }}"></label>
+                        <datalist id="np-cities"></datalist>
+                        <label class="np-warehouse" {{ np.warehouses is empty ? 'hidden' }} data-np-warehouse-wrap>{{ 'site.checkout.np.warehouse'|trans }}
+                            <select name="np_warehouse_ref" data-np-warehouse {{ np.warehouses is empty ? 'disabled' }}>
+                                <option value="">{{ 'site.checkout.np.warehouse_placeholder'|trans }}</option>
+                                {% for w in np.warehouses %}<option value="{{ w.ref }}" {{ data.np_warehouse_ref == w.ref ? 'selected' }}>{{ w.label(app.request.locale) }}</option>{% endfor %}
+                            </select>
+                        </label>
+                        <label data-np-address-wrap>{{ 'site.checkout.address'|trans }} <input type="text" name="address" value="{{ data.address }}" placeholder="{{ 'site.checkout.address_hint'|trans }}" data-np-address></label>
+                        {% if errors.address is defined %}<span class="form-error">{{ errors.address }}</span>{% endif %}
+                    </div>
+                {% else %}
+                    <label>{{ 'site.checkout.city'|trans }} <input type="text" name="city" value="{{ data.city }}" autocomplete="address-level2"></label>
+                    <label>{{ 'site.checkout.address'|trans }} <input type="text" name="address" value="{{ data.address }}" placeholder="{{ 'site.checkout.address_hint'|trans }}"></label>
+                {% endif %}
+                <p class="meta shipping-note">{{ 'site.checkout.shipping_note'|trans }}</p>
+            </fieldset>
+            <fieldset>
+                <legend>{{ 'site.checkout.payment_title'|trans }}</legend>
+                {% for method in paymentMethods %}
+                    <label class="radio"><input type="radio" name="payment" value="{{ method.value }}" {{ data.payment == method.value ? 'checked' }}> {{ ('site.checkout.payment.' ~ method.value)|trans }}</label>
+                {% endfor %}
+            </fieldset>
+            <label>{{ 'site.checkout.comment'|trans }} <textarea name="comment" rows="3">{{ data.comment }}</textarea></label>
+            <button type="submit" class="btn btn-primary">{{ (errors.price is defined ? 'site.checkout.confirm' : 'site.checkout.submit')|trans }}</button>
+        </form>
+        <aside class="checkout-summary">
+            <h2>{{ 'site.checkout.your_order'|trans }}</h2>
+            <ul>
+                {% for line in totals.lines %}{% set t = tr(line.item.variant.product) %}
+                    {% set q = line.item.quantity %}<li><span>{{ t ? t.name : line.item.variant.sku }} × {{ q|qty(line.item.variant.unit) }}{% if line.problem %} <span class="problem">{{ ('site.cart.problem.' ~ line.problem)|trans }}</span>{% endif %}</span> <span class="price">{{ line.lineTotal|money }}</span></li>
+                {% endfor %}
+            </ul>
+            <p class="price checkout-total">{{ 'site.cart.items_total'|trans }}: {{ totals.itemsTotal|money }}</p>
+            <p class="meta">{{ 'site.checkout.shipping_note'|trans }}</p>
+        </aside>
+    </div>
+{% endblock %}

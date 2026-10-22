@@ -1,0 +1,8 @@
+{# Обрані опції рядка кошика/замовлення зі снепшота (ADR Rev 9): «Група: значення». snapshot — optionsSnapshot або null. #}
+{% if snapshot and snapshot.groups is defined and snapshot.groups %}
+    <ul class="line-options">
+        {% for group in snapshot.groups %}
+            <li>{{ group.label }}: {{ group.labels is defined ? group.labels|join(', ') : group.value ~ (group.unit ? ' ' ~ group.unit : '') }}</li>
+        {% endfor %}
+    </ul>
+{% endif %}

@@ -1,0 +1,5 @@
+external_id,product_id,sku,name_uk,name_en,price,currency,category,category_en,images
+95-021,95-021,95-021,Шеврон Сокіл 77,Sokil workshop patch,295.00,UAH,Шеврони й патчі,Patches,"https://example.test/p21.jpg, https://example.test/p21b.jpg"
+95-066,95-066,95-066,Індивідуальне виробництво,Custom manufacturing,,UAH,Індивідуальне виробництво,Custom manufacturing,
+95-067-A,95-067,95-067-A,Чохол iPhone 16,iPhone 16 case,700.00,UAH,Індивідуальне виробництво,Custom manufacturing,
+95-067-B,95-067,95-067-B,Чохол iPhone 16,iPhone 16 case,,UAH,Індивідуальне виробництво,Custom manufacturing,

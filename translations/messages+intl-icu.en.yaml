@@ -1,0 +1,596 @@
+site:
+    a11y:
+        skip: Skip to content
+    error404:
+        title: Page not found
+        text: It may have moved, or the address has a typo. Start from the home page or the catalogue.
+        home: Home page
+    error410:
+        title: Page removed
+        text: This page no longer exists. Start from the home page or the catalogue.
+    nav:
+        solutions: 'Solutions'
+        menu: Menu
+        cart_count: 'Cart: {count, plural, =0 {empty} one {# item} other {# items}}'
+        catalog: Catalogue
+        blog: Blog
+        cart: Cart
+        account: Account
+        pages: Pages
+    home:
+        intro: 'Shop catalogue: pick a category or browse the new arrivals.'
+        to_catalog: Browse catalogue
+        categories: Categories
+        newest: New arrivals
+        popular: Popular
+        support: Support
+        support_title: Where the money goes
+        support_shop: Choose a product
+        all_posts: All posts
+        pages: Pages
+        latest_posts: Latest posts
+        no_pages: No pages yet.
+        no_posts: No posts yet.
+    solution:
+        title: 'Solutions'
+        description: '{site} solutions: the task, equipment options from the catalogue and a quote for your site.'
+        get_quote: 'Get a quote'
+        options: 'Solution options'
+        task: 'Task'
+        loads: 'Loads'
+        industries: 'Industries'
+        ask_price: 'Request a price'
+        details: 'Details'
+        request_note: 'Describe your task: we will prepare options and a quote and get back to you.'
+        faq: 'FAQ'
+        related: 'Other solutions'
+        all: 'All solutions'
+        other: 'Other'
+        product_block: 'Solutions with this product'
+    blog:
+        title: Blog
+        empty: No posts yet.
+        page_of: '{page} / {pages}'
+        faq: Frequently asked questions
+        related: See also
+        sources: Sources
+    category:
+        empty: No products yet.
+    footer:
+        socials: Social media
+        buyers: For customers
+        contacts: Contacts
+        language: Site language
+        copyright: '© {year} {site}'
+        platform: Platform
+        platform_license: '· open source under the Apache License 2.0, platform developed by LuxSite ·'
+        license_terms: Licence
+    license:
+        title: Licence
+        description: '{site} runs on Symfony ecommerce LuxSite, an open-source engine licensed under Apache 2.0. Licence terms and the list of third-party components.'
+        in_english: The licence text is provided in English.
+        components: Third-party components
+        components_note: 'The engine uses open-source libraries. Each is distributed under its own licence.'
+        package: Package
+        license: Licence
+    consent:
+        text: We use cookies for analytics and advertising. Allow them?
+        accept: Allow
+        decline: Essential only
+    cart:
+        title: Cart
+        empty: Your cart is empty.
+        continue: Back to catalogue
+        product: Product
+        price: Price
+        quantity: Quantity
+        total: Total
+        items_total: Subtotal
+        update: Update
+        remove: Remove
+        checkout: Checkout
+        add_to_cart: Add to cart
+        variant: Variant
+        added: '“{name}” added to cart'
+        merge_skipped: 'Some items from your cart are unavailable and were not transferred: {count}'
+        problem:
+            unavailable: Product unavailable
+            out_of_stock: Not enough stock for this quantity
+            invalid_step: Quantity must be a multiple of the step
+            below_min: Below the minimum quantity
+            invalid_options: Product options changed — please choose them again
+        minimum:
+            title: 'The order is below the minimum for your price group:'
+            amount: 'amount from {min}, {missing} short'
+            quantity: 'quantity from {min} units, {missing} short'
+    checkout:
+        title: Checkout
+        contact: Contact details
+        name: Name
+        phone: Phone
+        email: Email (for confirmation)
+        shipping_title: Delivery
+        shipping:
+            pickup: Pickup
+            courier: Courier
+            nova_poshta: Nova Poshta (branch)
+            manager_contact: Arranged by manager
+        city: City
+        address: Branch or address
+        address_hint: e.g. branch #12
+        np:
+            city_hint: start typing the city name
+            warehouse: Branch or parcel locker
+            warehouse_placeholder: Choose a branch
+            choose_warehouse: Choose a branch from the list or type it in
+        payment_title: Payment
+        payment:
+            cod: Cash on delivery
+            bank_transfer: Bank transfer
+            manager_contact: Arranged by manager
+        comment: Order comment
+        submit: Place order
+        confirm: 'Confirm the new total'
+        price_changed: 'Prices changed while you were checking out: a promotion ended, a price or the cart contents changed. The new total is {total}. Please review your order and confirm again.'
+        your_order: Your order
+        shipping_note: Delivery cost will be agreed by the manager after order confirmation.
+    thanks:
+        title: 'Thank you! Order {number} received'
+        intro: '{name}, we will call you at {phone} to confirm.'
+        quick_intro: '{name}, our manager will call you at {phone} to arrange delivery and payment.'
+        accepted_title: 'Order received'
+        accepted_intro: 'This link no longer shows order details. You received the confirmation and status by email or from our manager.'
+    price_request:
+        title: Request a price
+        comment: Comment (quantity, size, wishes)
+        submit: Send request
+        note: Our manager will contact you with the price.
+        sent: Request sent. Our manager will contact you shortly.
+    lead:
+        title: Send a request
+        note: Describe your task and our manager will get back to you with a proposal.
+        name: Name
+        phone: Phone
+        email: Email
+        company: Company
+        choice: Which option are you interested in
+        choice_unknown: Not sure, please advise
+        comment: Request details
+        attachment: Attachment (layout, drawing, photo)
+        attachment_hint: PDF, DWG, JPG or PNG up to 10 MB.
+        website: Website (leave empty)
+        submit: Send request
+        sent: Request sent. Our manager will contact you shortly.
+        error:
+            name: Please enter your name
+            phone: Please enter a valid phone number
+            email: Please check the email address
+            comment: Describe the task or attach a file
+            too_large: The file is too large, up to 10 MB
+            bad_type: This file type is not accepted, please use PDF, DWG, JPG or PNG
+            upload_failed: The file could not be uploaded, please try again
+    quick:
+        title: Buy in one click
+        submit: Order
+        note: The manager will call to arrange the details.
+        price_changed: 'The price has changed and is now {price}. Please check and order again.'
+    account:
+        title: My account
+        google:
+            button: Continue with Google
+            consent: 'By continuing with Google you agree to the processing of your personal data.'
+            title: Sign in with Google
+            linked: 'Google is connected: {email}, since {date}. You can sign in with the “Continue with Google” button.'
+            not_linked: Google is not connected.
+            link: Connect Google
+            link_text: 'Enter your current password and we will take you to Google to connect the account to this profile.'
+            link_submit: Go to Google
+            unlink: Disconnect Google
+            only_method: 'Google is your only way to sign in. To disconnect it, first'
+            set_password: set a password
+            no_password: 'This account has no password yet (sign-in via Google only), and this action requires one. First'
+            flash:
+                linked: Google connected.
+                unlinked: Google disconnected.
+            error:
+                failed: Could not sign in with Google. Please try again.
+                cancelled: Google sign-in was cancelled.
+                provider: 'Google did not confirm the sign-in. Try again or sign in with your password.'
+                state: 'The sign-in session has expired. Please start again.'
+                email_unverified: 'Google has not verified your email address. Please register with your email.'
+                disabled: This account is disabled. Please contact the store.
+                admin: This address cannot sign in to the site with Google.
+                demo: Demo accounts cannot sign in with Google.
+                already_linked: 'Another Google account is already connected to this address. Sign in with it or disconnect it in your account.'
+                sub_taken: This Google account is already connected to another profile.
+                no_other_method: 'Set a password first, otherwise you would lose access.'
+        wishlist:
+            link: Wishlist
+            title: Wishlist
+            empty: 'Your wishlist is empty. Add products with the “Add to wishlist” button.'
+        reviews:
+            link: My reviews
+            title: My reviews
+            empty: You have not written any reviews yet. The form is on every product page.
+            new_title: New review
+            edit_title: Edit review
+            product: Product
+            rating: Rating
+            text: Review
+            hint: 'Plain text only: no HTML or links. Reviews are checked before publishing.'
+            submit: Save review
+            edit: Edit
+            reply: Store reply
+            google_required: Sign in with Google to write a review.
+            login_google: Sign in with Google
+            status:
+                pending: Awaiting moderation
+                approved: Published
+                rejected: Rejected
+            flash:
+                published: Thank you! Your review is published.
+                pending: Thank you! Your review will appear after moderation.
+            error:
+                product: Product not found
+                rating: Choose a rating from 1 to 5
+                text_blank: Write a few words about the product
+                text_long: The review is too long (up to 2000 characters)
+                text_html: 'HTML is not allowed in a review: plain text only'
+                text_link: 'Links are not allowed in a review: remove web addresses'
+                too_many: Too many attempts. Try again later.
+                daily_limit: You can post at most 5 reviews per day
+        hello: 'Hello, {name}!'
+        last_order: Latest order
+        email: Email
+        name: Name
+        password: Password
+        password_new: 'Password (at least 10 characters)'
+        logout: Log out
+        login:
+            title: Log in
+            submit: Log in
+            remember: Remember me for 30 days
+            by_link: Log in with an email link
+            forgot: Forgot your password?
+            register: Create an account
+        demo:
+            title: Demo access
+            text: 'This is a public demo store. Sign in with one of the test accounts, they share one password. These accounts are reset every night.'
+            retail: Retail customer
+            wholesale: Wholesale customer
+            login_retail: Sign in as retail
+            login_wholesale: Sign in as wholesale
+            blocked_title: Not available in the demo
+            blocked_text: 'Password and email changes, account deletion and data export are disabled for demo accounts. In a real store these actions are available to the customer.'
+            back: Back to account
+        register:
+            title: Create an account
+            submit: Create account
+            have_account: Already have an account? Log in
+            text: 'Enter your email. We will send a message with a link where you choose your name and password.'
+        verify:
+            title: Confirm your email
+            text: Choose your name and password to finish signing up.
+            submit: Confirm and log in
+        reset:
+            title: Reset your password
+            text: Enter your account email and we will send a link to set a new password.
+            submit: Send link
+            new_title: New password
+            save: Save password
+            again: Send the link again
+        login_link:
+            title: Log in with a link
+            text: Enter your account email and we will send a link to log in without a password.
+            submit: Send link
+            confirm: Log in
+        flash:
+            check_email: 'Check your inbox: if an account with this address can be used, we have sent you a link.'
+            verified: Email confirmed. Welcome!
+            password_changed: Password changed.
+        error:
+            email_blank: Enter your email
+            email_invalid: Check your email
+            name_blank: Enter your name
+            password_short: The password must be at least 10 characters long
+            too_many: Too many attempts. Please try again later.
+            link_invalid: This link is invalid or has expired. Request a new one.
+            disabled: This account is disabled. Please contact the shop.
+            phone_invalid: 'Phone in the format +380XXXXXXXXX'
+            password_current: Current password is incorrect
+            consent_required: Consent to personal data processing is required
+            unverified: 'Your email is not confirmed yet: open the link from the registration email.'
+        orders:
+            title: My orders
+            link: My orders
+            one_title: 'Order {number}'
+            empty: No orders yet.
+            number: Number
+            date: Date
+            status: Status
+            total: Total
+            payment_status: Payment
+            comment: Comment
+            reorder: Reorder
+            back: Back to orders
+            pages: Pages
+            prev: Previous
+            next: Next
+            status_name:
+                new: New
+                confirmed: Confirmed
+                processing: Processing
+                shipped: Shipped
+                completed: Completed
+                cancelled: Cancelled
+            payment_status_name:
+                pending: Awaiting payment
+                partially_paid: Partially paid
+                paid: Paid
+                refunded: Refunded
+            claim:
+                text: 'Orders placed with {email} without an account: {count}. Add them to your history?'
+                submit: Find my orders by this email
+            flash:
+                claimed: 'Orders added to your history: {count}.'
+                nothing_to_claim: No new orders found for your email.
+                reordered: 'Items added to the cart: {count}. Prices are current as of today.'
+                unavailable: 'Currently unavailable, not added to the cart: {names}.'
+        consent:
+            pd_processing: 'I agree to the processing of my personal data to run my account and fulfil orders.'
+            marketing_email: 'Send me emails about promotions and new products.'
+        profile:
+            title: Profile
+            link: Profile
+            back: Back to profile
+            phone: Phone
+            locale: Language for emails and the site
+            save: Save
+            change_email: Change email
+            change_password: Change password
+            current_password: Current password
+            password_note: 'After the change, other devices will be signed out.'
+            new_email: New address
+            email_text: 'Your current address is {email}. We will email the new address, and it takes effect after confirmation. Your password stays the same.'
+            email_submit: Send confirmation
+            email_confirm_text: 'Confirm changing your address to {email}?'
+            revert_title: Restore old address
+            revert_text: 'Restore {email} as the account address and lock sign-in? The password will be erased: set a new one via "Forgot password" on this address. All devices will be signed out.'
+            revert_submit: Restore address and lock sign-in
+            email_confirm_submit: Confirm new address
+            flash:
+                saved: Profile saved.
+                email_sent: 'Check the new mailbox: we sent a confirmation link.'
+                email_changed: Email changed. A notice was sent to the old address.
+                email_reverted: 'The old address was restored and sign-in locked. Set a new password via "Forgot password".'
+            error:
+                email_same: This is your current address
+                email_taken: 'This address is already used by another account.'
+        address:
+            title: Delivery addresses
+            link: Delivery addresses
+            back: Back to addresses
+            empty: No addresses yet.
+            add: Add address
+            edit: Edit
+            delete: Delete
+            save: Save address
+            default: default
+            make_default: Make default
+            label: Label
+            label_hint: 'Home, office'
+            recipient: Recipient
+            flash:
+                saved: Address saved.
+                deleted: Address deleted.
+                default: Default address changed.
+            error:
+                too_many: 'Too many addresses: delete one.'
+        privacy:
+            title: Personal data
+            link: Personal data
+            back: Back to personal data
+            consents: Your consents
+            granted: granted
+            not_granted: not granted
+            policy_version: 'Policy version: {version}.'
+            export_title: Data export
+            export_text: 'We will collect all your data (profile, addresses, consents, orders) into a JSON file and email you a one-time link valid for 24 hours.'
+            export_link: Request export
+            export_submit: Confirm with password and request
+            export_pending: 'The file is still being prepared. Try the same link again in a few minutes.'
+            export_ready: 'The file is ready. The link is one-time: the file is deleted after download.'
+            export_download: Download file
+            delete_title: Delete account
+            delete_text: 'Sign-in will be closed, addresses deleted, email and phone erased. Orders stay in the shop without a link to the account for as long as the law requires.'
+            delete_link: Delete account
+            delete_warning: 'This cannot be undone.'
+            delete_submit: Confirm with password and delete
+            deleted_title: Account deleted
+            deleted_text: 'We erased your sign-in data and sent a confirmation email. Thank you for being with us.'
+            flash:
+                export_requested: 'Request accepted. An email with the file link will arrive in a few minutes.'
+        bulk:
+            title: Order by list
+            link: Order by list
+            no_group: 'Ordering by list is available to wholesale customers with an assigned price group.'
+            text: 'Paste lines "SKU quantity" (one per line) or upload a CSV with two columns: SKU and quantity. Without a quantity we take 1.'
+            placeholder: "ABC-123 10\nXYZ-7;5"
+            lines: List
+            csv: Or a CSV file
+            hint: 'Up to {lines} lines and {kb} KB. Encoding UTF-8 or Windows-1251 (CSV from Excel). Separator: semicolon, comma, tab or space.'
+            parse: Check the list
+            result: 'Recognised {ok} of {total}'
+            add: 'Add to cart: {count}'
+            col:
+                line: Line
+                sku: SKU
+                product: Product
+                quantity: Quantity
+                price: Price
+                total: Total
+                status: Status
+            status:
+                ok: Recognised
+                not_found: Not found
+                unavailable: Unavailable
+                below_min: 'Minimum lot {min}'
+                invalid_step: 'Multiples of {step} from {min}'
+                invalid_quantity: Quantity is not a number
+                needs_options: Needs option selection on the product page
+                header: 'Header, skipped'
+            error:
+                empty: The list is empty
+                too_large: 'File too large: up to {kb} KB'
+                too_many_lines: 'Too many lines: up to {lines}'
+                too_many: Too many attempts, try again in a few minutes
+                upload_failed: 'The file did not upload, try again'
+            flash:
+                added: 'Added to cart: {count}'
+                skipped: 'Skipped: {count}'
+        price_list:
+            link: Download price list (CSV)
+            hint: 'Your group prices for the whole catalogue. Opens in Excel: UTF-8, «;» separator.'
+            limited_title: Too many downloads
+            limited_text: The price list can be downloaded a few times per hour. Please try again later.
+            back: Back to account
+            column:
+                sku: SKU
+                name: Name
+                category: Category
+                unit: Unit
+                from_quantity: From quantity
+                group_price: Your price
+                retail_price: Retail price
+                currency: Currency
+                availability: Availability
+                stock: Stock
+                min_quantity: Minimum order
+                quantity_step: Step
+                pack_quantity: Per pack
+            unit:
+                pc: pc
+                m: m
+                m2: m²
+                kg: kg
+                set: set
+            availability:
+                in_stock: in stock
+                out_of_stock: out of stock
+                to_order: made to order
+        wholesale:
+            title: Wholesale customers
+            link: Become a wholesale customer
+            text: 'Fill in your company details. A manager will review the application and assign wholesale prices; the answer will arrive by email.'
+            submit: Send application
+            back: Back to account
+            yes: 'Yes'
+            no: 'No'
+            field:
+                company: Company or sole trader name
+                tax_id: EDRPOU or RNOKPP code
+                vat: VAT payer
+                contact: Contact person
+                phone: Contact phone
+                note: 'Volumes, assortment, wishes'
+            status:
+                approved: 'You are a wholesale customer: company "{company}", price group "{group}".'
+                pending: 'Your application of {date} has been received and is awaiting review. The answer will arrive by email.'
+                rejected: 'The application was declined on {date}. You can submit a new one.'
+            flash:
+                submitted: 'Application sent. A manager will review it and we will email you.'
+            error:
+                company_blank: Enter the company name
+                tax_id_blank: Enter the EDRPOU or RNOKPP code
+                tax_id_invalid: 'EDRPOU has 8 digits, RNOKPP has 10 digits'
+                contact_blank: Enter the contact person
+                too_long: The value is too long
+                pending: Your application is already awaiting review
+                already_member: You are already a wholesale customer
+                unverified: Confirm your email first
+email:
+    order:
+        item: Item
+        quantity: Qty
+        price: Price
+        total: Total
+        grand_total: Grand total
+        included: Includes
+        shipping: Delivery
+        payment: Payment
+        comment: Comment
+        customer_subject: 'Order {number} at {site}'
+        customer_title: 'Your order {number} has been received'
+        customer_intro: 'Hello {name}! Thank you for your order. Our manager will contact you to confirm.'
+        customer_outro: Kind regards, the shop team.
+    account:
+        hello: 'Hello, {name}!'
+        hello_plain: Hello!
+        verify:
+            subject: 'Confirm your email at {site}'
+            text: 'To finish signing up at {site}, please confirm your address.'
+            button: Confirm email
+            outro: 'The link is valid for {hours} hours. If you did not sign up, just ignore this email.'
+        account_exists:
+            subject: 'You already have an account at {site}'
+            text: 'Someone tried to sign up at {site} with your address, but an account already exists. If it was you and you forgot your password, set a new one.'
+            button: Set a new password
+            outro: 'The link is valid for {minutes} min. If it was not you, do nothing: your password has not changed.'
+        reset:
+            subject: 'Password reset at {site}'
+            text: 'You asked for a new password at {site}.'
+            button: Set a new password
+            outro: 'The link is valid for {minutes} min. If you did not ask for it, ignore this email.'
+        login_link:
+            subject: 'Log in to {site}'
+            text: 'Your link to log in to {site} without a password.'
+            button: Log in
+            outro: 'The link works once and is valid for {minutes} min. If you did not ask for it, ignore this email.'
+        password_changed:
+            subject: 'Your password at {site} was changed'
+            text: 'The password of your account at {site} has just been changed. Other devices have been logged out.'
+            button: Restore access
+            outro: 'If it was not you, restore access right away using the link above.'
+            google: 'The Google account {email} is connected to your account and can still be used to sign in. If it is not yours, disconnect it in your profile.'
+        email_change:
+            subject: 'Confirm your new address on {site}'
+            text: 'You asked to change your {site} account address to this one. Confirm it to make it active.'
+            button: Confirm new address
+            outro: 'The link is valid for {hours} hours. If you did not ask, ignore this email: the address will not change.'
+        email_changed:
+            subject: 'Your {site} account address was changed'
+            text: 'The address of your {site} account was just changed to another one. Emails now go there. If this was you, no action is needed.'
+            button: Restore old address and lock sign-in
+            outro: 'If this was not you, press the button above within {hours} hours: the address comes back, the password is erased, all devices are signed out, and you set a new password via "Forgot password" on this address.'
+        google_linked:
+            subject: 'Google connected to your account at {site}'
+            text: 'The Google account {email} has just been connected to your account at {site}: it can now be used to sign in.'
+            button: Open profile
+            outro: 'If it was not you, disconnect Google in your profile and change your password. If you have no password, set one via “Forgot password” to your own address.'
+        google_unlinked:
+            subject: 'Google disconnected from your account at {site}'
+            text: 'The Google account {email} has just been disconnected from your account at {site}. Signing in with it no longer works.'
+            button: Open profile
+            outro: 'If it was not you, change your password: someone has access to your account.'
+        export:
+            subject: 'Your data from {site} is ready'
+            text: 'The file with your {site} data is ready.'
+            button: Download file
+            outro: 'The link is one-time and valid for {hours} hours; it opens after signing in to your account.'
+        deleted:
+            subject: 'Your {site} account was deleted'
+            text: 'Your {site} account was deleted at your request: sign-in is closed and sign-in data erased.'
+            button: Go to the site
+            outro: 'If this was not you, reply to this email.'
+        wholesale_approved:
+            subject: 'Wholesale application at {site} approved'
+            text: 'Your application at {site} has been approved: wholesale prices are now active for your account.'
+            reason: 'Manager comment:'
+            button: Go to your account
+            outro: 'If you have any questions, reply to this email.'
+        wholesale_rejected:
+            subject: 'Wholesale application at {site} declined'
+            text: 'Unfortunately, your application at {site} has been declined.'
+            reason: 'Reason:'
+            button: Submit a new application
+            outro: 'If you think this is a mistake, reply to this email.'

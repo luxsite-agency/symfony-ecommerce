@@ -1,0 +1,26 @@
+{% extends '@EasyAdmin/page/content.html.twig' %}
+{% trans_default_domain 'admin' %}
+{# Імпорт правил редиректів з CSV (RedirectCrudController::import) і звіт: створено, замінено, помилки з номерами рядків. #}
+{% block content_title %}{{ 'redirect.import.title'|trans }}{% endblock %}
+{% block main %}
+    {% if report %}
+        <div class="alert {{ report.errors ? 'alert-warning' : 'alert-success' }}" data-import-report>
+            {{ 'redirect.import.report.created'|trans }} <strong data-created>{{ report.created }}</strong>, {{ 'redirect.import.report.updated'|trans }} <strong data-updated>{{ report.updated }}</strong>, {{ 'redirect.import.report.errors'|trans }} <strong data-errors>{{ report.errors|length }}</strong>.
+        </div>
+        {% if report.errors %}
+            <table class="table datagrid">
+                <thead><tr><th>{{ 'redirect.import.report.line'|trans }}</th><th>{{ 'redirect.import.report.error'|trans }}</th></tr></thead>
+                <tbody>
+                {% for error in report.errors %}
+                    <tr data-error-line="{{ error.line }}"><td>{{ error.line }}</td><td>{{ error.trans is defined and error.trans ? error.trans|trans : error.message }}</td></tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+    {% endif %}
+    {{ form_start(form) }}
+        {{ form_row(form.file) }}
+        <button type="submit" class="btn btn-primary"><i class="fa fa-upload"></i> {{ 'redirect.import.submit'|trans }}</button>
+        <a class="btn btn-secondary" href="{{ ea_url().setController('App\\Admin\\Controller\\Crud\\RedirectCrudController').setAction('index') }}">{{ 'redirect.import.back'|trans }}</a>
+    {{ form_end(form) }}
+{% endblock %}

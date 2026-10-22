@@ -1,0 +1,17 @@
+{% extends 'site/base.html.twig' %}
+{% set noindex = true %}
+{% block title %}{{ 'site.account.privacy.delete_title'|trans }} | {{ site_name }}{% endblock %}
+{% block body %}
+    <h1>{{ 'site.account.privacy.delete_title'|trans }}</h1>
+    <p class="flash flash-error" role="alert">{{ 'site.account.privacy.delete_warning'|trans }}</p>
+    {% if app.user.password is null %}
+        {% include 'site/account/_no_password.html.twig' %}
+    {% else %}
+        <form method="post" action="{{ path('site_account_delete') }}" class="account-form delete-form" novalidate>
+            <input type="hidden" name="{{ field_name(form._token) }}" value="{{ field_value(form._token) }}">
+            {% include 'site/account/_field.html.twig' with {field: form.current, label: 'site.account.profile.current_password'|trans, type: 'password', autocomplete: 'current-password'} only %}
+            <button type="submit" class="btn btn-primary">{{ 'site.account.privacy.delete_submit'|trans }}</button>
+        </form>
+    {% endif %}
+    <ul class="account-links"><li><a href="{{ path('site_account_privacy') }}">{{ 'site.account.privacy.back'|trans }}</a></li></ul>
+{% endblock %}

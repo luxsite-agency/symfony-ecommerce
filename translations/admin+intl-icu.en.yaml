@@ -1,0 +1,1724 @@
+dashboard:
+  menu: Dashboard
+  title: Dashboard
+  period:
+    label: Period
+    today: Today
+    yesterday: Yesterday
+    '7': 7 days
+    '30': 30 days
+    '90': 90 days
+    month: This month
+    last_month: Last month
+  range:
+    from: from
+    to: to
+    show: Show
+    span: from {from} to {to}
+    fallback: Showing the default 30 days.
+    error:
+      invalid: 'Dates not recognised: use YYYY-MM-DD.'
+      order: The "from" date is after the "to" date.
+      future: The "to" date is after today.
+      too_long: 'The range is too long: at most {max} days.'
+      preset: Unknown period.
+  generated_at: Data as of {time}, refreshed every few minutes
+  orders:
+    title: Orders
+    new: New
+    today: Today
+    last7: Last 7 days
+    last30: Last 30 days
+    period_total: Period total
+    period_count: Orders in period
+    average_check: Average order
+    by_status: By status
+    excluding_cancelled: excluding cancelled
+    in_list: In the orders list
+  sales:
+    title_day: Sales by day
+    title_week: Sales by week
+    title_month: Sales by month
+    empty: No sales in this period
+    tip_day: '{date}: {total}, {count, plural, one {# order} other {# orders}}'
+    tip_week: 'week of {date}: {total}, {count, plural, one {# order} other {# orders}}'
+    tip_month: '{date}: {total}, {count, plural, one {# order} other {# orders}}'
+  top:
+    title: Top products
+    by_total: By revenue
+    by_quantity: By quantity
+    empty: No products sold in this period yet
+  recent:
+    title: Recent orders
+    empty: No orders yet
+    all: All orders
+  quick:
+    title: New quick-order requests
+    empty: No new quick-order requests
+  reviews:
+    title: New reviews awaiting moderation
+    empty: No new reviews
+    all: All reviews
+  stock:
+    title: Stock
+    out: Out of stock
+    low: Low (≤ {threshold})
+    empty: All active tracked products are in stock
+  integrations:
+    title: Integrations
+    crm: CRM connector
+    crm_push: Order push
+    last_order_push: Last order pushed
+    last_catalog_sync: Last catalog sync
+    without_ref: Period orders missing in CRM
+    failed: Failed messages
+    pending: Queued (async)
+    oldest_pending: Oldest queued
+    never: never
+    ok: all good
+  analytics:
+    title: Analytics
+    gtm: GTM
+    ga4: GA4
+    pixel: Meta Pixel
+    enabled: Tags are output
+    disabled: Tags are not output (dev switch is off)
+    none: No tag configured
+    settings: Site settings
+  'yes': 'yes'
+  'no': 'no'
+  columns:
+    number: Number
+    status: Status
+    customer: Customer
+    phone: Phone
+    total: Total
+    placed_at: Placed
+    sku: SKU
+    name: Name
+    quantity: Qty
+    stock: Stock
+menu:
+  solutions: 'Solutions'
+  solution_groups: 'Solution groups'
+  toggle: Open menu
+  catalog: Catalog
+  products: Products
+  categories: Categories
+  brands: Brands
+  attributes: Attributes
+  media: Media library
+  sales: Sales
+  orders: Orders
+  promotions: Promotions
+  reviews: Reviews
+  wholesale: Wholesale
+  wholesale_applications: Wholesale applications
+  companies: Companies
+  content: Content
+  pages: Pages
+  blog: Blog
+  blog_categories: Blog categories
+  seo: SEO
+  redirects: Redirects
+  not_found: 404 log
+  log: History
+  audit: Activity log
+  changesets: Change sets
+  api: API
+  api_tokens: API tokens
+  ai: AI
+  ai_usage: AI usage
+  ai_key: AI key and model
+  settings: Settings
+  customer_groups: Customer groups
+  users: Users
+  site_settings: Site settings
+  license: Licence
+  logout: Log out
+login:
+  email: Email
+  password: Password
+  sign_in: Sign in
+license_footer:
+  link: Licence
+  open_source: "open source, Apache 2.0"
+  developers: "platform developed by"
+error:
+  order:
+    transition_unavailable: This status change isn't available for order {number} right now
+  api_token:
+    days_range: Validity must be 1 to {max} days.
+    name_length: Token name must be 1 to 100 characters.
+    scope_denied: Scope {scope} isn’t available for this user’s role.
+    scopes_required: Select at least one scope.
+  attribute:
+    axis_requires_select: Only a select attribute can be a variant axis; "{code}" is of type {type}.
+    axis_select_only: Only a select attribute can be a variant axis.
+    no_values: Attribute "{code}" of type {type} has no predefined values.
+    type_locked: The attribute type can’t be changed after it’s created.
+    value_exists: Value "{value}" already exists in attribute "{attribute}".
+  brand:
+    name_length: Brand name is required and must be 255 characters or fewer.
+  catalog_slug:
+    page_has_slug: 'A page already uses this URL slug in this language (pages at the site root).'
+    product_has_slug: A product already uses this URL slug in this language (products and categories share URLs).
+    product_taken: A product with this URL slug already exists in this language.
+    reserved: “{slug}” is a reserved site URL.
+    root_category_has_slug: A top-level category already uses this URL slug in this language (products and categories share URLs).
+    root_category_taken: A top-level category with this URL slug already exists in this language.
+    subcategory_taken: The parent category already has a subcategory with this URL slug.
+  category:
+    filter_not_filterable: Attribute "{attribute}" isn’t marked as filterable, so it’s not in the filter index.
+    own_ancestor: A category can’t be its own parent or ancestor.
+  company:
+    contact_length: 'Contact person: 1 to {max} characters.'
+    name_length: Company name is required and must be {max} characters or fewer.
+    phone_too_long: The phone number is too long.
+    tax_id_format: EDRPOU code has 8 digits, RNOKPP has 10 digits.
+  customer_group:
+    min_order_positive: Minimum order amount must be greater than zero.
+    name_length: Group name is required and must be 255 characters or fewer.
+  machine_code:
+    invalid: 'Invalid code (snake_case, up to 64 characters): "{value}"'
+  media:
+    invalid_dimensions: Image dimensions must be a pair of non-negative numbers.
+    invalid_mime: 'Not a MIME type: "{mime}"'
+    invalid_path: 'Invalid media path: "{path}"'
+    negative_size: File size can’t be negative.
+  money:
+    invalid: 'Not a valid amount: "{value}"'
+    invalid_currency: 'Not an ISO currency code: "{value}"'
+    overflow: The amount is too large.
+  number:
+    invalid_decimal: 'Not a valid number (up to 4 decimal places): "{value}"'
+  option_group:
+    component_currency: Component {sku} is priced in {component_currency}, but the product is in {currency}.
+    component_price_currency: The component price must be in the product currency ({currency}).
+    component_price_negative: The component price can’t be negative.
+    component_price_on_request: Component {sku} has price on request. Enter a price for the whole selection.
+    component_same_product: A variant of the same product can’t be a component.
+    discount_too_big: An option discount must be less than 100%.
+    exists: This product already has option group "{code}".
+    foreign_value: This value belongs to another option group.
+    modifier_currency: The surcharge must be in the product currency ({currency}).
+    number_has_values: A number option group can’t have values. Remove them first.
+    number_min_gt_max: The minimum is greater than the maximum.
+    number_no_values: A number option group has no values.
+    number_single_only: A number option group allows a single choice only.
+    number_step_positive: The step must be greater than zero.
+    rate_currency: The rate must be in the product currency ({currency}).
+    rate_negative: The rate can’t be negative.
+    single_many_defaults: A single-choice group can’t have more than one default value.
+    threshold_required: Enter a threshold for the “above threshold” rule.
+    value_exists: Value "{value}" already exists in group "{group}".
+  price_tier:
+    currency: The tier currency is {expected}, not {actual}.
+    negative_price: The tier price can’t be negative.
+  product:
+    attribute_no_values: Attribute "{attribute}" has no predefined values.
+    attribute_type: Attribute "{attribute}" is of type {type}, not {expected}.
+    last_variant: A product must keep at least one variant.
+    main_category_not_assigned: The main category must be one of the product’s categories.
+    media_already_attached: This file is already attached to the product.
+    no_variants: The product has no variants.
+  product_media:
+    foreign_variant: A photo can only be linked to a variant of the same product.
+  promotion:
+    amount_format: Discount amount must be a number greater than zero, e.g. 150.00.
+    amount_positive: Discount amount must be greater than zero.
+    percent_format: Discount percentage must be a number from 0.01 to 100, with up to two decimal places.
+    percent_range: Discount percentage must be from 0.01 to 100.
+  quantity:
+    invalid: 'Not a valid quantity (up to 3 decimal places): "{value}"'
+    invalid_plain: 'Not a valid quantity: "{value}"'
+    negative: 'Quantity can’t be negative: "{value}"'
+    not_positive: 'Quantity must be greater than zero: "{value}"'
+  redirect:
+    chain_too_long: The redirect chain from {source} is too long.
+    external_denied: Only an administrator can set a target on another site. Managers can use a path from the root (/…).
+    invalid_source: 'Invalid source URL “{source}”: enter a path from the site root.'
+    invalid_target: 'Invalid target “{target}”: a path from the root (/…) or a full URL https://…'
+    loop: 'Redirect loop: {source} → {target} leads back to {path}'
+    self: The redirect points to the same URL.
+    source_live: '{source} is a live page on the site, and redirects only apply to 404s. Unpublish the page or change its URL first (a 301 will then be added automatically).'
+    target_required: 'Enter a target for 301/302: a path from the root (/…) or a full URL https://…'
+  review:
+    rating_range: Rating must be from {min} to {max}.
+    reply_too_long: The reply is longer than {max} characters.
+    text_blank: The review text is empty.
+    text_too_long: The review text is longer than {max} characters.
+  slug:
+    invalid: 'Invalid URL slug: "{value}"'
+  translation:
+    field_too_long: Field "{field}" must be {max} characters or fewer.
+    invalid_locale: 'Invalid locale code: "{value}"'
+  variant:
+    axes_duplicate: 'A variant with these axis values already exists: {sku}'
+    axis_value_foreign: Value "{value}" doesn’t belong to axis "{attribute}".
+    currency: The variant currency is {expected}, not {actual}.
+    external_id_length: externalId is required and must be 128 bytes or fewer.
+    lead_time_range: Lead time must be between 0 and 32767 days.
+    not_axis: Attribute "{attribute}" isn’t a variant axis.
+    old_price_not_greater: Compare-at price must be higher than the price.
+    price_negative: Price can’t be negative.
+    service_stock_policy: 'Services have no stock: use not_tracked.'
+    sku_exists: SKU "{sku}" is already used in this product.
+    sku_length: SKU is required and must be 64 characters or fewer.
+    tier_exists: A price tier from {min_quantity} already exists for this group.
+  wholesale_application:
+    already_decided: This application has already been reviewed.
+    already_member: This customer already belongs to a company.
+    comment_too_long: Comment must be {max} characters or fewer.
+    company_has_owner: A company with code {tax_id} already exists and has an owner.
+    company_race: A company with this code was just created from another application. Refresh the page.
+    locked: Another manager is processing this application. Try again in a minute.
+    reason_required: Enter a reason for rejection.
+product:
+  label:
+    singular: Product
+    plural: Products
+  title:
+    new: New product
+    edit: '{name}'
+  help:
+    main_category: Used for breadcrumbs and the canonical URL; must be one of the product's categories. Leave empty to use the first selected.
+    featured: Shown first in the homepage showcase; new arrivals fill the remaining spots
+    variants: Each variant is a purchasable unit with its own SKU, price, stock, axes (colour, size) and price tiers
+    attributes: Product attributes; variant axes are on the Variants tab
+    options: 'Option groups: surcharges as an amount or percentage, or component SKUs with a quantity'
+    gallery: Files from the media library; upload new ones in Media library
+  action:
+    add: Add product
+    activate: Activate
+    deactivate: Deactivate
+    feature: Feature on homepage
+    unfeature: Remove from homepage
+    add_variant: 'Add variant'
+  flash:
+    activated: '{count, plural, one {# product activated} other {# products activated}}'
+    deactivated: '{count, plural, one {# product deactivated} other {# products deactivated}}'
+    featured: '{count, plural, one {# product featured on the homepage} other {# products featured on the homepage}}'
+    unfeatured: '{count, plural, one {# product removed from the homepage} other {# products removed from the homepage}}'
+  filter:
+    category: Category
+    brand: Brand
+    active: Active
+    featured: Featured on homepage
+  field:
+    sku: SKU
+    name: Name
+    price: Price
+    variants_count: Variants
+    kind: Type
+    price_mode: Pricing
+    brand: Brand
+    categories: Categories
+    main_category: Primary category
+    active: Active
+    featured: Featured on homepage
+    updated_at: Updated
+    source_updated_at: Updated by source
+  tab:
+    main: General
+    texts: Names and descriptions
+    variants: Variants
+    attributes: Attributes
+    options: Options
+    gallery: Gallery
+  kind:
+    goods: Product
+    service: Service
+    bundle: Bundle
+    quote: On request
+  price_mode:
+    fixed: Fixed price
+    from: '"From" price'
+    on_request: Price on request
+  variant:
+    new: 'New variant'
+category:
+  label:
+    singular: Category
+    plural: Categories
+  title:
+    new: New category
+  action:
+    add: Add category
+  field:
+    category: Category
+    path: Path
+    parent: Parent category
+    position: Sort order
+    active: Active
+    image: Tile image
+  fieldset:
+    placement: Placement
+    texts: Names and descriptions
+  placeholder:
+    root: — top level —
+  help:
+    image: Category tile image on the homepage, from the media library. Leave empty to use the first product's photo
+brand:
+  label:
+    singular: Brand
+    plural: Brands
+  title:
+    new: New brand
+  action:
+    add: Add brand
+  field:
+    name: Name
+    slug: URL slug
+    active: Active
+  help:
+    slug: Latin letters, digits and hyphens
+attribute:
+  label:
+    singular: Attribute
+    plural: Attributes
+  title:
+    new: New attribute
+  action:
+    add: Add attribute
+  fieldset:
+    main: Attribute
+    values: Values
+  field:
+    code: Code
+    type: Type
+    unit: Unit
+    filterable: Show in filters
+    variant_axis: Variant axis
+    position: Sort order
+    values_count: Values
+  help:
+    code: snake_case in Latin letters, e.g. color, height_mm
+    type_locked: The type can't be changed after creation
+    unit: e.g. mm, kg; for display only
+    variant_axis: e.g. size or colour; select type only
+    values: For select and multiselect only
+  type:
+    select: Single choice (select)
+    multiselect: Multiple choice (multiselect)
+    number: Number
+    boolean: Yes/no
+media:
+  label:
+    singular: File
+    plural: Media library
+  title:
+    new: New file
+  action:
+    add: Add file
+  field:
+    image: Image
+    path: Path
+    mime_type: Type
+    size: Size, bytes
+    width: Width
+    height: Height
+    created_at: Uploaded
+    file: File
+    alt: Alt text
+  help:
+    file: JPG, PNG, WebP or PDF up to 20 MB; product photos should be at least 1200×1200
+    alt: Short description for accessibility and Google Images
+action:
+  create: Create
+  save_and_add_another: Save and add another
+  save: Save
+  save_and_continue: Save and continue editing
+  cancel: Discard changes
+  view_on_site: View on site
+filter:
+  in_stock: In stock
+catalog_form:
+  field:
+    code: Code
+    position: Sort order
+    value: Value
+    values: Values
+    label: Label
+    selection: Selection
+    required: Required
+    value_kind: Type
+    modifier_type: Surcharge
+    amount: Amount (in product currency, can be negative)
+    percent: Percentage
+    component_variant: Component variant
+    component_quantity: Component quantity
+    selection_price: Price for the whole selection
+    default: Default
+    tier_min_quantity: Min. quantity
+    price: Price
+    customer_group: Customer group
+    media: File from media library
+    media_variant: Variant only
+    sku: SKU
+    external_id: Import key (externalId)
+    barcode: Barcode
+    old_price: Compare-at price
+    stock: Stock
+    stock_policy: Availability
+    lead_time_days: Lead time, days
+    sales_unit: Sales unit
+    min_quantity: Minimum quantity
+    quantity_step: Quantity step
+    pack_quantity: Per pack
+    active: Active
+    price_tiers: Price tiers
+  help:
+    attribute_value_code: snake_case in Latin letters; keep it stable for imports
+    option_group_code: snake_case in Latin letters, e.g. casing, lock
+    percent: 15 = +15%, −10 = discount
+    selection_price: Leave empty to use component price × quantity
+  selection:
+    single: One from the list
+    multiple: Multiple
+  value_kind:
+    modifier: Surcharge
+    component: Component (SKU)
+  modifier_type:
+    absolute: Amount
+    percent: Percentage
+  placeholder:
+    all_customers: all customers
+    whole_product: whole product
+  stock_policy:
+    in_stock: From stock (tracked)
+    made_to_order: Made to order
+    not_tracked: Don't track stock
+  unit:
+    pc: pcs
+    m: m
+    m2: m²
+    kg: kg
+    set: set
+  boolean:
+    'yes': 'Yes'
+    'no': 'No'
+  error:
+    component_variant_required: Select a component variant.
+    percent_not_number: Enter the percentage as a number.
+    amount_required: Enter the surcharge amount.
+    tier_price_required: Enter the tier price.
+    media_required: Select a file from the media library.
+    price_required: Enter a price.
+    required_default_locale: Required for the default language.
+    product_name_required: Enter the product name.
+    category_name_required: Enter the category name.
+    name_required: Enter a name.
+    page_title_required: Enter the page title.
+    post_title_required: Enter the post title.
+  translation:
+    name: Name
+    title: Title
+    slug: URL slug
+    description: Description
+    short_description: Short description
+    h1: Page H1
+    excerpt: Excerpt
+    body: Content
+    meta_title: Meta title
+    meta_description: Meta description
+    help:
+      slug_from_name: Leave empty to generate from the name
+      slug_from_title: Leave empty to generate from the title
+      h1: Leave empty to use the name. The name is still used in menus, breadcrumbs and tiles
+order:
+  label:
+    singular: Order
+    plural: Orders
+  action:
+    confirm: Confirm
+    process: Start processing
+    ship: Mark as shipped
+    complete: Mark as completed
+    cancel: 'Cancel order'
+  filter:
+    status: Status
+    payment_status: Payment
+    source: Source
+    placed_at: Date
+  field:
+    number: Order number
+    placed_at: Placed
+    status: Status
+    payment_status: Payment
+    source: Source
+    customer_name: Customer
+    phone: Phone
+    email: Email
+    company: Company
+    total: Total
+    shipping_method: Shipping
+    shipping_city: City
+    shipping_address: Branch / address
+    shipping_point: Nova Poshta branch (from directory)
+    payment_method: Payment method
+    comment: Customer note
+    locale: Language
+    ip: IP
+  flash:
+    transitioned: '{number} → {status}'
+    transition_failed: 'Status change not available: {error}'
+    transition_unavailable: '"{transition}" isn''t available for an order with status "{status}". Reload the page and try again.'
+  detail:
+    items: Items
+    sku: SKU
+    name: Name
+    price: Price
+    quantity: Qty
+    line_total: Total
+    reserved: Reserved
+    promotion: 'Promotion: {name}'
+    included: included
+    items_total: Subtotal
+    shipping: Shipping
+    grand_total: Total
+    history: History
+    cancel_confirm: 'Cancel order {number}? Reserved stock will go back to inventory.'
+  attachments:
+    title: Customer attachments
+    purged: deleted after the retention period
+order_history:
+  created:
+    checkout: Placed by customer on the website
+    quick: Quick order request from customer
+    price_request: Price request from customer
+    admin: Created in admin
+    lead: Request from the website
+    default: Created
+  actor:
+    customer: customer
+    system: system
+    demo_seed: demo data
+    admin: admin
+    manager: manager {email}
+promotion:
+  label:
+    singular: Promotion
+    plural: Promotions
+  title:
+    new: New promotion
+  default_name: New promotion
+  action:
+    add: Add promotion
+  fieldset:
+    discount: Discount
+    when: Schedule
+    targets: Applies to
+    audience: Customers
+  help:
+    index: Only one best promotion applies (highest priority, then the larger discount). Promotions combine only if marked "Stacks with others" and the winning one is marked too. A promotion covers the whole catalog only when "Whole catalog" is ticked.
+    name: Shown to customers next to the discount and in the order
+    discount: 'For "Percentage": 0.01–100. For "Amount per unit": amount in {currency}, e.g. 150.00'
+    priority: Higher priority wins when one promotion is chosen
+    ends_at: Active up to and including this minute. Must be after the start.
+    targets: Either "Whole catalog" or specific targets. A category includes its subcategories. A promotion whose targets were all deleted doesn't apply.
+    audience: The promotion always applies to retail (guests and customers without a group). Customers in a group (wholesale) get it only if their group is selected here. Leave empty for retail only; wholesale prices stay unchanged.
+  field:
+    name: Name
+    active: Active
+    type: Type
+    discount: Discount
+    priority: Priority
+    stackable: Stacks with others
+    starts_at: Starts
+    ends_at: Ends
+    whole_catalog: Whole catalog
+    categories: Categories
+    brands: Brands
+    products: Products
+    customer_groups: Customer groups
+  error:
+    type_required: Choose a discount type.
+    discount_required: Enter a discount for the selected type.
+review:
+  label:
+    singular: Review
+    plural: Reviews
+  help:
+    index: 'New reviews wait for approval (pre-moderation). Customer text can''t be edited: approve, reject, reply or delete. Approved reviews appear on the product page, star ratings in product lists.'
+  action:
+    approve: Approve
+    reject: Reject
+  filter:
+    status: Status
+    rating: Rating
+    verified_purchase: Verified purchase
+    demo: Demo review
+  field:
+    created_at: Created
+    status: Status
+    product: Product
+    rating: Rating
+    customer: Customer
+    email: Email
+    verified_purchase: Verified purchase
+    demo: Demo
+    locale: Language
+    text: Review
+    reply_text: Store reply
+    reply_by: Replied by
+    replied_at: Replied at
+    moderated_by: Moderated by
+    moderated_at: Moderated at
+    updated_at: Updated
+  flash:
+    batch_approved: '{count, plural, one {# review approved} other {# reviews approved}}'
+    batch_rejected: '{count, plural, one {# review rejected} other {# reviews rejected}}'
+    approved: Review approved and published on the site
+    rejected: Review rejected
+    reply_saved: Store reply saved
+    reply_removed: Store reply removed
+  error:
+    unknown_decision: Unknown action. Reload the page and try again.
+  detail:
+    moderation: Moderation
+    moderation_help: 'Customer text isn''t edited: approve it (shown on the site) or reject it.'
+    reply_label: Reply text (shown under the review on the site; leave empty to remove the reply)
+    reply_save: Save reply
+wholesale:
+  label:
+    singular: Wholesale application
+    plural: Wholesale applications
+  help:
+    index: 'Approval assigns the customer a price group and creates a company from the application details. Rejection needs a reason: it''s emailed to the customer, who can apply again.'
+  filter:
+    status: Status
+  field:
+    created_at: Submitted
+    status: Status
+    company_name: Company
+    tax_id: Tax ID (EDRPOU / RNOKPP)
+    vat_payer: VAT
+    contact_name: Contact
+    contact_phone: Phone
+    customer_email: Customer email
+    customer_name: Customer name
+    note: Customer note
+    assigned_group: Price group
+    company: Linked company
+    reviewed_by: Reviewed by
+    reviewed_at: Reviewed at
+    review_comment: Manager comment
+  error:
+    group_required: Choose a price group.
+    reason_required: Enter a reason for rejection. It will be sent to the customer.
+    unknown_decision: Unknown action. Reload the page and try again.
+  flash:
+    approved: 'Application #{id} approved, price group "{group}" assigned'
+    rejected: 'Application #{id} rejected'
+  detail:
+    approve: Approve
+    group_label: Price group for the customer
+    group_placeholder: Choose a group
+    approve_comment: Comment (optional, included in the email to the customer)
+    approve_submit: Approve and assign group
+    reject: Reject
+    reject_reason: Reason (required, included in the email to the customer)
+company:
+  label:
+    singular: Company
+    plural: Companies
+  field:
+    name: Name
+    tax_id: Tax ID (EDRPOU / RNOKPP)
+    vat_payer: VAT registered
+    contact_name: Contact person
+    contact_phone: Phone
+    members: Customer
+    created_at: Created
+customer_group:
+  label:
+    singular: Customer group
+    plural: Customer groups
+  title:
+    new: New customer group
+  default_name: New group
+  action:
+    price_list: Download price list
+    add: Add group
+  field:
+    code: Code
+    name: Name
+    position: Sort order
+    min_order_amount: Minimum order amount, {currency}
+    min_order_quantity: Minimum order quantity (units)
+    exact_stock: Exact stock and lead times
+  help:
+    code: 'Latin letters in snake_case: retail, dealer'
+    min_order_amount: Leave empty for no minimum. Checked at checkout and on quick orders.
+    min_order_quantity: Total for the whole order. Leave empty for no minimum.
+    exact_stock: Customers in this group see stock in units and the lead time instead of "In stock".
+price_list:
+  error:
+    too_many: Too many price list downloads. Try again in an hour.
+email_order:
+  admin:
+    subject: '[{site}] New order {number} — {total}'
+    title: New order {number} ({source})
+    customer: Customer
+    shipping: Shipping
+    payment: Payment
+    language: Language
+    comment: Customer note
+    company: Company
+    attachments: Attachments
+    attachments_hint: open in the admin panel, on the order page
+  item: Product
+  quantity: Qty
+  price: Price
+  total: Total
+  included: Includes
+  grand_total: Order total
+  included_line: includes
+enum:
+  order_status:
+    new: New
+    confirmed: Confirmed
+    processing: Processing
+    shipped: Shipped
+    completed: Completed
+    cancelled: Cancelled
+  payment_status:
+    pending: Not paid
+    partially_paid: Partially paid
+    paid: Paid
+    refunded: Refunded
+  payment_method:
+    cod: Cash on delivery
+    bank_transfer: Bank transfer
+    manager_contact: Arranged by manager
+  shipping_method:
+    pickup: Pickup
+    courier: Courier
+    nova_poshta: Nova Poshta
+    manager_contact: Arranged by manager
+  order_source:
+    quick: Quick order request
+    checkout: Website
+    admin: Admin
+    price_request: Price request
+    lead: Request
+  review_status:
+    pending: Pending
+    approved: Approved
+    rejected: Rejected
+  application_status:
+    new: New
+    approved: Approved
+    rejected: Rejected
+  promotion_type:
+    percent: Percentage
+    amount: Amount per unit
+  redirect_code:
+    '301': 301 — permanent
+    '302': 302 — temporary
+    '404': 404 — not found
+    '410': 410 — gone
+  redirect_kind:
+    manual: manual
+    auto: auto
+  user_role:
+    admin: Administrator
+    manager: Manager
+  api_scope:
+    catalog:read: Read catalog and content
+    content:write: Content change sets (text, SEO, URL slug, categories, active status)
+    prices:write: Price change sets (variant prices, price tiers)
+    theme:write: 'Live design: site templates and theme.css, applied immediately'
+  secret_state:
+    missing: not set
+    no_key: no encryption key
+    unreadable: can't decrypt — enter it again
+    ready: set
+    hint:
+      no_key: SETTINGS_SECRET_KEY isn't set on the server (.env.local), so secret settings are turned off.
+      unreadable: 'The saved value couldn''t be decrypted: SETTINGS_SECRET_KEY on the server was changed or lost (restored from backup, new server) or the data is corrupted. Enter the value again. If you changed the encryption key on purpose, run bin/console app:secrets:rotate (docs/ai.md).'
+  ai_feature:
+    check: key check
+    describe: description
+    translate: translation
+    seo: SEO meta
+  ai_usage_status:
+    queued: queued
+    ok: done
+    error: error
+    rejected: rejected
+  audit_action:
+    create: Created
+    update: Updated
+    delete: Deleted
+    apply: Applied
+    reject: Rejected
+  audit_source:
+    admin_ui: Admin
+    ai_api: AI (API)
+    import: Import
+    cli: Console
+  platform_credit:
+    full: "Full"
+    short: "Short"
+    none: "Don’t show"
+  changeset_status:
+    proposed: Proposed
+    applied: Applied
+    rejected: Rejected
+    expired: Expired
+page:
+  label:
+    singular: Page
+    plural: Pages
+  title:
+    new: Add page
+  action:
+    add: Add page
+  field:
+    title: Title
+    slug: URL slug
+    published: Published
+    position: Sort order
+    show_in_header: In header
+    show_in_footer: In footer
+    updated_at: Updated
+  section:
+    publishing: Publishing
+    content: Content (by language)
+post:
+  label:
+    singular: Blog post
+    plural: Blog
+  title:
+    new: Add blog post
+  action:
+    add: Add blog post
+  field:
+    category: Blog category
+    cover: Cover image
+    title: Title
+    published_at: Publish date
+    author: Author
+    tags: Tags
+    updated_at: Updated
+  section:
+    publishing: Publishing
+    content: Content (by language)
+  help:
+    published_at: Leave empty or set a future date to keep the post hidden.
+    cover: Pick a file from the media library; upload new files there.
+    tags: Separate with commas.
+post_category:
+  label:
+    singular: Blog category
+    plural: Blog categories
+  title:
+    new: Add blog category
+  action:
+    add: Add blog category
+  field:
+    name: Name
+    code: Code
+    position: Sort order
+  help:
+    code: Latin snake_case, e.g. news, tips.
+redirect:
+  label:
+    singular: Redirect
+    plural: Redirects
+  title:
+    new: Add redirect
+  help:
+    index: A rule only applies when the URL would otherwise return 404, so live pages are never overridden. Changing the URL slug of a product, page or post, or a category path, adds a 301 automatically (auto). For a deleted product, add a 410 manually if needed.
+    source: 'Path from the site root, with the language prefix for non-default languages: /old-url, /ru/category/. You can paste a full URL: the domain and query string are dropped and the path is lowercased. The trailing slash matters: /category/ is a category, /product is a product.'
+    target: 'For 301/302: a path from the root (/new-url) or a full https://… URL. Leave empty for 404/410. If the new URL redirects further, the final destination is saved.'
+  action:
+    export: Export CSV
+    import: Import CSV
+    add: Add redirect
+  field:
+    code: Code
+    kind: Source
+    source: Old URL
+    target: New URL
+    hits: Hits
+    last_hit_at: Last hit
+    created_at: Created
+  flash:
+    file_unreadable: Couldn't read the file. Check it and upload it again.
+  import:
+    title: Import redirects from CSV
+    file: CSV file
+    file_help: 'Rows in the form "old;code;new", separated by ";", UTF-8 encoded (in Excel, save as "CSV UTF-8"): /old;301;/new, /deleted;410; (leave the target empty for 404/410). The source;code;target header row can stay, so an export file imports as is. Existing rules with the same old URL are replaced. Up to {max} rows; for larger files, run seo:redirects:import on the server.'
+    submit: Import
+    back: Back to list
+    report:
+      created: 'Created:'
+      updated: 'replaced:'
+      errors: 'with errors:'
+      line: Row
+      error: Error
+    error:
+      too_many_rows: 'More than {max} rows: the rest of the file was skipped. Import larger files with seo:redirects:import.'
+      not_utf8: Row is not UTF-8. Save the file as "CSV UTF-8" and try again.
+      bad_code: Code "{code}" isn't allowed. Use 301, 302, 404 or 410.
+not_found:
+  label:
+    singular: 404 URL
+    plural: 404 log
+  help:
+    index: Site URLs that returned 404, without IP addresses or query strings. Keeps up to {limit} URLs for {days} days after the last hit; older entries are removed automatically.
+  action:
+    create_redirect: Create redirect
+    clear: Clear log
+  field:
+    path: URL
+    hits: Hits
+    last_hit_at: Last hit
+    first_seen_at: First seen
+    referer: Referrer (last)
+  flash:
+    csrf_invalid: Your session token has expired. Try again.
+    cleared: '404 log cleared: {count, plural, one {# URL} other {# URLs}} removed.'
+  clear:
+    title: Clear the 404 log?
+    text: All recorded 404 URLs will be deleted. Redirect rules won't change.
+    submit: Clear
+    cancel: Cancel
+user:
+  label:
+    singular: User
+    plural: Users
+  title:
+    new: Add user
+  action:
+    add: Add user
+  field:
+    email: Email
+    display_name: Name
+    role: Role
+    active: Active
+    password: Password
+    new_password: New password
+    created_at: Created
+  help:
+    password: At least 8 characters.
+    new_password: Leave empty to keep the current password.
+  default_display_name: New user
+api_token:
+  label:
+    singular: API token
+    plural: API tokens
+  help:
+    index: Personal tokens for Claude Code / REST (docs/admin-api.md). Each user creates their own, valid for up to {days} days; the value is shown only once. Administrators see all tokens and can revoke any of them.
+    token: First 12 characters, to recognise the token. The full value isn't stored.
+    last_used_ip: Anonymised
+  action:
+    issue: Create token
+    revoke: Revoke
+  filter:
+    scope: Permission
+  field:
+    name: Name
+    token: Token
+    scopes: Permissions
+    owner: Owner
+    status: Status
+    created_at: Created
+    expires_at: Expires
+    last_used_at: Last request
+    last_used_ip: From IP
+  status:
+    active: Active
+    expired: Expired
+    revoked: Revoked
+  flash:
+    issued: Token "{name}" created. Copy the value now — it won't be shown again.
+    revoked: Token "{name}" revoked.
+    csrf_invalid: Your session token has expired. Try again.
+  plain:
+    title: New token.
+    text: 'Copy it now: it won''t be shown again, only its hash is stored.'
+    value: Token value
+    env_hint: keep the value in an environment variable, not in a file
+    check: 'Test it:'
+  issue:
+    title: Create API token
+    intro: The token gives Claude Code (MCP) or a script the same access you have, limited to the permissions you select. The value is shown only once. Change sets can't be applied via the API — only in the admin.
+    submit: Create
+    cancel: Cancel
+  revoke:
+    title: Revoke API token
+    token: Token
+    owner: 'owner:'
+    text: will stop working immediately. It can't be restored — you can only create a new one.
+    submit: Revoke
+    cancel: Cancel
+  form:
+    name: Name
+    name_help: What the token is for, e.g. "Claude Code on laptop" or "price script". Only you and administrators can see it.
+    scopes: Permissions
+    scope_choice: '{label} <code class="small text-muted ms-1">{scope}</code>'
+    days: Valid for, days
+    days_help: Up to {max} days. To extend, create a new token and revoke the old one.
+setting:
+  key:
+    analytics:
+      gtm_container_id:
+        label: Google Tag Manager container ID
+        help: GTM-XXXXXXX. If set, add GA4 and the Pixel inside GTM instead.
+      ga4_measurement_id:
+        label: Google Analytics 4 measurement ID
+        help: G-XXXXXXXXXX. Output via gtag.js only when GTM isn't set.
+      fb_pixel_id:
+        label: Meta (Facebook) Pixel ID
+        help: Numeric Meta Pixel ID. The engine sends PageView and ecommerce events (ViewContent, AddToCart, InitiateCheckout, Purchase; content_ids = variant SKU, as in the feed) only with cookie consent. If the Pixel is set up in GTM, leave this empty, otherwise events are sent twice (docs/analytics.md).
+      tags_on_dev:
+        label: Enable tags on dev
+        help: On prod, tags and HTML code are always output; on dev/test only with this switch (off by default so test visits don't reach analytics).
+      consent_granted_locales:
+        label: 'Cookie consent: languages where it is granted by default'
+        help: Comma-separated. For these languages consent = granted with no banner; for the rest it is denied and a consent banner is shown (EU).
+    seo:
+      google_site_verification:
+        label: Google Search Console verification code
+        help: The google-site-verification meta value (without the tag).
+      bing_site_verification:
+        label: Bing Webmaster verification code
+        help: The msvalidate.01 meta value (without the tag).
+    html:
+      head:
+        label: Custom code in page head
+        help: Any HTML/JS, output raw in the <head> of every site page. Administrators only.
+      body_start:
+        label: Custom code at page start
+        help: Output raw right after <body>.
+      body_end:
+        label: Custom code at page end
+        help: Output raw before </body>.
+    orders:
+      notify_email:
+        label: Email for new orders
+        help: Where to send an email about each new order; separate multiple addresses with commas. Leave empty to send nothing.
+    prices:
+      notify_email:
+        label: Email for applied price change sets
+        help: Who gets a summary when a change set with prices is applied (AI, CLI). Separate multiple addresses with commas. Leave empty to notify all active users with the Manager role (not administrators).
+    catalog:
+      facet_counts_enabled:
+        label: Show counts in filters
+        help: 'Number of products next to category filter values. When off, values show without numbers (ADR Rev 11). Counts are expensive on large catalogs: see the threshold below.'
+      facet_counts_max_set:
+        label: Filter count threshold, products
+        help: If the filtered set has more products than this, counts aren't calculated or shown (values stay, without numbers). Whole number; leave empty for 20000.
+    feeds:
+      default_brand:
+        label: Brand for products without a brand (Meta feed)
+        help: 'Meta rejects products without a brand: products with no brand get this value in the Meta feed; leave empty to use the store name. The Google feed doesn''t use it (there, a product without a brand is marked identifier_exists = no).'
+    ai:
+      openrouter_key:
+        label: OpenRouter key
+        help: API key from openrouter.ai/keys (sk-or-v1-…). Admin AI features run on this key and its credits. Stored encrypted and shown only masked; leave the field empty when saving to keep the current key. Without a key there are no AI buttons in the admin (docs/ai.md).
+      model:
+        label: AI model
+        help: A vendor/model string from openrouter.ai/models, e.g. deepseek/deepseek-v4-pro or anthropic/claude-sonnet-4.5. Leave empty for the engine default.
+      monthly_budget_usd:
+        label: Monthly AI spending limit, $
+        help: Once spending for the calendar month (per OpenRouter) reaches the limit, AI features stop until the end of the month. 0 or empty means no limit.
+    google:
+      sign_in_enabled:
+        label: "Enabled"
+        help: "Shows the “Continue with Google” button on sign-in, registration and in the review form. Works only together with the Client ID and Client Secret below; setup steps and the addresses for Google Cloud Console are below the settings list."
+      client_id:
+        label: "Client ID"
+        help: "From Google Cloud Console → Credentials → OAuth client ID (Web application): a string like 123456789012-abc…xyz.apps.googleusercontent.com."
+      client_secret:
+        label: "Client Secret"
+        help: "From the same place (GOCSPX-…). Stored encrypted and only ever shown masked; leave the field empty when saving to keep the current one. To rotate it, create a new secret in the same client in Cloud Console, paste it here, then disable the old one."
+    site:
+      platform_credit:
+        label: "Platform credit in the footer"
+        help: "“Full” — the platform, open source under the Apache 2.0 licence, developed by LuxSite, with a “Licence” link; “Short” — “Ecommerce LuxSite”; “Don’t show” — no line at all. Apache 2.0 doesn’t require showing it on the site: the NOTICE requirement only applies to distributing the code. The /license page stays available at its address (hidden from search engines)."
+  group:
+    analytics: Analytics
+    seo: SEO
+    html: HTML code
+    orders: Orders
+    prices: Prices
+    catalog: Catalog
+    feeds: Product feeds
+    ai: AI
+    google: "Sign in with Google"
+    site: "Online store"
+  label:
+    singular: Setting
+    plural: Site settings
+  help:
+    index: Tags and HTML code go live on the site as soon as you save (always on prod; on dev only with "Enable tags on dev" switched on).
+    clear_secret: Switch on and save to remove the key. AI features will be turned off.
+    html_raw: '{help} Saved as is, without escaping.'
+    secret_disabled: '{problem}. Secret settings are turned off. {help}'
+    secret_unreadable: <strong>{hint}</strong> {help}
+  action:
+    check_on_site: Check on site
+    edit: Edit
+  field:
+    label: Setting
+    code: Key
+    value: Value
+    status: Status
+    updated_at: Updated
+    clear_secret: Delete saved key
+  status:
+    not_set: not set
+    default: "default"
+    output: live
+    invalid: 'not output: invalid format'
+    invalid_title: Enter the ID in the format shown in the field help.
+  placeholder:
+    not_set: not set
+    secret: '{mask, select, none {not set} other {{mask}}}'
+  feeds:
+    title: Product feeds
+    help: 'Updated every 6 hours and after each import. Paste the URL into Google Merchant Center (Data sources → Add products from a file → Scheduled fetch) or Meta Commerce Manager (Catalog → Data sources → Data feed → Scheduled feed). Guide: docs/feeds.md.'
+    channel: Channel
+    locale: Language
+    url: URL
+    generated_at: Generated
+    url_aria: '{channel} feed URL, {locale}'
+    not_generated: not generated yet
+    copy: 'Copy'
+    copied: 'Copied'
+ai_key:
+  reason:
+    missing: OpenRouter key isn't set
+    no_key: SETTINGS_SECRET_KEY isn't set on the server, so secret settings and AI are turned off
+    unreadable: 'Can''t decrypt the OpenRouter key: SETTINGS_SECRET_KEY on the server was changed or lost. Enter the OpenRouter key again.'
+    ready: OpenRouter key is set
+  key_problem:
+    invalid: 'SETTINGS_SECRET_KEY in .env.local is invalid: it must be 32 bytes in base64 (44 characters on one line; bin/console app:secrets:keygen)'
+    missing: SETTINGS_SECRET_KEY isn't set on the server (.env.local)
+  flash:
+    csrf_invalid: Your session token has expired. Try again.
+    check_ok: 'OpenRouter responded: {summary}. Model: {model}'
+    check_failed: 'OpenRouter rejected the request: {error}'
+  summary:
+    label: key "{label}"
+    no_label: unnamed key
+    spent: spent ${amount}
+    no_limit: no limit on the key
+    limit: limit ${amount}
+    limit_remaining: limit ${amount}, ${remaining} left
+    free_tier: free tier
+  action:
+    enter: Enter OpenRouter key
+    change: Change key
+    get: Get a key
+    check: Test connection
+  section:
+    title: AI on the store key (OpenRouter)
+    no_key_invalid: SETTINGS_SECRET_KEY in .env.local is invalid (must be 32 bytes in base64, 44 characters on one line)
+    no_key_missing: SETTINGS_SECRET_KEY isn't set on the server
+    no_key_disabled: secret settings and AI features are turned off (docs/ai.md).
+    unreadable_title: Enter the OpenRouter key again.
+    unreadable_text: 'The saved key couldn''t be decrypted: SETTINGS_SECRET_KEY on the server was changed or lost (restored from backup on a new server, regenerated key) or the data is corrupted. AI features are off until you enter it again. If you changed the encryption key on purpose, run'
+    missing: OpenRouter key isn't set, so forms have no AI buttons. Enter the key using the button below.
+    model: 'Model:'
+    change: change
+    change_budget: change limit
+    month: 'This month: {calls} calls, ${cost} spent (no limit)'
+    month_budget: 'This month: {calls} calls, ${cost} spent of ${budget} limit'
+    no_cost: '{count, plural, one {# successful call} other {# successful calls}} with no cost from the provider, not counted towards the limit'
+    change_model: 'AI model: change'
+    change_monthly_budget: 'Monthly limit: change'
+ai_usage:
+  label:
+    singular: AI call
+    plural: AI usage
+  title:
+    detail: '{feature} #{id}'
+  help:
+    index: 'This month: {calls} calls, {ok} successful, ${cost} spent (no limit). Spending is as reported by OpenRouter for the store key.'
+    index_budget: 'This month: {calls} calls, {ok} successful, ${cost} spent of ${budget} limit. Spending is as reported by OpenRouter for the store key.'
+  field:
+    occurred_at: When
+    actor: Who
+    feature: Feature
+    status: Status
+    model: Model
+    user: User
+    entity_type: Entity
+    entity_id: ID
+    prompt_tokens: Prompt tokens
+    completion_tokens: Completion tokens
+    cost: Cost
+    duration_ms: ms
+    changeset_id: Change set
+    error: Error
+  banner:
+    disabled: AI features are off, so the log is empty.
+    ask_admin: Ask an administrator to enter the key.
+    settings: AI settings
+license:
+  title: Licence
+  field:
+    platform: Platform
+    code_license: "Code licence"
+    developers: "Platform developers"
+    licensee: Site owner
+    site_host: Site domain
+    admin_host: Admin domain
+    engine: Engine version
+    type: "Agreement with LuxSite"
+    contract: "Agreement number"
+    since: Date
+  open_source: "open source"
+  licensee_default: 'store name: app.license isn''t set in the pack'
+  engine:
+    unknown: unknown
+    built: built
+    pack: pack
+  type:
+    subscription: Subscription
+    perpetual: Perpetual
+    none: "Not specified"
+  components:
+    title: Third-party components
+    help: Runtime packages from the engine's composer.lock; each is used under its own licence. The list is written by
+    help_build: during the image build.
+    package: Package
+    version: Version
+    license: Licence
+audit:
+  label:
+    singular: Log entry
+    plural: Activity log
+  title:
+    detail: '{action}: {type} #{id}'
+  help:
+    index: Changes to products, prices, categories, pages and promotions made in the admin or by AI, one row per field. Feed imports aren't logged here — they have their own report.
+    index_retention: Changes to products, prices, categories, pages and promotions made in the admin or by AI, one row per field. Kept for {months} months. Feed imports aren't logged here — they have their own report.
+  field:
+    occurred_at: When
+    actor: Who
+    source: Source
+    action: Action
+    entity_type: What
+    entity_id: ID
+    entity_label: Name
+    locale: Language
+    field: Field
+    before: Before
+    after: After
+    user_id: User ID
+    token: Token
+    changeset: Change set
+    ip: IP (anonymised)
+    change: 'Change'
+  filter:
+    entity_id: Record ID
+  value:
+    'yes': 'yes'
+    'no': 'no'
+  error:
+    admin_only: Only administrators can see settings entries
+  subject:
+    labelled: '{type} “{label}” #{id}'
+    plain: '{type} #{id}'
+  summary:
+    created: 'created'
+    deleted: 'deleted'
+  field_name:
+    name: 'Name'
+    title: 'Title'
+    slug: 'URL handle (slug)'
+    description: 'Description'
+    shortDescription: 'Short description'
+    body: 'Body'
+    content: 'Content'
+    metaTitle: 'SEO title'
+    metaDescription: 'SEO description'
+    h1: 'H1 heading'
+    price: 'Price'
+    priceMinor: 'Price'
+    oldPriceMinor: 'Compare-at price'
+    stock: 'Stock'
+    sku: 'SKU'
+    active: 'Active'
+    featured: 'Featured on homepage'
+    position: 'Position'
+    parent: 'Parent category'
+    brand: 'Brand'
+    categories: 'Categories'
+    value: 'Value'
+    label: 'Label'
+    discount: 'Discount'
+    startsAt: 'Starts'
+    endsAt: 'Ends'
+    unit: 'Unit'
+    stockPolicy: 'Availability'
+entity_type:
+  product: Product
+  product_variant: Variant
+  price_tier: Price tier
+  category: Category
+  page: Page
+  post: Blog post
+  promotion: Promotion
+  option_value: Product option
+  setting: Setting
+  api_token: API token
+  changeset: Change set
+changeset:
+  label:
+    singular: Change set
+    plural: Change sets
+  help:
+    index: Change sets are proposed by AI through Claude Code (REST/MCP) or the AI assistant in forms. Nothing changes until someone clicks “Apply” on the change set page. A proposed change set is valid for {ttl}.
+  action:
+    apply: Apply
+    reject: Reject
+    revert: Revert
+  column:
+    id: No.
+    title: Title
+    status: Status
+    source: Source
+    author: Author
+    operations: Ops
+    risks: Risks
+    created_at: Created
+    when: Valid until / when
+  badge:
+    prices: prices
+    prices_title: includes price operations
+  when:
+    until: until {date}
+  flash:
+    confirm_risk: Tick the box to confirm the risky change
+    conflict: The data changed after this change set was created — it can't be applied
+    applied: Applied {count, plural, one {# operation} other {# operations}}. <a href="{url}">See the entries in the Activity log</a>{mail, select, yes {. Email sent to the people responsible for prices} other {}}
+    rejected: Change set rejected. It can't be restored — create a new one if needed.
+    revert_failed: Can't revert
+    revert_created: 'Revert change set #{id} created — review and apply it'
+    already_applied: 'Change set already applied: {name}, {date}'
+    already_rejected: 'Change set already rejected: {name}, {date}'
+    expired: The change set has expired and can't be applied — create it again in Claude Code
+    not_applicable: 'Change set #{id} is {status}'
+  detail:
+    valid_until: valid until {date}
+    less_than_hour: less than an hour
+    hours_left: '{hours} h left'
+    expired_at: expired {date} — can't be applied, create the change set again in Claude Code
+    applied_by: applied by {name}, {date}
+    risk_confirmed_by: risks confirmed by {name}, {date}
+    rejected_by: rejected by {name}, {date}
+    author: 'Author: {name}'
+    via_token: '(via API token #{id})'
+    created: 'Created: {date}'
+    source: 'Source: {source}'
+    operations: 'Operations: {count}'
+    price_operations: ', price operations: {count}'
+    revert_of: 'Reverts change set #{id} →'
+    reverted_by: 'Reverted by change set #{id} →'
+    audit_link: 'Activity log: entries for this change set →'
+    op: op. {n}
+  conflicts:
+    title: The data changed after this change set was created
+    text: 'This change set can no longer be applied: the current values don''t match the ones it was based on. Create the change set again.'
+    col_op: Op.
+    col_target: Target
+    col_field: Field
+    col_expected: Expected
+    col_current: Now
+    col_who: Who / when
+    outside_log: 'not in the log: an import or a change made before logging was turned on'
+  risks:
+    title: Risky change
+    title_proposed: Risky change — needs your confirmation
+    title_confirmed: Risky change — confirmed by {name}, {date}
+    more: and {count} more
+    note: The rules are store settings; this is a warning, not a block. You apply it and you are responsible for it.
+  warnings:
+    title: Warnings ({count})
+  diff:
+    title: Changes ({count})
+    col_before: Before
+    col_after: After
+    no_changes: no changes
+    open_form: Open form
+    none: (none)
+    redirect: a 301 redirect from the old URL will be created
+    category_paths: URLs of subcategories and products will change
+  confirm:
+    label: 'I confirm the risky change: {summary}'
+    invalid: Tick the box to apply a risky change set
+    apply_n: Apply {count, plural, one {# operation} other {# operations}}
+    reject_note: A rejected change set can't be restored — create a new one if needed.
+    revert_note: Creates a new change set with the reverse changes; nothing changes until you apply it.
+  target:
+    product_variant: Variant
+    product: Product
+    category: Category
+    page: Page
+    post: Post
+    price_tier: Tier
+  field:
+    price: Price
+    old_price: Compare-at price
+    name: Name
+    title: Title
+    short_description: Short description
+    description: Description
+    body: Text
+    meta_title: Meta title
+    meta_description: Meta description
+    slug: URL slug
+    h1: H1
+    excerpt: Excerpt
+    active: Active
+    featured: Featured on home page
+    categories: Categories
+    main: Main category
+  warning:
+    html_sanitized: HTML cleaned up by the sanitiser
+    typography_dash: Typography
+    double_space: Typography
+    straight_quotes: Typography
+    tier_above_base: Tier costs more than the base price
+    noop: No actual changes
+    slug_generated: URL slug generated from the name
+  risk:
+    price_jump: Price jump over {pct}%
+    cumulative: Total change over {days} days above {pct}%
+    zero_price: Price is 0
+    mass_price: More than {count} price operations in the change set
+    summary_ops: '{label} ({count} ops)'
+  value:
+    'yes': 'yes'
+    'no': 'no'
+    deleted_category: '#{id} (deleted)'
+  issue:
+    zero_price: '{sku}: price is 0'
+    price_jump: '{sku}: price change over {pct}% ({before} → {after})'
+    cumulative: '{sku}: total change over {days} days above {pct}% ({before} → {after})'
+    tier_above_base: '{sku}: tier from {qty} ({price}) costs more than the base price ({base})'
+    mass_price: 'Price operations in the change set: {count} (limit {max})'
+    invalid_slug: '{field}: use lowercase Latin letters, digits and hyphens between them'
+    too_long_bytes: '{field}: longer than {max} bytes'
+    too_long_chars: '{field}: longer than {max} characters'
+    html_sanitized: '{field}: HTML cleaned up by store rules (tags or attributes removed)'
+    typography_dash: '{field}: a dash is used to join words — store texts avoid this'
+    double_space: '{field}: double spaces'
+    straight_quotes: '{field}: straight quotes instead of typographic ones'
+    noop: This operation changes nothing
+    variant_not_found: Variant {ref} not found
+    product_not_found: Product {ref} not found
+    category_not_found: 'Category #{id} not found'
+    group_not_found: Customer group “{code}” not found
+    entity_not_found: '{type} #{id} not found'
+    tier_not_found: No price tier from {qty} on {sku}
+    tier_not_found_group: No price tier from {qty} for group {group} on {sku}
+    locale: Language “{locale}” isn't enabled in the store ({locales})
+    field_not_allowed: 'Field “{field}” isn''t available for {entity}; allowed: {allowed}'
+    string_or_null: '{field}: must be a string or null'
+    translation_missing: 'There''s no “{locale}” translation yet: fields must include {field}'
+    required: '{field}: can''t be empty'
+    slug_required: 'slug: the URL can''t be removed, only changed'
+    slug_generated: No slug given — URL “{slug}” was generated from the name
+    slug_taken: 'slug: {message}'
+    slug_taken_locale: URL slug “{slug}” is already taken in this language
+    flags_missing: Set active and/or featured
+    main_not_in_categories: The main category must be one of categories
+    expect_missing: 'expect.{key}: give the current value'
+    conflict: expect.{key} doesn't match the current value
+    duplicate_target: Operation {op} already changes this target
+    blame: '{message} (changed by {who}, {when})'
+    retry: Someone else is changing the same data — try again
+    risk_changed: 'New risks have appeared since the change set was created: {flags}. Create the change set again'
+    revert_unsupported: The “{locale}” translation of {target} was created by this change set — reverting doesn't remove it; delete the translation in the admin
+    nothing_to_revert: The change set changed nothing — there's nothing to revert
+email_changeset:
+  price_applied:
+    subject: '[{site}] Price change set #{id} applied: {title}'
+    heading: 'Price change set #{id} applied: {title}'
+    created_by: 'Created by:'
+    applied_by: 'Applied by:'
+    operations: 'Operations:'
+    operations_value: '{count}, price operations: {price}'
+    risk_flags: 'Risk flags:'
+    risk_flags_value: '{flags} — confirmed by {name}'
+    col_target: Target
+    col_field: Field
+    col_before: Before
+    col_after: After
+    more: and {count} more
+    link_changeset: Change set page
+    link_audit: Activity log
+    text_changeset: 'Change set:'
+    text_audit: 'Activity log:'
+field:
+  id: ID
+locale_switch:
+  label: Admin language
+settings:
+  google:
+    title: Sign in with Google
+    csrf_invalid: Your session token has expired. Try again.
+    state:
+      settings: 'Enabled: customers see the “Continue with Google” button; keys come from the store settings.'
+      env: 'Switch is off; keys from server environment variables are in use (agency staging). For a client store enter the keys here and enable.'
+      disabled: 'Disabled: there is no “Continue with Google” button on the site.'
+      client_id_missing: 'Enabled, but Client ID is empty — no button on the site.'
+      client_id_invalid: 'Enabled, but Client ID does not look like …apps.googleusercontent.com — no button on the site.'
+      secret_missing: 'Enabled, but Client Secret is empty — no button on the site.'
+      secret_no_key: 'Enabled, but the server has no SETTINGS_SECRET_KEY encryption key — the secret cannot be stored, no button on the site.'
+      secret_unreadable: 'Enabled, but the stored Client Secret cannot be decrypted (the server encryption key changed) — enter it again.'
+    origin: Authorized JavaScript origin
+    redirect_uri: Authorized redirect URI
+    copy: Copy
+    copied: Copied
+    steps:
+      title: How to get a Client ID and Client Secret (once, 10–15 minutes)
+      console: 'Open Google Cloud Console (console.cloud.google.com) and pick the store project or create a new one.'
+      consent: 'APIs & Services → OAuth consent screen: user type External, store name, support email, site domain; publishing status In production (Testing lets only test accounts in). Scopes — only openid, email, profile.'
+      client: 'APIs & Services → Credentials → Create credentials → OAuth client ID, type Web application, name — the store domain.'
+      uris: 'Paste the origin above into Authorized JavaScript origins and the redirect URI above into Authorized redirect URIs (exact match, no trailing slash). If the site also opens with www, add both addresses again with www.'
+      keys: 'Copy the Client ID and Client Secret into the “Client ID” and “Client Secret” settings in the list above (the secret is stored encrypted and shown masked).'
+      enable: 'Turn on the “Enabled” switch in the “Sign in with Google” group and save.'
+      verify: 'Click “Check settings”, then “Try on the site”: the login page shows “Continue with Google” — sign in with your Google account.'
+    console: Open Google Cloud Console
+    check: Check settings
+    try: Try on the site
+    check_result:
+      client_id_ok: 'Client ID is set and well-formed.'
+      client_id_missing: 'Client ID is empty.'
+      client_id_invalid: 'Client ID does not look like …apps.googleusercontent.com — check you did not paste the secret or an API key.'
+      secret_ready: 'Client Secret is set.'
+      secret_missing: 'Client Secret is empty.'
+      secret_no_key: 'The server has no SETTINGS_SECRET_KEY encryption key — the Client Secret cannot be stored. Contact the developer.'
+      secret_unreadable: 'The stored Client Secret cannot be decrypted: the server encryption key changed — enter the secret again.'
+      enabled_settings: 'Enabled, keys from the store settings are in use.'
+      enabled_env: 'Switch is off: keys from server environment variables are in use (staging). Turn it on to use the keys from settings.'
+      enabled_incomplete: 'Switch is on, but the keys are incomplete — no button on the site.'
+      enabled_off: 'Switch is off — no button on the site.'
+      google_ok: 'Google responds: issuer {issuer}, {keys} signing keys.'
+      google_endpoints_changed: 'Google announces different endpoint addresses than the engine uses — tell the developer.'
+      google_failed: 'Google is unreachable from the server ({reason}). Check the server’s internet access and try again later.'
+empty_state:
+  product_review:
+    text: 'No reviews yet. They appear when customers rate products they bought from their account; new reviews wait here for moderation.'
+  changeset:
+    text: 'No change sets yet. An AI agent or an integration creates them through the admin API: price and product changes arrive here for review before they are applied.'
+    action: 'API tokens for the agent'
+  admin_api_token:
+    text: 'No tokens yet. A token gives an AI agent or an integration access to the admin API with the permissions you choose.'
+    action: 'Create token'
+  ai_usage:
+    text: 'No AI calls yet. Description and translation generations from the admin will appear here, with model, tokens and cost.'
+  wholesale_application:
+    text: 'No wholesale applications yet. Customers apply from their account on the site, and their applications will appear here.'
+  not_found_entry:
+    text: 'No 404 URLs recorded yet. Pages that someone tried to open on the site but that do not exist end up here, which makes it easy to set up redirects.'
+  admin_audit_entry:
+    text: 'No changes yet. Changes to products, prices, categories, pages and promotions made in the admin or via AI appear here.'
+  order:
+    text: 'No orders yet. They appear when customers check out their cart or send a quick order request on the site.'
+  default:
+    text: 'No records yet.'
+  search:
+    text: 'Nothing matches this search or filter.'
+    reset: 'Clear search and filters'
+solution:
+  lookup_inactive: 'inactive'
+  label:
+    singular: 'Solution'
+    plural: 'Solutions'
+  title:
+    new: 'New solution'
+  action:
+    add: 'Add solution'
+  field:
+    id: 'ID'
+    title: 'Title'
+    published: 'Published'
+    position: 'Order'
+    group: 'Group'
+    cover: 'Cover'
+    related: 'Other solutions'
+    updated_at: 'Updated'
+  section:
+    publishing: 'Publishing'
+    options: 'Solution options'
+    content: 'Content (by language)'
+  help:
+    cover: 'A file from the Media library; upload new files there'
+    related: 'Empty: the site shows solutions from the same group'
+    options: 'Catalogue products as options. The price and "Request a price" come from the product (price type) and are not set here.'
+solution_group:
+  label:
+    singular: 'Solution group'
+    plural: 'Solution groups'
+  title:
+    new: 'New solution group'
+  action:
+    add: 'Add group'
+  field:
+    title: 'Title'
+solution_form:
+  error:
+    title_required: 'Enter the solution title'
+    group_title_required: 'Enter the group title'
+  title: 'Title'
+  slug: 'Slug (URL)'
+  intro: 'Introduction (under the heading)'
+  task: 'Task'
+  loads: 'Loads'
+  industries: 'Industries'
+  body: 'Additional text'
+  faq: 'FAQ'
+  meta_title: 'Meta title'
+  meta_description: 'Meta description'
+  group_title: 'Group title'
+  product: 'Product'
+  position: 'Order'
+  pros: 'Advantages'
+  note: 'Option description'
+  help:
+    slug: 'Empty: generated from the title'
+    lines: 'One item per line'
+    body: 'Optional: shown after the options'
+    faq: 'Blocks separated by an empty line: the first line is the question, the rest is the answer'
+
+search:
+  found: '{count, plural, one {# result found} other {# results found}}'
+  did_you_mean: Did you mean “{suggestion}”? Showing results for it instead of “{query}”.
+  exact_opened: Opened the exact match for “{query}”. <a href="{url}">Show all results</a>
+  hint:
+    default: Search
+    product: Name, SKU, barcode or brand
+    order: Order number, phone, email, name or company
+    category: Name or URL slug
+    brand: Name or URL slug
+    attribute: Name or code
+    media: File name or alt text
+    promotion: Promotion name
+    product_review: Review text, customer or product
+    wholesale_application: Company, tax ID, contact or email
+    company: Name, tax ID, contact or email
+    customer_group: Name or code
+    page: Title or URL slug
+    post: Title, URL slug, author or tag
+    post_category: Name or code
+    redirect: Source or target path
+    not_found_entry: Path or referrer
+    admin_audit_entry: Item, field or who made the change
+    changeset: Change set title or author
+    admin_api_token: Token name or prefix
+    ai_usage: User, model or error
+    user: Email or name
+    setting: Setting key or value
+    solution: 'Title, intro, group or product'
+    solution_group: 'Group title'

@@ -1,0 +1,16 @@
+{% extends 'site/base.html.twig' %}
+{% set noindex = true %}
+{% block title %}{{ 'site.account.profile.revert_title'|trans }} | {{ site_name }}{% endblock %}
+{% block body %}
+    <h1>{{ 'site.account.profile.revert_title'|trans }}</h1>
+    {% if ok %}
+        <p>{{ 'site.account.profile.revert_text'|trans({email: email}) }}</p>
+        <form method="post" class="account-form email-revert">
+            <input type="hidden" name="_token" value="{{ csrf_token('account') }}">
+            <button type="submit" class="btn btn-primary">{{ 'site.account.profile.revert_submit'|trans }}</button>
+        </form>
+    {% else %}
+        <p class="flash flash-error" role="alert">{{ 'site.account.error.link_invalid'|trans }}</p>
+    {% endif %}
+    <ul class="account-links"><li><a href="{{ path('site_account_login') }}">{{ 'site.account.login.title'|trans }}</a></li></ul>
+{% endblock %}

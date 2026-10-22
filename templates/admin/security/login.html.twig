@@ -1,0 +1,10 @@
+{% extends '@EasyAdmin/page/login.html.twig' %}
+{# Вхід в адмінку (SecurityController::login): стандартна сторінка EasyAdmin + рядок ліцензії внизу, як на решті сторінок адмінки
+   (bundles/EasyAdminBundle/layout.html.twig). Змінні — ті самі, що в @EasyAdmin/page/login.html.twig. #}
+{% block wrapper_wrapper %}
+    {# перемикач мови «UA / EN» до входу: вибір іде в cookie, після входу — у профіль #}
+    <div class="admin-login-locale">{% include 'admin/_locale_switcher.html.twig' %}</div>
+    <style>.admin-login-locale { display: flex; justify-content: flex-end; padding: .5rem 1rem 0; }</style>
+    {{ parent() }}
+    {% include 'admin/_license_footer.html.twig' %}
+{% endblock %}

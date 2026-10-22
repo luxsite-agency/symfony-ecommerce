@@ -1,0 +1,15 @@
+{% set l = order.locale %}{{ 'email.order.customer_title'|trans({number: order.number}, null, l) }}
+
+{{ 'email.order.customer_intro'|trans({name: order.customerName}, null, l) }}
+
+{% for item in order.items %}{% if item.parent is null %}- {{ item.name }} ({{ item.sku }}) × {{ item.quantity|qty(item.variant ? item.variant.unit, l) }} = {{ item.lineTotal|money(l) }}
+{% else %}    {{ 'email.order.included'|trans({}, null, l) }}: {{ item.name }} ({{ item.sku }}) × {{ item.quantity|qty(item.variant ? item.variant.unit, l) }}
+{% endif %}{% endfor %}{{ 'email.order.grand_total'|trans({}, null, l) }}: {{ order.total|money(l) }}
+
+{{ 'email.order.shipping'|trans({}, null, l) }}: {{ ('site.checkout.shipping.' ~ order.shippingMethod.value)|trans({}, null, l) }}{% if order.shippingCity %}, {{ order.shippingCity }}{% endif %}{% if order.shippingAddress %}, {{ order.shippingAddress }}{% endif %}
+{{ 'email.order.payment'|trans({}, null, l) }}: {{ ('site.checkout.payment.' ~ order.paymentMethod.value)|trans({}, null, l) }}
+{{ 'site.checkout.shipping_note'|trans({}, null, l) }}
+{% if order.comment %}{{ 'email.order.comment'|trans({}, null, l) }}: {{ order.comment }}
+{% endif %}
+{{ 'email.order.customer_outro'|trans({}, null, l) }}
+{{ siteName }}: {{ siteUrl }}
