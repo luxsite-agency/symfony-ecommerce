@@ -3,7 +3,21 @@
     "description": "Symfony ecommerce LuxSite: open-source e-commerce engine on Symfony (Apache 2.0, platform developed by LuxSite)",
     "type": "project",
     "license": "Apache-2.0",
+    "keywords": [
+        "symfony",
+        "ecommerce",
+        "e-commerce",
+        "shop",
+        "multi-store",
+        "easyadmin",
+        "mcp"
+    ],
     "homepage": "https://luxsite.agency",
+    "support": {
+        "issues": "https://github.com/luxsite-agency/symfony-ecommerce/issues",
+        "source": "https://github.com/luxsite-agency/symfony-ecommerce",
+        "docs": "https://github.com/luxsite-agency/symfony-ecommerce#readme"
+    },
     "authors": [
         {
             "name": "LuxSite",
