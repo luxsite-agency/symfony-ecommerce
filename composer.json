@@ -79,7 +79,7 @@
         "vich/uploader-bundle": "^3.0"
     },
     "suggest": {
-        "luxsite/gmb-reviews-bundle": "Оцінка й відгуки магазину з gbp-manager LuxSite (платний сервіс): store.yaml addons: [gmb-reviews], docs/addons.md"
+        "luxsite/gmb-reviews-bundle": "Store rating and reviews from LuxSite gbp-manager (paid service): store.yaml addons: [gmb-reviews], see docs/addons.md"
     },
     "config": {
         "allow-plugins": {
